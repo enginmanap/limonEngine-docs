@@ -205,6 +205,7 @@ The logic of triggers is as follows:
 #. If player is not detected, and was detected last frame, and *Exit Trigger* is set, run it.
 #. If player is detected, and was detected last frame, do nothing.
 #. If player is detected, and wasn't detected last frame:
+
     #. If player was not detected ever before, and *First Enter Trigger* is set, run it.
     #. If player was not detected ever before, but *First Enter Trigger* is not set, and *Enter Trigger* is set, run *Enter Trigger*.
     #. If player was detected before, if *Enter Trigger* is set, run *Enter Trigger*.
