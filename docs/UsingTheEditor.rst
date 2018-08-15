@@ -257,6 +257,11 @@ Just under these settings, there is snap settings. It is used by gizmo. For deta
 Gizmo Usage
 ___________
 
+.. figure:: _static/media/images/editor-gizmo_all.png
+    :align: center
+
+    Gizmo types: Translate, Scale, Rotate
+
 The gizmo is the tool interface that appears at the position of the object that is selected. It has 3 modes, translate(move), scale and rotate. These modes are set using the object editor window, and not all of them are available for all object types. They are directly attached to the editor information, so change in one will update the other.
 
 All three modes use same logic. Dragging an axis applies the transform on that axis. Meaning while in translate mode, clicking on vertical line and dragging will move model vertically. Dragging by the center moves freely, without axis locking. Translate mode also has boxes that can be used to move on a plane, instead of a line.
