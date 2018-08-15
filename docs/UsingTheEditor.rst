@@ -209,6 +209,7 @@ The logic of triggers is as follows:
     #. If player was not detected ever before, but *First Enter Trigger* is not set, and *Enter Trigger* is set, run *Enter Trigger*.
     #. If player was detected before, if *Enter Trigger* is set, run *Enter Trigger*.
 
+.. _Gizmo Usage:
 Gizmo Usage
 ___________
 
