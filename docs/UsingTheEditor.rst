@@ -200,6 +200,7 @@ This section has 3 Trigger settings.
 The details of Triggers settings are not predefined, triggers can define their own settings. For details, please refer to :ref:`Triggers`. Any or all of the triggers can be left unset.
 
 The logic of triggers is as follows:
+
 #. If player is not detected, and wasn't detected last frame, do nothing.
 #. If player is not detected, and was detected last frame, and *Exit Trigger* is set, run it.
 #. If player is detected, and was detected last frame, do nothing.
