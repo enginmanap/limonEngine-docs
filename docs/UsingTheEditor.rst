@@ -142,3 +142,6 @@ Saving the map
 ______________
 
 The map will be saved at the path when save world is clicked, overriding if it already exists.
+
+.. warning::
+    It is worth repeating. The save button overrides if there is a file with same name. Please pay attention.
