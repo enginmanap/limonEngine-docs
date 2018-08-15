@@ -70,7 +70,7 @@ Static object have a full mesh representing physical object. It is possible to r
 .. note::
     Because physical representation is dependent on the mass, mass setting cant be changed once an model is added to the world. If you need to change the mass, remove and add again.
 
-Add Trigger Volume button will create an empty cube. That cube can be used to trigger custom code paths. The details are at :ref:`TriggerVolumes`.
+Add Trigger Volume button will create an empty cube. That cube can be used to trigger custom code paths. The details are at :ref:`Trigger Object Editor`.
 
 Adding GUI Elements
 ___________________
@@ -145,3 +145,73 @@ The map will be saved at the path when save world is clicked, overriding if it a
 
 .. warning::
     It is worth repeating. The save button overrides if there is a file with same name. Please pay attention.
+
+Object Editor Details
+####################
+
+Object editor has two parts. One is the window that is on the left by default, and the other is the gizmos that appear at the position of the object. The window content changes based on the selected object. Each possible object type is documented separately below.
+
+.. figure:: _static/media/images/editor-object_marked.png
+    :align: center
+
+Model Object Editor
+___________________
+
+.. figure:: _static/media/images/editor-object_model.png
+    :align: center
+
+    The model window with all options visible
+
+Model Object editor has selected object in a drop-down that lists all the game objects.
+
+After that, there are 3 radio buttons. These are "Translate", "Rotate", "Scale". Based on the selected mode, the 6 elements below change, but their usage is the same. First 3 are used for precise settings by dragging, or entering exact value by typing. **To enter typing mode, you should double click the item.** The second 3 items are for setting the values with bigger differences.
+
+Just under these settings, there is snap settings. It is used by gizmo. For details check :ref:`Gizmo Usage`.
+
+If the loaded model contains animations within, these animations are listed under the "Model animation properties", and the speed of this animation can be set using "Animation time scale".
+
+AI properties only contain "AI Driven" at the current version.
+
+.. note::
+    If model has no animation, it can't be assigned an AI. Both Animation properties and AI properties will be hidden in that case.
+
+Under AI settings, there is "Step on Sound" setting. This is used as step sound when "Physical player" move on top of the model.
+
+After That there is "Custom animation properties". This section lists currently available animations, you can apply any of the custom animations to any number of models. If you want to create a new custom animation, you can do so by using "Create new" button. This button will open animation sequencer. For details please check :ref:`TriggerVolumes`.
+
+Disconnect from physics button removes the collision mesh from map so the object won't be interacting with physics engine. This can be useful for small probes that should be ignored.
+
+Last button is "Remove This Object", which removes the object from the map.
+
+Trigger Object Editor
+_____________________
+
+.. figure:: _static/media/images/editor-object_trigger.png
+    :align: center
+
+The trigger object has same interfaces with model for transformation settings. The difference is at "Trigger Properties" section.
+
+This section has 3 Trigger settings.
+
+#. First Enter Trigger.
+#. Enter Trigger.
+#. Exit Trigger.
+
+The details of Triggers settings are not predefined, triggers can define their own settings. For details, please refer to :ref:`Triggers`. Any or all of the triggers can be left unset.
+
+The logic of triggers is as follows:
+#. If player is not detected, and wasn't detected last frame, do nothing.
+#. If player is not detected, and was detected last frame, and *Exit Trigger* is set, run it.
+#. If player is detected, and was detected last frame, do nothing.
+#. If player is detected, and wasn't detected last frame
+    #. If player was not detected ever before, and *First Enter Trigger* is set, run it.
+    #. If player was not detected ever before, but *First Enter Trigger* is not set, and *Enter Trigger* is set, run *Enter Trigger*.
+    #. If player was detected before, if *Enter Trigger* is set, run *Enter Trigger*.
+
+Gizmo Usage
+___________
+
+The gizmo have 3 modes, translate(move), scale and rotate. These modes are
+
+Animation Sequencer Details
+###########################
