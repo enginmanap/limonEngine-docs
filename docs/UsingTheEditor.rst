@@ -96,14 +96,7 @@ To add GUI text, you need to set the font, font size and name. The layer of the 
 
 To add GUI Image, you need to set the name and image files path relative to the engine. The layer of the image can be selected from the drop down.
 
-To add GUI Button, you need to set the name, and normal image file path relative to the engine.
-
-The Button can be interactive, depending on the player state. If player is set interactive, the following logic is used:
-
-#. If The button doesn't have an trigger, and have a disabled image set, the disabled image will be shown.
-#. If on click image is set, and mouse is down over the button, on click image is shown. Also Trigger will be run. For details, please check :ref:`Triggers`.
-#. If on hover image is set, and mouse cursor is over the button, that image will be shown.
-#. If all else were wrong, the normal image will be shown.
+To add GUI Button, you need to set the name, and normal image file path relative to the engine. The rest of the fields are optional. For details please check :ref:`GUI Button Settings`.
 
 The layer of the button can be selected from the drop down.
 
@@ -151,20 +144,20 @@ Object Editor Details
 
 Object editor has two parts. One is the window that is on the left by default, and the other is the gizmos that appear at the position of the object. The window content changes based on the selected object. Each possible object type is documented separately below.
 
+Object editor has selected object in a drop-down that lists all the game objects, you can select another object using this drop down. All object have a remove button at the end of the window, which removes selected object completely.
+
 .. figure:: _static/media/images/editor-object_marked.png
     :align: center
 
-Model Object Editor
-___________________
+Model Object Settings
+_____________________
 
 .. figure:: _static/media/images/editor-object_model.png
     :align: center
 
     The model window with all options visible
 
-Model Object editor has selected object in a drop-down that lists all the game objects.
-
-After that, there are 3 radio buttons. These are "Translate", "Rotate", "Scale". Based on the selected mode, the 6 elements below change, but their usage is the same. First 3 are used for precise settings by dragging, or entering exact value by typing. **To enter typing mode, you should double click the item.** The second 3 items are for setting the values with bigger differences.
+There are 3 radio buttons under the selected object Drop-down. These are "Translate", "Rotate", "Scale". Based on the selected mode, the 6 elements below change, but their usage is the same. First 3 are used for precise settings by dragging, or entering exact value by typing. **To enter typing mode, you should double click the item.** The second 3 items are for setting the values with bigger differences.
 
 Just under these settings, there is snap settings. It is used by gizmo. For details check :ref:`Gizmo Usage`.
 
@@ -181,10 +174,8 @@ After That there is "Custom animation properties". This section lists currently 
 
 Disconnect from physics button removes the collision mesh from map so the object won't be interacting with physics engine. This can be useful for small probes that should be ignored.
 
-Last button is "Remove This Object", which removes the object from the map.
-
-Trigger Object Editor
-_____________________
+Trigger Object Settings
+_______________________
 
 .. figure:: _static/media/images/editor-object_trigger.png
     :align: center
@@ -210,12 +201,67 @@ The logic of triggers is as follows:
     #. If player was not detected ever before, but *First Enter Trigger* is not set, and *Enter Trigger* is set, run *Enter Trigger*.
     #. If player was detected before, if *Enter Trigger* is set, run *Enter Trigger*.
 
+GUI Text Settings
+_________________
+
+.. figure:: _static/media/images/editor-object_GUIText.png
+    :align: center
+
+GUI Text has custom name that can be updated using the name field. This field doesn't allow spaces of any kind.
+
+The text to render is set using *Text* field.
+
+Position X and Position Y is used for transformation of the text, and Color R G B are the text color.
+
+GUI Image Settings
+__________________
+
+.. figure:: _static/media/images/editor-object_GUIImage.png
+    :align: center
+
+GUI Image has custom name that can be updated using the name field. This field doesn't allow spaces of any kind.
+
+The File is the path to image file. Changes on this field is only applied when change image button is clicked.
+
+Full screen click box scales the image to fill the screen, and disables scale and position settings.
+
+Position and Scale are used to set the Transform of the image.
+
+.. _GUI Button Settings:
+
+GUI Button Settings
+___________________
+
+.. figure:: _static/media/images/editor-object_GUIButton.png
+    :align: center
+
+GUI Button has custom name that can be updated using the name field. This field doesn't allow spaces of any kind.
+
+There are 4 file settings. Only the Normal file is required, the rest are optional.
+
+The Button can be interactive, depending on the player state. If player is set interactive, the following logic is used:
+
+#. If The button doesn't have an trigger, and have a disabled image set, the disabled image will be shown.
+#. If on click image is set, and mouse is down over the button, on click image is shown. Also Trigger will be run. For details, please check :ref:`Triggers`.
+#. If on hover image is set, and mouse cursor is over the button, that image will be shown.
+#. If all else were wrong, the normal image will be shown.
+
+Position and Scale are used to set the Transform of the button.
+
+Trigger section allows to set the trigger to run when clicked.
+
+Just under these settings, there is snap settings. It is used by gizmo. For details check :ref:`Gizmo Usage`.
+
 .. _Gizmo Usage:
 
 Gizmo Usage
 ___________
 
-The gizmo have 3 modes, translate(move), scale and rotate. These modes are
+The gizmo is the tool interface that appears at the position of the object that is selected. It has 3 modes, translate(move), scale and rotate. These modes are set using the object editor window, and not all of them are available for all object types. They are directly attached to the editor information, so change in one will update the other.
+
+All three modes use same logic. Dragging an axis applies the transform on that axis. Meaning while in translate mode, clicking on vertical line and dragging will move model vertically. Dragging by the center moves freely, without axis locking. Translate mode also has boxes that can be used to move on a plane, instead of a line.
+
+Some objects have an *snap* setting. This setting is used by the gizmo, to determine step size of the update. Snap of 0.25 in scale mode means dragging the gizmo will scale the object as 1, 1.25, 1.5, 1.75 etc. Same applies for translate and rotate too.
 
 Animation Sequencer Details
 ###########################
