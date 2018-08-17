@@ -174,6 +174,8 @@ After That there is "Custom animation properties". This section lists currently 
 
 Disconnect from physics button removes the collision mesh from map so the object won't be interacting with physics engine. This can be useful for small probes that should be ignored.
 
+.. _Trigger Object Editor:
+
 Trigger Object Settings
 _______________________
 
