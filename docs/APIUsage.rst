@@ -16,7 +16,7 @@ _______________________
 
 The struct is main means of data transfer. The serialize and deserialize methods are meant to be used by engine internals, they should be ignored for API usage purposes.
 
-.. note:
+.. note::
     The value of any instance is initialized to 0.
 
 RequestParameterTypes Enum
@@ -65,7 +65,7 @@ Union variables
 * double doubleValue
 * bool boolValue
 
-.. note:
+.. note::
     if long values array is used, first element should be used element count.
 
 isSet
@@ -73,7 +73,7 @@ isSet
 
 Used to indicate if the variable is set or or not. If default value is considered valid then should be initialized true.
 
-.. warning:
+.. warning::
     If a variable is not reqired aka optional, this should be initialized with true, because editor doesn't allow saving a trigger with any parameter not set.
 
 API Methods
@@ -109,7 +109,7 @@ TriggerInterface(LimonAPI \*limonAPI)
 =====================================
 The constructor of the interface.
 
-.. note:
+.. note::
     All actions must have the same signature, no other parameters should be required.
 
 .. _TriggerInterface-getParameters:
@@ -142,5 +142,5 @@ getName() const
 
 Returns the name of the action.
 
-.. warning:
+.. warning::
     The name must be unique, or the results will be undefined.
