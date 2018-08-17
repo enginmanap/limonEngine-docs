@@ -270,3 +270,28 @@ Some objects have an *snap* setting. This setting is used by the gizmo, to deter
 
 Animation Sequencer Details
 ###########################
+
+.. figure:: _static/media/images/editor-animation_sequencer.png
+    :align: center
+
+Limon Engine can be used to animate objects using all three transformations. You can select the object you want to animate, and use the custom animation section. If you choose to create a new custom animation, the animation sequencer will be shown.
+
+The sequencer starts with animation name. You can't save/finish an animation without a name.
+
+.. warning::
+    If an animation with the same name exists, the old one will be overriden.
+
+Second line is how many frames long the animation will be. After that the main sequencer part comes. The "-" symbol is used to hide/show the sequences. "+" sign is used to add a section to the end of the animation. Each section has "+" and "-" symbols next to them. "-" removes the section, and "+" add a section just after the selected one, with the same length.
+
+.. note::
+    Animations are considered 60 frames per second.
+
+How to create animations
+________________________
+
+When sequencer is shown, it will have 1 section. You can imagine the sections, as "What is the final transform, after given time". You can move the object around, scale, rotate as you wish, to set the transform. THe length of the section is time. If you want the animation to have multiple sections, you can press the either "+" button to add another section. When you hit finish, the animation will be saved and applied.
+
+.. note::
+    The custom animation is assumed to be built for the selected object, and to run in a loop, starting with map load. If this is wrong, you can remove the animation from the object.
+
+
