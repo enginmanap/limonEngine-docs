@@ -79,9 +79,18 @@ Used to indicate if the variable is set or or not. If default value is considere
 API Methods
 ___________
 
-+---------------------+------------------------------------+
-|uint32_t             |removeGuiElement(uint32_t)          |
-+---------------------+------------------------------------+
++---------------------+-----------------------------------------------------------------------------------------------------------------------------+
+|uint32_t             |:ref:`removeGuiElement(uint32_t)<LimonAPI-removeGuiElement>`                                                                 |
++---------------------+-----------------------------------------------------------------------------------------------------------------------------+
+
+.. _LimonAPI-removeGuiElement:
+
+uint32_t removeGuiElement(uint32_t)
+===================================
+
+removes the gui *text* with given handle ID. If successful, returns 0, if non successful returns 1.
+
+
 
 How to Implement an action
 ##########################
