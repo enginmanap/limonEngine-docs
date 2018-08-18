@@ -1,0 +1,9 @@
+site_name: Limon Engine
+
+pages:
+
+  - Getting Started: GettingStarted.rst
+  - Using Builtin Editor: UsingTheEditor.rst
+  - Action API Usage: APIUsage.rst
+
+theme: readthedocs
