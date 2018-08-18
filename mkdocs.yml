@@ -2,8 +2,8 @@ site_name: Limon Engine
 
 nav:
 
-  - Getting Started: GettingStarted.rst
-  - Using Builtin Editor: UsingTheEditor.rst
-  - Action API Usage: APIUsage.rst
+  - 'GettingStarted.rst'
+  - 'UsingTheEditor.rst'
+  - 'APIUsage.rst'
 
 theme: readthedocs
