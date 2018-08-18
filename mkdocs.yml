@@ -1,6 +1,6 @@
 site_name: Limon Engine
 
-pages:
+nav:
 
   - Getting Started: GettingStarted.rst
   - Using Builtin Editor: UsingTheEditor.rst
