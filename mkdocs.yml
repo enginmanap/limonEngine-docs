@@ -1,7 +1,6 @@
 site_name: Limon Engine
 
 nav:
-
   - 'GettingStarted.rst'
   - 'UsingTheEditor.rst'
   - 'APIUsage.rst'
