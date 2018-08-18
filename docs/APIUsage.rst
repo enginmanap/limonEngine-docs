@@ -79,17 +79,208 @@ Used to indicate if the variable is set or or not. If default value is considere
 API Methods
 ___________
 
-+---------------------+-----------------------------------------------------------------------------------------------------------------------------+
-|uint32_t             |:ref:`removeGuiElement(uint32_t)<LimonAPI-removeGuiElement>`                                                                 |
-+---------------------+-----------------------------------------------------------------------------------------------------------------------------+
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string \*soundPath)<LimonAPI-animateModel>`                                                                                     |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)<LimonAPI-addGuiText>`    |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`updateGuiText(uint32_t guiTextID, const std::string &newText)<LimonAPI-updateGuiText>`                                                                                                                       |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`removeObject(uint32_t guiElementID)<LimonAPI-removeObject>`                                                                                                                                                  |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                 |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`disconnectObjectFromPhysics(uint32_t modelID)<LimonAPI-disconnectObjectFromPhysics>`                                                                                                                         |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`reconnectObjectToPhysics(uint32_t modelID)<LimonAPI-reconnectObjectToPhysics>`                                                                                                                               |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath)<LimonAPI-attachSoundToObjectAndPlay>`                                                                                       |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`detachSoundFromObject(uint32_t objectWorldID)<LimonAPI-detachSoundFromObject>`                                                                                                                               |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)<LimonAPI-playSound>`                                                                                                         |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`loadAndSwitchWorld(const std::string& worldFileName)<LimonAPI-loadAndSwitchWorld>`                                                                                                                           |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`returnToWorld(const std::string& worldFileName)<LimonAPI-returnToWorld>`                                                                                                                                     |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`LoadAndRemove(const std::string& worldFileName)<LimonAPI-LoadAndRemove>`                                                                                                                                     |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|void                           |:ref:`returnPreviousWorld()<LimonAPI-returnPreviousWorld>`                                                                                                                                                         |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|void                           |:ref:`quitGame()<LimonAPI-quitGame>`                                                                                                                                                                               |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|std::vector<ParameterRequest>  |:ref:`getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                           |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|LimonAPI::ParameterRequest&    |:ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _LimonAPI-animateModel:
+
+uint32_t animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string \*soundPath)
+=========================================================================================================
+
+Adds an animation to a model. returns model handle ID.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to animate
+#. uint32_t animationID: handle ID of the animation
+#. bool looped: whether the animation is looped or one off.
+#. const std::string \*soundPath: sound to play while animation goes.  If NULL, no sound plays. Otherwise sound will be played in loop until the animation stops.
+
+.. _LimonAPI-addGuiText:
+
+uint32_t addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)
+============================================================================================================================================================================================
+
+Adds GUI Text to world. Returns created GUITexts handle ID.
+
+Parameters:
+
+#. const std::string &fontFilePath: Font file to use while rendering the text.
+#. uint32_t fontSize: Font size
+#. const std::string &name: Name of the GameObject GUIText
+#. const std::string &text: Text to render
+#. const glm::vec3 &color: Text color
+#. const glm::vec2 &position: Position of the Text. This values will be between 0 and 1. 0,0 means left bottom and 1,1 means right top
+#. float rotation: Rotation of the text. 0 is upwards. it is in rads and clockwise.
+
+.. _LimonAPI-updateGuiText:
+
+uint32_t updateGuiText(uint32_t guiTextID, const std::string &newText)
+======================================================================
+
+Updates rendered text of the GUIText provided by the handle ID. Returns 0.
+
+Parameters:
+
+#. uint32_t guiTextID
+#. const std::string &newText
 
 .. _LimonAPI-removeGuiElement:
 
-uint32_t removeGuiElement(uint32_t)
-===================================
+uint32_t removeGuiElement(uint32_t guiElementID)
+================================================
 
-removes the gui *text* with given handle ID. If successful, returns 0, if non successful returns 1.
+Removes the GUIText indicated by the handle ID. Returns 0 for success, 1 for invalid Handle ID
 
+Parameters:
+
+#. uint32_t guiElementID: GUIText handle ID
+
+.. _LimonAPI-removeObject:
+
+uint32_t removeObject(uint32_t guiElementID)
+============================================
+
+Removes object indicated by the handle ID passed. Returns 0 for success, 1 for invalid Handle ID
+
+Parameters:
+
+#. uint32_t guiElementID: handle id of the object to remove. Note the variable name is wrong.
+
+
+.. _LimonAPI-removeTriggerObject:
+
+uint32_t removeTriggerObject(uint32_t TriggerObjectID)
+======================================================
+
+Removes trigger volume indicated by the handle ID passed. Returns 0 for success, 1 for invalid handle ID
+
+Parameters:
+
+#. uint32_t TriggerObjectID: handle id of the trigger volume to remove.
+
+.. _LimonAPI-disconnectObjectFromPhysics:
+
+bool disconnectObjectFromPhysics(uint32_t modelID)
+==================================================
+
+Disconnects the model from physics, but it will be rendered as usual. Including custom and asset builtin animations. Returns true for success, false for fail. Fail can be either Handle ID invalid or the object is not a model, and can't be disconnected.
+
+Parameters:
+
+#. uint32_t modelID: handle id of the model to disconnect.
+
+
+.. _LimonAPI-reconnectObjectToPhysics:
+
+bool reconnectObjectToPhysics(uint32_t modelID)
+===============================================
+
+Connects the model from physics. Returns true for success, false for fail. Fail can be either Handle ID invalid or the object is not a model, and can't be connected. Does nothing if already connected, returns true.
+
+Parameters:
+
+#. uint32_t modelID: handle id of the model to connect.
+
+.. _LimonAPI-attachSoundToObjectAndPlay:
+
+bool attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath)
+=====================================================================================
+
+.. _LimonAPI-detachSoundFromObject:
+
+bool detachSoundFromObject(uint32_t objectWorldID)
+==================================================
+
+.. _LimonAPI-playSound:
+
+bool playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)
+====================================================================================
+
+.. _LimonAPI-loadAndSwitchWorld:
+
+bool loadAndSwitchWorld(const std::string& worldFileName)
+=========================================================
+
+.. _LimonAPI-returnToWorld:
+
+bool returnToWorld(const std::string& worldFileName)
+====================================================
+
+.. _LimonAPI-LoadAndRemove:
+
+bool LoadAndRemove(const std::string& worldFileName)
+====================================================
+
+.. _LimonAPI-returnPreviousWorld:
+
+void returnPreviousWorld()
+==========================
+
+.. _LimonAPI-quitGame:
+
+void quitGame()
+===============
+
+.. _LimonAPI-getResultOfTrigger:
+
+getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
+====================================================================
+
+.. _LimonAPI-getVariable>:
+
+LimonAPI::ParameterRequest&   getVariable(const std::string& variableName)
+==========================================================================
+
+
+
+    returnToWorld(const std::string& worldFileName);//if world is not loaded, loads first
+    LoadAndRemove(const std::string& worldFileName); // removes current world after loading the new one
+
+    /**
+     * This method Returns a parameter request reference that you can update. If the variable was never set,
+     * it creates one with the default values. There are no safety checks, user is fully responsible for the variables.
+     *
+     * Don't forget, these variables are not saved in world save, so they should be considered temporary.
+     *
+     * @param variableName
+     * @return variable itself
+     */
 
 
 How to Implement an action
