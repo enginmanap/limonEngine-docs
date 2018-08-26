@@ -317,11 +317,12 @@ std::vector<LimonAPI::ParameterRequest> getResultOfTrigger(uint32_t TriggerObjec
 Returns the result of the trigger object. For details, check :ref:`trigger object editor<Trigger Object Editor>`
 
 Parameters:
+
 #. uint32_t TriggerObjectID: The handleID of trigger object
 #. uint32_t TriggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
 
 
-.. _LimonAPI-getVariable>:
+.. _LimonAPI-getVariable:
 
 LimonAPI::ParameterRequest& getVariable(const std::string& variableName)
 ========================================================================
