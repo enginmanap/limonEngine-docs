@@ -1,5 +1,6 @@
-.. You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+=======
+Welcome
+=======
 
 Welcome to Limon Engine's documentation!
 ========================================
@@ -35,6 +36,7 @@ Contents:
     :maxdepth: 2
     :glob:
 
+    index
     GettingStarted
     UsingTheEditor
     APIUsage
