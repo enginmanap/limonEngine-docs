@@ -222,15 +222,36 @@ Parameters:
 bool attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath)
 =====================================================================================
 
+Creates a sound, attaches it to an object and plays. The sound is played in loop. Attaching an object means the sound source position and velocity will follow the object. Returns false if the object is not found.
+
+Parameter:
+
+#. uint32_t objectWorldID: Handle id of the object to attach.
+#. const std::string &soundPath: Path of the sound to play.
+
 .. _LimonAPI-detachSoundFromObject:
 
 bool detachSoundFromObject(uint32_t objectWorldID)
 ==================================================
 
+Removes the sound already attached from the object, and stops the sound. Returns false if the object is not found.
+
+Parameter:
+
+#. uint32_t objectWorldID: Handle id of the object to remove.
+
 .. _LimonAPI-playSound:
 
 bool playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)
 ====================================================================================
+
+Creates and plays a sound. Returns uin32_t playing sound ID.
+
+Parameters:
+
+#. const std::string &soundPath: Path of the sound to play.
+#. const glm::vec3 &position: World position of the sound source.
+#. bool looped: Play once or play in a loop
 
 .. _LimonAPI-loadAndSwitchWorld:
 
