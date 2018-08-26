@@ -38,7 +38,7 @@ Contents:
     GettingStarted
     UsingTheEditor
     APIUsage
-    Authors
+    authors
 
 Indices and tables
 ==================
