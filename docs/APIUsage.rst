@@ -258,51 +258,84 @@ Parameters:
 bool loadAndSwitchWorld(const std::string& worldFileName)
 =========================================================
 
+Loads a world file, then switches the current world to the newly loaded one. If the world file was already loaded, removes the old one, effectively resetting the world. Returns false if the world file couldn't be loaded.
+
+Parameters:
+
+#. const std::string& worldFileName: The file path+name of the world to load.
+
 .. _LimonAPI-returnToWorld:
 
 bool returnToWorld(const std::string& worldFileName)
 ====================================================
+
+Checks if the world file is loaded. If it is not, loads the world. Then changes the current world to requested one. Returns false if the world file couldn't be loaded.
+
+Parameters:
+
+#. const std::string& worldFileName: The file path+name of the world to load.
 
 .. _LimonAPI-LoadAndRemove:
 
 bool LoadAndRemove(const std::string& worldFileName)
 ====================================================
 
+Loads the world requested, and removes the current world. Returns true.
+
+It is used to switch between big worlds, like game maps. It is not necessary to clear menu worlds since they use very little memory.
+
+.. note::
+    This method clears the return previous world stack.
+
+Parameters:
+
+#. const std::string& worldFileName: The file path+name of the world to load.
+
 .. _LimonAPI-returnPreviousWorld:
 
 void returnPreviousWorld()
 ==========================
+
+Returns to the world that was running before current. If no world is found, it will be a noop.
+
+Parameters:
+
+none
 
 .. _LimonAPI-quitGame:
 
 void quitGame()
 ===============
 
+Clears the open devices and quits the game, shutting down the engine process.
+
 .. _LimonAPI-getResultOfTrigger:
 
-getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
-====================================================================
+std::vector<LimonAPI::ParameterRequest> getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
+============================================================================================================
+
+Returns the result of the trigger object. For details, check :ref:`trigger object editor<Trigger Object Editor>`
+
+Parameters:
+#. uint32_t TriggerObjectID: The handleID of trigger object
+#. uint32_t TriggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
+
 
 .. _LimonAPI-getVariable>:
 
-LimonAPI::ParameterRequest&   getVariable(const std::string& variableName)
-==========================================================================
+LimonAPI::ParameterRequest& getVariable(const std::string& variableName)
+========================================================================
 
+Returns variable from global variable store. If the variable is never set, it will be 0 initialized. Returned reference can be updated, doing so will be setting the parameter.
 
+The variables are accessible by all triggers, and there are no safety checks. User is fully responsible for use of them.
 
-    returnToWorld(const std::string& worldFileName);//if world is not loaded, loads first
-    LoadAndRemove(const std::string& worldFileName); // removes current world after loading the new one
+.. warning::
+    The variables are not save with world itself, so they should be considered temporary.
 
-    /**
-     * This method Returns a parameter request reference that you can update. If the variable was never set,
-     * it creates one with the default values. There are no safety checks, user is fully responsible for the variables.
-     *
-     * Don't forget, these variables are not saved in world save, so they should be considered temporary.
-     *
-     * @param variableName
-     * @return variable itself
-     */
+Parameters:
 
+#. const std::string& variableName: The name of the variable that should be returned.
 
 How to Implement an action
 ##########################
