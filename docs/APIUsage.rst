@@ -338,6 +338,8 @@ Parameters:
 
 #. const std::string& variableName: The name of the variable that should be returned.
 
+.. _LimonAPI-HowToImplementAnAction:
+
 How to Implement an action
 ##########################
 
