@@ -38,6 +38,7 @@ Contents:
     GettingStarted
     UsingTheEditor
     APIUsage
+    RoadMap
     authors
 
 Indices and tables
