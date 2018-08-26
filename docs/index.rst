@@ -35,9 +35,9 @@ Contents:
    :maxdepth: 2
    :glob:
 
-   *
-
-
+   GettingStarted
+   UsingTheEditor
+   APIUsage
 
 Indices and tables
 ==================
