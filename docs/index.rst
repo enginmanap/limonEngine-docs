@@ -38,6 +38,7 @@ Contents:
     GettingStarted
     UsingTheEditor
     APIUsage
+    EngineArchitecture
     RoadMap
     authors
 
