@@ -17,3 +17,9 @@ Main goal of this release is fighting.
 #. Allow adding quad/s as bullet holes etc.
 #. There is no way to implement Player getting hit. A way should be exposed.
 
+Before 1.0
+==========
+
+#. Shadow mapping improvements.
+#. Generate AI navigation mesh from AI navigation grid. Serialize it with map.
+#. Make world a tree, and allow modifications to groups.
