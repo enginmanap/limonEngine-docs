@@ -52,4 +52,4 @@ After engine launch, the key bindings are as follows:
 * Pressing `+` and `-` changes mouse sensitivity.
 * `wasd` for walking around and mouse for looking around as usual.
 
-
+The options of the game engine can be edited using ./Engine/Options.xml file. 
