@@ -23,3 +23,7 @@ Before 1.0
 #. Shadow mapping improvements.
 #. Generate AI navigation mesh from AI navigation grid. Serialize it with map.
 #. Make world a tree, and allow modifications to groups.
+#. Directory listings should auto generate for assets, and it should be able to refresh.
+#. Options can't be set using GUI, they should have.
+#. There is no stair support, there should be.
+#. Mixamo support
