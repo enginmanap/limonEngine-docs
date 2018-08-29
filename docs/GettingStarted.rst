@@ -38,3 +38,18 @@ Release source contains a directory, in that directory, call these commands:
 
 after that, depending on the system, either the executable binaries, or appropriate build system files like automake should be generated. If that is the case, use the build system for your installation to compile final binaries.
 
+Running
+=======
+
+Limon engine takes single parameter, and that is the path to first map file to load. If no parameter is passed, it defaults to "./Data/Maps/World001.xml", which is a test map that has samples for capabilities of the engine.
+
+The Custom trigger are automatically loaded from the same directory of the engine binary, with name  *libcustomTriggers*, the extension of that file depends on the platform(dll, so, dynlib).
+
+After engine launch, the key bindings are as follows:
+
+* Pressing `0` switches to debug mode, renders physics collision meshes and disconnects player from physics (flying and passing trough objects)
+* Pressing `F2` key switches to editor mode, which allows creating maps.
+* Pressing `+` and `-` changes mouse sensitivity.
+* `wasd` for walking around and mouse for looking around as usual.
+
+
