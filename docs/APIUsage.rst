@@ -242,7 +242,7 @@ Parameter:
 
 .. _LimonAPI-playSound:
 
-bool playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)
+uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)
 ====================================================================================
 
 Creates and plays a sound. Returns uin32_t playing sound ID.
