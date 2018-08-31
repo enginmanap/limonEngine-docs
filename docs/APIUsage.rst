@@ -173,10 +173,10 @@ Parameters:
 
 .. _LimonAPI-removeObject:
 
-uint32_t removeObject(uint32_t objectID)
-========================================
+bool removeObject(uint32_t objectID)
+====================================
 
-Removes object indicated by the handle ID passed. Returns 0 for success, 1 for invalid Handle ID
+Removes object indicated by the handle ID passed. Returns true for success, false for invalid Handle ID.
 
 Parameters:
 
