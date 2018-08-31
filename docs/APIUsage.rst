@@ -88,7 +88,7 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|uint32_t                       |:ref:`removeObject(uint32_t guiElementID)<LimonAPI-removeObject>`                                                                                                                                                  |
+|uint32_t                       |:ref:`removeObject(uint32_t objectID)<LimonAPI-removeObject>`                                                                                                                                                  |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                 |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -173,14 +173,14 @@ Parameters:
 
 .. _LimonAPI-removeObject:
 
-uint32_t removeObject(uint32_t guiElementID)
-============================================
+uint32_t removeObject(uint32_t objectID)
+========================================
 
 Removes object indicated by the handle ID passed. Returns 0 for success, 1 for invalid Handle ID
 
 Parameters:
 
-#. uint32_t guiElementID: handle id of the object to remove. Note the variable name is wrong.
+#. uint32_t objectID: handle id of the object to remove. Note the variable name is wrong.
 
 
 .. _LimonAPI-removeTriggerObject:
