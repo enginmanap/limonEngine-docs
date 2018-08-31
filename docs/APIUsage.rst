@@ -185,10 +185,10 @@ Parameters:
 
 .. _LimonAPI-removeTriggerObject:
 
-uint32_t removeTriggerObject(uint32_t TriggerObjectID)
-======================================================
+bool removeTriggerObject(uint32_t TriggerObjectID)
+==================================================
 
-Removes trigger volume indicated by the handle ID passed. Returns 0 for success, 1 for invalid handle ID
+Removes trigger volume indicated by the handle ID passed. Returns true for success, false if trigger handle ID invalid.
 
 Parameters:
 
