@@ -84,7 +84,7 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)<LimonAPI-addGuiText>`    |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|uint32_t                       |:ref:`updateGuiText(uint32_t guiTextID, const std::string &newText)<LimonAPI-updateGuiText>`                                                                                                                       |
+|bool                           |:ref:`updateGuiText(uint32_t guiTextID, const std::string &newText)<LimonAPI-updateGuiText>`                                                                                                                       |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -150,10 +150,10 @@ Parameters:
 
 .. _LimonAPI-updateGuiText:
 
-uint32_t updateGuiText(uint32_t guiTextID, const std::string &newText)
-======================================================================
+bool updateGuiText(uint32_t guiTextID, const std::string &newText)
+==================================================================
 
-Updates rendered text of the GUIText provided by the handle ID. Returns 0.
+Updates rendered text of the GUIText provided by the handle ID. Returns true if successful, false if handle ID invalid.
 
 Parameters:
 
