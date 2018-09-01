@@ -280,7 +280,7 @@ Parameters:
 bool LoadAndRemove(const std::string& worldFileName)
 ====================================================
 
-Loads the world requested, and removes the current world. Returns true.
+Loads the world requested, and removes the current world. Returns true if load successful, false if not. If not successful, world doesn't change.
 
 It is used to switch between big worlds, like game maps. It is not necessary to clear menu worlds since they use very little memory.
 
