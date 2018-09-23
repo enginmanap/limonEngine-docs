@@ -21,9 +21,11 @@ Contribute
 ----------
 
 If you are having issues, or if you think some awesome feature is missing, please let us know using the issue tracker.
+Also if you want to chat, there is a Discord channel.
 
 - Issue Tracker: https://github.com/enginmanap/limonEngine/issues
 - Source Code: https://github.com/enginmanap/limonEngine
+- Discord: https://discord.gg/gqprbFd
 
 License
 -------
