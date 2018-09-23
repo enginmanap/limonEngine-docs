@@ -10,6 +10,11 @@ Builtin editor can be used to create maps, interfaces and menus. 3D and 2D compo
 Editor Basics
 #############
 
+Editor mode uses a free cursor control scheme. You can move around by "WASD" and look around by moving mouse cursor to edges of the screen. Please take note, editor windows have precedence over these controls, so if mouse is over a control, or if a text input is selected, these controls wont work.
+
+.. figure:: _static/media/images/editor-lookAround.png
+    :align: center
+
 The editor has 3 main windows. By default left of the screen is object properties, right is world properties and bottom is animation sequencer. As expected you can drag and drop and resize the windows. If no object is selected, only the world properties window is visible. Animation sequencer is visible only when creating an animation.
 
 .. figure:: _static/media/images/editor-world-withAnimation.jpg
