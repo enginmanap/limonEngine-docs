@@ -18,7 +18,7 @@ Limon uses c++14, so a supporting c++ compiler is required. GCC 7.2 to 8.2 are t
 * bullet
 * sdl2
 * sdl2-image
-* freetype6
+* freetype (likely freetype6 as library name)
 * tinyxml2
 * glew
 * glm
