@@ -22,7 +22,6 @@ Limon uses c++14, so a supporting c++ compiler is required. GCC 7.2 to 8.2 are t
 * tinyxml2
 * glew
 * glm
-* tinyxml2
 
 If you are using Ubuntu, you can use the line below to install the required libraries:
 ::
