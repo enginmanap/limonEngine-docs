@@ -99,6 +99,8 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)<LimonAPI-addObject>`                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObject>`                                                                                                         |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeObject(uint32_t objectID)<LimonAPI-removeObject>`                                                                                                                                                      |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                 |
@@ -212,6 +214,19 @@ Parameters:
 #. const glm::vec3 &position: World position of the Object. Please note some objects has their center set to their feet.
 #. const glm::vec3 &scale: scale of the object.
 #. const glm::quat &orientation: Rotation of the model.
+
+
+.. _LimonAPI-attachObjectToObject:
+
+bool attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)
+====================================
+
+Attaches object indicated by the handle ID, to another object indicated by second parameter. Returns true for success, false for invalid Handle ID for either parameter. Attachment means if parent object move, child will move too. Example usage: bullet hole decals to dynamic objects. The object should have a transformation relative to the object it will be attached.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to attach as child.
+#. uint32_t objectToAttachToID: handle id of the object to attach as parent.
 
 .. _LimonAPI-removeObject:
 
