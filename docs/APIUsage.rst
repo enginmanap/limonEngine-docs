@@ -115,6 +115,8 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)<LimonAPI-playSound>`                                                                                                         |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`interactWithAI(uint32_t AIID, std::vector<LimonAPI::ParameterRequest> &interactionInformation)<LimonAPI-interactWithAI>`                                                                                                         |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`loadAndSwitchWorld(const std::string& worldFileName)<LimonAPI-loadAndSwitchWorld>`                                                                                                                           |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`returnToWorld(const std::string& worldFileName)<LimonAPI-returnToWorld>`                                                                                                                                     |
@@ -309,6 +311,18 @@ Parameters:
 #. const std::string &soundPath: Path of the sound to play.
 #. const glm::vec3 &position: World position of the sound source.
 #. bool looped: Play once or play in a loop
+
+.. _LimonAPI-interactWithAI:
+
+bool interactWithAI(uint32_t AIID, std::vector<LimonAPI::ParameterRequest> &interactionInformation)
+====================================================================================
+
+Sends the parameters to AI as new interaction. Since AI is an extension point, the parameters required are not defined by Limon engine. Returns false if no AI actor with given ID found.
+
+Parameters:
+
+#. uint32_t AIID: ID of AI actor to send the data
+#. std::vector<LimonAPI::ParameterRequest> &interactionInformation: Parameters to pass.
 
 .. _LimonAPI-loadAndSwitchWorld:
 
