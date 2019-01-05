@@ -91,6 +91,8 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)<LimonAPI-addGuiText>`    |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`addGuiImage(const std::string &imageFilePath, const std::string &name, const glm::vec2 &position, const glm::vec2 &scale, float rotation)<LimonAPI-addGuiImage>`                                             |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`updateGuiText(uint32_t guiTextID, const std::string &newText)<LimonAPI-updateGuiText>`                                                                                                                       |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                          |
@@ -153,6 +155,21 @@ Parameters:
 #. const std::string &text: Text to render
 #. const glm::vec3 &color: Text color
 #. const glm::vec2 &position: Position of the Text. This values will be between 0 and 1. 0,0 means left bottom and 1,1 means right top
+#. float rotation: Rotation of the text. 0 is upwards. it is in rads and clockwise.
+
+.. _LimonAPI-addGuiImage:
+
+uint32_t addGuiImage(const std::string &imageFilePath, const std::string &name, const glm::vec2 &position, const glm::vec3 &scale, float rotation)
+============================================================================================================================================================================================
+
+Adds GUI Image to world. Returns created GUIImage handle ID.
+
+Parameters:
+
+#. const std::string &imageFilePath: Image files path.
+#. const std::string &name: Name of the GameObject GUIImage
+#. const glm::vec2 &position: Position of the Text. This values will be between 0 and 1. 0,0 means left bottom and 1,1 means right top
+#. const glm::vec2 &scale: scale of the image.
 #. float rotation: Rotation of the text. 0 is upwards. it is in rads and clockwise.
 
 .. _LimonAPI-updateGuiText:
