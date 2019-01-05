@@ -93,11 +93,11 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiImage(const std::string &imageFilePath, const std::string &name, const glm::vec2 &position, const glm::vec2 &scale, float rotation)<LimonAPI-addGuiImage>`                                             |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|uint32_t                       |:ref:`addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)<LimonAPI-addObject>`                          |
-+-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`updateGuiText(uint32_t guiTextID, const std::string &newText)<LimonAPI-updateGuiText>`                                                                                                                       |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)<LimonAPI-addObject>`                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeObject(uint32_t objectID)<LimonAPI-removeObject>`                                                                                                                                                      |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -174,22 +174,6 @@ Parameters:
 #. const glm::vec2 &scale: scale of the image.
 #. float rotation: Rotation of the text. 0 is upwards. it is in rads and clockwise.
 
-.. _LimonAPI-addObject:
-
-uint32_t addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)
-============================================================================================================================================================================================
-
-Adds Model to world. Returns created Model handle ID.
-
-Parameters:
-
-#. const std::string &modelFilePath: Model files path.
-#. float modelWeight: Weight of the model. 0 means object is static, and it won't move.
-#. bool physical: Whether model has physical interactions or not. If set to false, it won't collide with anything.
-#. const glm::vec3 &position: World position of the Object. Please note some objects has their center set to their feet.
-#. const glm::vec3 &scale: scale of the object.
-#. const glm::quat &orientation: Rotation of the model.
-
 .. _LimonAPI-updateGuiText:
 
 bool updateGuiText(uint32_t guiTextID, const std::string &newText)
@@ -212,6 +196,22 @@ Removes the GUIText indicated by the handle ID. Returns 0 for success, 1 for inv
 Parameters:
 
 #. uint32_t guiElementID: GUIText handle ID
+
+.. _LimonAPI-addObject:
+
+uint32_t addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)
+============================================================================================================================================================================================
+
+Adds Model to world. Returns created Model handle ID.
+
+Parameters:
+
+#. const std::string &modelFilePath: Model files path.
+#. float modelWeight: Weight of the model. 0 means object is static, and it won't move.
+#. bool physical: Whether model has physical interactions or not. If set to false, it won't collide with anything.
+#. const glm::vec3 &position: World position of the Object. Please note some objects has their center set to their feet.
+#. const glm::vec3 &scale: scale of the object.
+#. const glm::quat &orientation: Rotation of the model.
 
 .. _LimonAPI-removeObject:
 
