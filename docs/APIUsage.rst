@@ -22,7 +22,7 @@ The struct is main means of data transfer. The serialize and deserialize methods
 RequestParameterTypes Enum
 ==========================
 
-Used to indicate the semantic meaning of the parameter. Used to render editor interface accordingly. The *requestType* variable keeps the value.
+Used to indicate the semantic meaning of the parameter. Editor will render interface accordingly. The *requestType* variable keeps the value.
 
 Possible values:
 
@@ -33,6 +33,9 @@ Possible values:
 * TRIGGER: Lists the trigger volumes in the map, and selector for "first enter", "enter", "exit". Uses variable type LONG_ARRAY, sets handle id, and selected trigger. for details refer to :ref:`Trigger Object Editor`
 * GUI_TEXT: Lists the GUI Text elements in the map. Uses variable type LONG, sets handle id
 * FREE_NUMBER: Renders input box for number. Uses variable type LONG. Sets the number entered.
+* COORDINATE: Used to pass 3D vectors. Editor doesn't handle this type.
+* TRANSFORM: Used to pass 4x4 Transformation matrix. Editor doesn't handle this type.
+* MULTI_SELECT: Renders combobox. In a request, same description and multi select parameters are grouped to build the combobox. First of this group is the selected object. Selected object should be repeated at its desired position. Ex: "apple, banana, apple, grape" values will render "banana, apple, grape" combobox with apple selected.
 
 ValueTypes Enum
 ===============
@@ -46,11 +49,13 @@ Possible values:
 * LONG
 * LONG_ARRAY
 * BOOLEAN
+* VEC4
+* MAT4
 
 Description String
 ==================
 
-Used in editor and shown to user directly.
+Used in editor and shown to user directly. It is also used to group MULTI_SELECT elements to build the combobox.
 
 Value Union
 ===========
@@ -64,6 +69,8 @@ Union variables
 * long longValues[16]
 * double doubleValue
 * bool boolValue
+* Vec4 vectorValue
+* Mat4 matrixValue
 
 .. note::
     if long values array is used, first element should be used element count.
@@ -74,7 +81,7 @@ isSet
 Used to indicate if the variable is set or or not. If default value is considered valid then should be initialized true.
 
 .. warning::
-    If a variable is not reqired aka optional, this should be initialized with true, because editor doesn't allow saving a trigger with any parameter not set.
+    If a variable is not required aka optional, this should be initialized with true, because editor doesn't allow saving a trigger with any parameter not set.
 
 API Methods
 ___________
