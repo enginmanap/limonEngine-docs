@@ -103,6 +103,22 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`setObjectTemporary(uint32_t objectID, bool temporary)<LimonAPI-setObjectTemporary>`                                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|std::vector<ParameterRequest>  |:ref:`getObjectTransformation(uint32_t objectID)<LimonAPI-getObjectTransformation>`                                                                                                                                |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|std::vector<ParameterRequest>  |:ref:`getObjectTransformationMatrix(uint32_t objectID)<LimonAPI-getObjectTransformationMatrix>`                                                                                                                    |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)<LimonAPI-setObjectTranslate>`                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setObjectScale(uint32_t objectID, const LimonAPI::Vec4& scale)<LimonAPI-setObjectScale>`                                                                                                                     |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setObjectOrientation(uint32_t objectID, const LimonAPI::Vec4& orientation)<LimonAPI-setObjectOrientation>`                                                                                                   |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`addObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)<LimonAPI-addObjectTranslate>`                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`addObjectScale(uint32_t objectID, const LimonAPI::Vec4& scale)<LimonAPI-addObjectScale>`                                                                                                                     |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`addObjectOrientation(uint32_t objectID, const LimonAPI::Vec4& orientation)<LimonAPI-addObjectOrientation>`                                                                                                   |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeObject(uint32_t objectID)<LimonAPI-removeObject>`                                                                                                                                                      |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                 |
@@ -243,6 +259,112 @@ Parameters:
 
 #. uint32_t objectID: handle id of the object to change flag.
 #. bool temporary: whether flag is set or not. True value will prevent save with the map.
+
+.. _LimonAPI-getObjectTransformation:
+
+std::vector<LimonAPI::ParameterRequest> getObjectTransformation(uint32_t objectID)
+====================================
+
+returns objects transformation information. If the object ID is valid, the returned vector will contain 3 vec4 parameters, translate, scale, orientation in respective order. For translate and scale, w component is not used. Orientation is in quaternion form. Returns empty vector if object not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to get transformation.
+
+.. _LimonAPI-getObjectTransformationMatrix:
+
+std::vector<LimonAPI::ParameterRequest> getObjectTransformationMatrix(uint32_t objectID)
+====================================
+
+returns objects transformation matrix. If object has custom matrix generation (Physical object can define offsets), transformation might not be enough to build the matrix. This method provides objects matrix as Limon Engine has it. Returns empty vector if object not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to get transformation matrix.
+
+.. _LimonAPI-setObjectTranslate:
+
+bool setObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)
+====================================
+
+Sets objects world position to 2. parameter. Returns false if object is not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to change position.
+#. const LimonAPI::Vec4& position: new position of the object
+
+.. note::
+    Fourth element in the vector is ignored.
+
+.. _LimonAPI-setObjectScale:
+
+bool setObjectScale(uint32_t objectID, const LimonAPI::Vec4& scale)
+====================================
+
+Sets objects scale to 2. parameter. Returns false if object is not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to change scale.
+#. const LimonAPI::Vec4& scale: new scale of the object
+
+.. note::
+    Fourth element in the vector is ignored.
+
+.. _LimonAPI-setObjectOrientation:
+
+bool setObjectOrientation(uint32_t objectID, const LimonAPI::Vec4& orientation)
+====================================
+
+Sets object world orientation to 2. parameter, aka rotates it. Returns false if object is not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to change orientation.
+#. const LimonAPI::Vec4& orientation: new orientation of the object
+
+.. _LimonAPI-addObjectTranslate:
+
+bool addObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)
+====================================
+
+Adds given vector to objects current world position, effectively moving it. Returns false if object is not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to change position.
+#. const LimonAPI::Vec4& position: position change desired for the object
+
+.. note::
+    Fourth element in the vector is ignored.
+
+.. _LimonAPI-addObjectScale:
+
+bool addObjectScale(uint32_t objectID, const LimonAPI::Vec4& scale)
+====================================
+
+Scales the object, in respect to its current scale. If object is scaled to double of its original size before this call, and this call scales it to half, object will be at its original size afterwards. Returns false if object is not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to change scale.
+#. const LimonAPI::Vec4& scale: scale of object in respect to current scale.
+
+.. note::
+    Fourth element in the vector is ignored.
+
+.. _LimonAPI-addObjectOrientation:
+
+bool addObjectOrientation(uint32_t objectID, const LimonAPI::Vec4& orientation)
+====================================
+
+Rotates the object from current orientation. Returns false if object ID not found.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to change orientation.
+#. const LimonAPI::Vec4& orientation: new position of the object
 
 .. _LimonAPI-removeObject:
 
