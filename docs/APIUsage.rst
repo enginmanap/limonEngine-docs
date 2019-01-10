@@ -101,6 +101,8 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObject>`                                                                                                         |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setObjectTemporary(uint32_t objectID, bool temporary)<LimonAPI-setObjectTemporary>`                                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeObject(uint32_t objectID)<LimonAPI-removeObject>`                                                                                                                                                      |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                 |
@@ -229,6 +231,18 @@ Parameters:
 
 #. uint32_t objectID: handle id of the object to attach as child.
 #. uint32_t objectToAttachToID: handle id of the object to attach as parent.
+
+.. _LimonAPI-setObjectTemporary:
+
+bool setObjectTemporary(uint32_t objectID, bool temporary)
+====================================
+
+Changes objects temporary flag. If an object is temporary, it won't be saved with map save. There is no other difference. Returns false if object can't be found. Returns true if successful.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to change flag.
+#. bool temporary: whether flag is set or not. True value will prevent save with the map.
 
 .. _LimonAPI-removeObject:
 
