@@ -175,6 +175,8 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |LimonAPI::ParameterRequest&    |:ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|std::vector<ParameterRequest>  |:ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _LimonAPI-animateModel:
 
@@ -728,6 +730,22 @@ The variables are accessible by all triggers, and there are no safety checks. Us
 Parameters:
 
 #. const std::string& variableName: The name of the variable that should be returned.
+
+.. _LimonAPI-rayCastToCursor:
+
+std::vector<ParameterRequest> rayCastToCursor()
+===============================================
+
+Returns information about what is under player cursor (crosshair). If nothing is found, empty vector is returned.
+if something is hit, return vector will have the following information:
+#. ObjectID of the hit object
+#. hit coordinates
+#. hit normal
+#. if Object has AI, AI id. If not, this parameter will not be in the vector.
+
+Parameters:
+
+none
 
 .. _LimonAPI-HowToImplementAnAction:
 
