@@ -558,7 +558,7 @@ Parameters:
 none
 
 .. note::
-    Player attachment might have children, check :ref:`getModelChildren method <_LimonAPI-getModelChildren>`
+    Player attachment might have children, check :ref:`getModelChildren method <LimonAPI-getModelChildren>`
 
 .. _LimonAPI-getPlayerAttachedModelOffset:
 
