@@ -97,6 +97,8 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, long blendTime = 100)<LimonAPI-setModelAnimationWithBlend>`                                             |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setModelAnimationSpeed(uint32_t modelID, float speed)<LimonAPI-setModelAnimationSpeed>`                                                                                                                      |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)<LimonAPI-addGuiText>`    |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiImage(const std::string &imageFilePath, const std::string &name, const glm::vec2 &position, const glm::vec2 &scale, float rotation)<LimonAPI-addGuiImage>`                                             |
@@ -222,7 +224,19 @@ Parameters:
 #. uint32_t modelID: handle ID of the model to animate
 #. const std::string& animationName: Name of the animation to play
 #. bool isLooped: Whether play animation and stop, or play in a loop
-#. long blendTime: How long the previous animation will effect state. 
+#. long blendTime: How long the previous animation will effect state.
+
+.. _LimonAPI-setModelAnimationSpeed:
+
+bool setModelAnimationSpeed(uint32_t modelID, float speed)
+==========================================================
+
+Changes animation speed by given factor. speed=2.0 will double the animation speed. Speed values < 0.001f will be rejected and return false. If model is not found it will return false
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to animate
+#. float speed: Animation time multiplier
 
 .. _LimonAPI-addGuiText:
 
