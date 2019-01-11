@@ -18,6 +18,7 @@ Limon is a multi-platform, multi-threaded 3D game engine. Engine is built as a m
 
 #. Not Exposed Extensions: Those are extensions used by Engine developers.
     * Player interface for camera and movement (ex: 3rd person support)
+    * GUIObject for GUI elements (ex: Video player)
 
 #. Backend wrappers: Both rendering, sound, and platform(windowing, threading IO) are wrapped to their respective classes. Those are not intended to be extended by users, but engine developers. For example it should be rather easy to add a Vulkan backend for rendering.
     * Rendering: OpenGL
@@ -50,22 +51,24 @@ Each renderable implements *void render()* method. *World* class sets the render
 Physics
 =======
 
-For physics Limon uses Bullet Physics. The only *PhysicalObject* children are registered to physics subsystem. At version 0.5, only child is *Model* class. The physical representation of Models are auto generated using the following logic:
+For physics Limon uses Bullet Physics. The only *PhysicalObject* children are registered to physics subsystem. At version 0.6, there are *Model* and *ModelGroup* classes that use Physics. The physical representation of Models are auto generated using the following logic:
 
 #. For each mesh, if another mesh with same name prefixed with "UCX_" that mesh will be used.
 #. Else if object is not animated, and static, use the full mesh data to generate rigid body. This is because static objects might be concave.
 #. Else if object is not animated, and dynamic, auto generate a hull that encapsulates whole object. Dynamic objects are forced to be convex.
 #. Else if object is animated, for each bone, auto generate a hull for the vertices that are attached to that bone. Each of those hulls animate with the object itself
 
+Model groups just groups the models with given physical representations.
+
 IO
 ==
 
-IO is handled with multiple levels of abstraction. Part of platform wrapper maps raw input to engine inputs. After that, an implementer of *Player* will get the input in form of *void move(moveDirections)* and *void rotate(float xPosition, float yPosition, float xChange, float yChange)* methods. The Player class has settings that allow different types of interaction, like physical, editor etc.
+IO is handled with multiple levels of abstraction. Part of platform wrapper maps raw input to engine inputs. After that, an implementer of *Player* will get the input in form of *void move(moveDirections)* and *void rotate(float xPosition, float yPosition, float xChange, float yChange)* methods. The Player class has settings that allow different types of interaction, like physical, editor etc. In the end, the inputs are feed to PlayerExtensions, so they can handle them as they see fit.
 
 Sound
 =====
 
-Sound backend is OpenAL. A separate thread is used to refresh sound buffers. New sound play requests are done with a lock to requests. Only synchronization point between main thread and sounds are that lock.
+Sound backend is OpenAL. A separate thread is used to refresh sound buffers. Sound Assets and sound subsystem complexities are abstracted by Sound GameObject.
 
 GUI
 ===
@@ -80,16 +83,18 @@ Editor is built using Dear ImGui library. Main part of it is within *World* clas
 Game Play and Game Objects
 ==========================
 
-As of version 0.5, Limon engine has following game objects:
+As of version 0.6, Limon engine has following game objects:
 
 * Player
 * Light
 * Model
-* Skybox
-* Trigger
+* Model Group
+* SkyBox
+* Trigger Object
 * Gui Text
 * Gui Image
 * Gui Button
+* Gui Animation
 * Sound
 
 Those object can be used in Editor, and by Triggers. Gameplay layer has an API called LimonAPI, and it has an interface to allow extending, and Limon Engine supports dynamically loading those custom triggers. For details, please check :ref:`implementAction`
@@ -97,4 +102,4 @@ Those object can be used in Editor, and by Triggers. Gameplay layer has an API c
 AI
 ==
 
-Limon has an interface called *Actor* that is used to allow custom AI implementations to be used. Each actor will be triggered each simulation step with *ActorInformation*, which contains the player direction, whether or not player is visible, is it possible to reach the player etc. Also the path to player will be provided (Assuming actor is same size with the player).
+Limon has an interface called *ActorInterface* that is used to allow custom AI implementations to be used. Each actor will be triggered each simulation step with *ActorInformation*, which contains the player direction, whether or not player is visible etc. It is possible to ask for a route to player using this interface too, assuming actor is same size with the player.
