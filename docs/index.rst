@@ -41,7 +41,7 @@ Contents:
    index
    GettingStarted
    UsingTheEditor
-   docs/ExtendingByAPI/index
+   ExtendingByAPI/index
    EngineArchitecture
    RoadMap
    authors
