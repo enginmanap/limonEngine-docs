@@ -2,7 +2,11 @@
 How to Implement an Action
 ==========================
 
-Actions are generalized by the class TriggerInterface, under src/GamePlay of the engine. Each new action must implement this interface.
+Actions are generalized by the class TriggerInterface, under src/GamePlay of the engine. Each new action must implement this interface. These actions can be assigned to trigger volumes or GUI button.They can also be run on map load.
+
+Action constructors will get a populated LimonAPI instance for the world they are to be run in. Using this instance, API calls can be made to interact or change the world to game design.
+
+Actions never get persisted, but parameters to pass to actions are persisted with maps.
 
 TriggerInterface Class
 ______________________

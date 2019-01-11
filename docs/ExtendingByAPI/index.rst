@@ -6,5 +6,5 @@ Extending Engine Capabilities
    :name: toc-extending-by-api
 
    APIUsage
-   implementTrigger
+   implementAction
    APIReference
