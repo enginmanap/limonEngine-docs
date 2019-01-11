@@ -10,16 +10,20 @@ Limon is a multi-platform, multi-threaded 3D game engine. Engine is built as a m
 
 #. Dynamic Linking Extensions: Those are fully customisable points. as of version 0.5, only trigger codes are implemented to be dynamic linking.
 #. Engine recompile required extensions: Those are extensions that are most likely become dynamic linking in later revisions.
-    * Player interface for IO
-    * Actor interface for AI
+    * Player interface for camera and movement
 #. Backend wrappers: Both rendering, sound, and platform(windowing, threading IO) are wrapped to their respective classes. Those are not intended to be extended by users, but engine developers. For example it should be rather easy to add a Vulkan backend for rendering.
     * Rendering: OpenGL
     * Audio: OpenAL
     * Platform: SDL2
 
 .. note::
-    Even though SDL2 is wrapped, multiple platform backends are not envisioned.
+    Even though SDL2 and OpenAL are wrapped, multiple platform or sound backends not envisioned.
 
+Engine Overview
+===============
+
+.. figure:: _static/media/images/LimonEngineArch.png
+    :align: center
 
 Subsystems
 **********
@@ -80,7 +84,7 @@ As of version 0.5, Limon engine has following game objects:
 * Gui Button
 * Sound
 
-Those object can be used in Editor, and by Triggers. Gameplay layer has an API called LimonAPI, and it has an interface to allow extending, and Limon Engine supports dynamically loading those custom triggers. For details, please check :ref:`How to implement an action<LimonAPI-HowToImplementAnAction>`
+Those object can be used in Editor, and by Triggers. Gameplay layer has an API called LimonAPI, and it has an interface to allow extending, and Limon Engine supports dynamically loading those custom triggers. For details, please check :ref:`ExtendingByAPI/implementAction`
 
 AI
 ==
