@@ -157,6 +157,10 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`interactWithAI(uint32_t AIID, std::vector\<LimonAPI::ParameterRequest\> &interactionInformation)<LimonAPI-interactWithAI>`                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`addLightTranslate(uint32_t lightID, const LimonAPI::Vec4& translate)<LimonAPI-addLightTranslate>`                                                                                                            |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setLightColor(uint32_t lightID, const LimonAPI::Vec4& color)<LimonAPI-setLightColor>`                                                                                                                        |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`loadAndSwitchWorld(const std::string& worldFileName)<LimonAPI-loadAndSwitchWorld>`                                                                                                                           |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`returnToWorld(const std::string& worldFileName)<LimonAPI-returnToWorld>`                                                                                                                                     |
@@ -615,6 +619,30 @@ Parameters:
 
 #. uint32_t AIID: ID of AI actor to send the data
 #. std::vector<LimonAPI::ParameterRequest> &interactionInformation: Parameters to pass.
+
+.. _LimonAPI-addLightTranslate:
+
+bool addLightTranslate(uint32_t lightID, const LimonAPI::Vec4& translate)
+=========================================================================
+
+Adds given translate to current position of the light indicated by the lightID. Returns false if no light with given ID found.
+
+Parameters:
+
+#. uint32_t lightID: ID of light to translate
+#. const LimonAPI::Vec4& translate: Translate vector to add. W component will be ignored.
+
+.. _LimonAPI-setLightColor:
+
+bool setLightColor(uint32_t lightID, const LimonAPI::Vec4& color)
+=================================================================
+
+Sets the color of the light, indicated by lightID parameter. Returns false if no light with given ID found.
+
+Parameters:
+
+#. uint32_t lightID: ID of light to change color
+#. const LimonAPI::Vec4& color: RGB color to set. W component will be ignored.
 
 .. _LimonAPI-loadAndSwitchWorld:
 
