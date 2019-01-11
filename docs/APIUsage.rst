@@ -143,6 +143,16 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)<LimonAPI-playSound>`                                                                                                         |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                       |:ref:`getPlayerAttachedModel()<LimonAPI-getPlayerAttachedModel>`                                                                                                                                                   |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|LimonAPI::Vec4                 |:ref:`getPlayerAttachedModelOffset()<LimonAPI-getPlayerAttachedModelOffset>`                                                                                                                                       |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setPlayerAttachedModelOffset(LimonAPI::Vec4 &newOffset)<LimonAPI-setPlayerAttachedModelOffset>`                                                                                               |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|void                           |:ref:`interactWithPlayer(std::vector<ParameterRequest>& input)<LimonAPI-interactWithPlayer>`                                                                                                                        |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|void                           |:ref:`killPlayer()<LimonAPI-killPlayer>`                                                                                                                                                                           |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`interactWithAI(uint32_t AIID, std::vector\<LimonAPI::ParameterRequest\> &interactionInformation)<LimonAPI-interactWithAI>`                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`loadAndSwitchWorld(const std::string& worldFileName)<LimonAPI-loadAndSwitchWorld>`                                                                                                                           |
@@ -521,6 +531,64 @@ Parameters:
 #. const std::string &soundPath: Path of the sound to play.
 #. const glm::vec3 &position: World position of the sound source.
 #. bool looped: Play once or play in a loop
+
+.. _LimonAPI-getPlayerAttachedModel:
+
+uint32_t getPlayerAttachedModel()
+====================================================================================
+
+Returns the model ID of player attachment. return 0 if player has no attachment.
+
+Parameters:
+
+none
+
+.. note::
+    Player attachment might have children, check :ref:`getModelChildren method <_LimonAPI-getModelChildren>`
+
+.. _LimonAPI-getPlayerAttachedModelOffset:
+
+LimonAPI::Vec4 getPlayerAttachedModelOffset()
+====================================================================================
+
+Returns offset of the model attached to player. returns Vec4(0,0,0,0) if player has no attachment.
+
+Parameters:
+
+none
+
+.. _LimonAPI-setPlayerAttachedModelOffsetWithAI:
+
+bool setPlayerAttachedModelOffset(LimonAPI::Vec4 newOffset)
+====================================================================================
+
+Sets offset to player attachment. Returns false if player has no attachment.
+
+Parameters:
+
+#. LimonAPI::Vec4: offset to set. w component of parameter ignored.
+
+.. _LimonAPI-interactWithPlayer:
+
+void interactWithPlayer(std::vector<LimonAPI::ParameterRequest> &interactionInformation)
+====================================================================================
+
+Sends the interaction information to player Extension. If no extension is loaded, it will not have any effect.
+
+Parameters:
+
+#. std::vector<LimonAPI::ParameterRequest> &interactionInformation: Parameters to pass.
+
+.. _LimonAPI-killPlayer:
+
+void killPlayer()
+====================================================================================
+
+Kills the player.
+
+Parameters:
+
+none
 
 .. _LimonAPI-interactWithAI:
 
