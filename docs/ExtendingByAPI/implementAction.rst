@@ -1,3 +1,5 @@
+.. _implementAction:
+
 ==========================
 How to Implement an Action
 ==========================

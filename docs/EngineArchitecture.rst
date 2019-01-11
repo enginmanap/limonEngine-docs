@@ -1,3 +1,5 @@
+.. _EngineArchitecture:
+
 ===================
 Engine Architecture
 ===================

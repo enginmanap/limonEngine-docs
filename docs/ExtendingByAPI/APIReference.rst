@@ -1,3 +1,5 @@
+.. _APIReference:
+
 ==========================
 Limon Engine API Reference
 ==========================
