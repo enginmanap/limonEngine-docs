@@ -35,16 +35,16 @@ The project is licensed under the LGPL license.
 Contents:
 
 .. toctree::
-    :maxdepth: 2
-    :glob:
+   :maxdepth: 2
+   :glob:
 
-    index
-    GettingStarted
-    UsingTheEditor
-    ExtendingByAPI/index
-    EngineArchitecture
-    RoadMap
-    authors
+   index
+   GettingStarted
+   UsingTheEditor
+   ExtendingByAPI/index
+   EngineArchitecture
+   RoadMap
+   authors
 
 Indices and tables
 ==================
