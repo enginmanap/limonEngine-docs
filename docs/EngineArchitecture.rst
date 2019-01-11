@@ -8,9 +8,15 @@ Engine Architecture
 
 Limon is a multi-platform, multi-threaded 3D game engine. Engine is built as a monolith, and architecture is not meant to be pluggable. It doesn't mean there is no extension points. The possible extension methods can be separated by 3 groups:
 
-#. Dynamic Linking Extensions: Those are fully customisable points. as of version 0.5, only trigger codes are implemented to be dynamic linking.
-#. Engine recompile required extensions: Those are extensions that are most likely become dynamic linking in later revisions.
-    * Player interface for camera and movement
+#. Dynamic Linking Extensions: Those are intended for game developers to use. Version 0.6 has 3 extension types:
+
+    * Actions: These are attached to Trigger volumes, buttons or run on map load. Details can be found at :ref:`implementAction`
+    * Player extensions: They attach to player, and get all inputs, as well as any requests to player interaction. :ref:`implementPlayerExtension` has the details.
+    * AI actors: They attach to Models, and add agency to them. Details are at :ref:`implementAIActor`
+
+#. Not Exposed Extensions: Those are extensions used by Engine developers.
+    * Player interface for camera and movement (ex: 3rd person support)
+
 #. Backend wrappers: Both rendering, sound, and platform(windowing, threading IO) are wrapped to their respective classes. Those are not intended to be extended by users, but engine developers. For example it should be rather easy to add a Vulkan backend for rendering.
     * Rendering: OpenGL
     * Audio: OpenAL
@@ -84,7 +90,7 @@ As of version 0.5, Limon engine has following game objects:
 * Gui Button
 * Sound
 
-Those object can be used in Editor, and by Triggers. Gameplay layer has an API called LimonAPI, and it has an interface to allow extending, and Limon Engine supports dynamically loading those custom triggers. For details, please check :ref:`ExtendingByAPI/implementAction`
+Those object can be used in Editor, and by Triggers. Gameplay layer has an API called LimonAPI, and it has an interface to allow extending, and Limon Engine supports dynamically loading those custom triggers. For details, please check :ref:`implementAction`
 
 AI
 ==

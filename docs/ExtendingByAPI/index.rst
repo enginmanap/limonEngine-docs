@@ -7,4 +7,6 @@ Extending Engine Capabilities
 
    APIUsage
    implementAction
+   implementPlayerExtension
+   implementAIActor
    APIReference
