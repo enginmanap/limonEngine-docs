@@ -175,7 +175,9 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |LimonAPI::ParameterRequest&    |:ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|std::vector<ParameterRequest>  |:ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                          |
+|std::vector<ParameterRequest>  |:ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                                                 |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|void                           |:ref:`addTimedEvent(long waitTime, std::function<void(const std::vector<LimonAPI::ParameterRequest>&)> methodToCall, std::vector<LimonAPI::ParameterRequest> parameters)<LimonAPI-addTimedEvent>`                  |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _LimonAPI-animateModel:
@@ -738,10 +740,32 @@ std::vector<ParameterRequest> rayCastToCursor()
 
 Returns information about what is under player cursor (crosshair). If nothing is found, empty vector is returned.
 if something is hit, return vector will have the following information:
+
 #. ObjectID of the hit object
 #. hit coordinates
 #. hit normal
 #. if Object has AI, AI id. If not, this parameter will not be in the vector.
+
+Parameters:
+
+none
+
+.. _LimonAPI-addTimedEvent:
+
+void addTimedEvent(long waitTime, std::function<void(const std::vector<LimonAPI::ParameterRequest>&)> methodToCall, std::vector<LimonAPI::ParameterRequest> parameters)
+=======================================================================================================================================================================
+
+Runs the given method, with passed parameters, after a given amount of time.
+
+#. long waitTime: How long to wait before call, in milliseconds.
+#. std::function<void(const std::vector<LimonAPI::ParameterRequest>&)> methodToCall: function to call.
+#. std::vector<LimonAPI::ParameterRequest> parameters: parameters of that function call.
+
+.. note::
+    Wait time is not precise beyond game ticks. Limon Engine internally ticks each 1/60 seconds.
+
+.. warning::
+    If function is part of an object, and that object is removed, engine might crash. Avoiding those situations are game developers responsibility.
 
 Parameters:
 
