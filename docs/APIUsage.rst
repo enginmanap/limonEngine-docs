@@ -89,6 +89,14 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string \*soundPath)<LimonAPI-animateModel>`                                                                                     |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|std::string                    |:ref:`getModelAnimationName(uint32_t modelID)<LimonAPI-getModelAnimationName>`                                                                                                                                     |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`getModelAnimationFinished(uint32_t modelID)<LimonAPI-getModelAnimationFinished>`                                                                                                                             |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setModelAnimation(uint32_t modelID, const std::string& animationName, bool isLooped = true)<LimonAPI-setModelAnimation>`                                                                                     |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, long blendTime = 100)<LimonAPI-setModelAnimationWithBlend>`                                             |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)<LimonAPI-addGuiText>`    |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiImage(const std::string &imageFilePath, const std::string &name, const glm::vec2 &position, const glm::vec2 &scale, float rotation)<LimonAPI-addGuiImage>`                                             |
@@ -155,7 +163,7 @@ ___________
 uint32_t animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string \*soundPath)
 =========================================================================================================
 
-Adds an animation to a model. returns model handle ID.
+Applies an custom animation to a model. returns model handle ID.
 
 Parameters:
 
@@ -163,6 +171,58 @@ Parameters:
 #. uint32_t animationID: handle ID of the animation
 #. bool looped: whether the animation is looped or one off.
 #. const std::string \*soundPath: sound to play while animation goes.  If NULL, no sound plays. Otherwise sound will be played in loop until the animation stops.
+
+.. _LimonAPI-getModelAnimationName:
+
+std::string getModelAnimationName(uint32_t modelID)
+===================================================
+
+Returns current "Asset" animation name of the model. If a custom animation is applied to the model, it is not returned. Returns empty string when model is not found.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to check for animation name
+
+.. note::
+    Asset Animation names are not managed by Limon, so it is possible empty string to be name of an animation.
+
+.. _LimonAPI-getModelAnimationFinished:
+
+bool getModelAnimationFinished(uint32_t modelID)
+================================================
+
+Returns true if model finished playing animation. For looped animations always returns false. Also returns false if model is not found.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to check for animation state
+
+.. _LimonAPI-setModelAnimation:
+
+bool setModelAnimation(uint32_t modelID, const std::string& animationName, bool isLooped = true)
+=========================================================================================
+
+Applies an "Asset" animation to a model. Returns false if model is not found.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to animate
+#. const std::string& animationName: Name of the animation to play
+#. bool isLooped: Whether play animation and stop, or play in a loop
+
+.. _LimonAPI-setModelAnimationWithBlend:
+
+bool setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, long blendTime = 100)
+========================================================================================================================
+
+Applies an "Asset" animation to a model, blending it (using linear interpolation) with the previous animation. Returns false if model is not found.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to animate
+#. const std::string& animationName: Name of the animation to play
+#. bool isLooped: Whether play animation and stop, or play in a loop
+#. long blendTime: How long the previous animation will effect state. 
 
 .. _LimonAPI-addGuiText:
 
