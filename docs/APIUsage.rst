@@ -757,6 +757,8 @@ void addTimedEvent(long waitTime, std::function<void(const std::vector<LimonAPI:
 
 Runs the given method, with passed parameters, after a given amount of time.
 
+Parameters:
+
 #. long waitTime: How long to wait before call, in milliseconds.
 #. std::function<void(const std::vector<LimonAPI::ParameterRequest>&)> methodToCall: function to call.
 #. std::vector<LimonAPI::ParameterRequest> parameters: parameters of that function call.
@@ -766,10 +768,6 @@ Runs the given method, with passed parameters, after a given amount of time.
 
 .. warning::
     If function is part of an object, and that object is removed, engine might crash. Avoiding those situations are game developers responsibility.
-
-Parameters:
-
-none
 
 .. _LimonAPI-HowToImplementAnAction:
 
