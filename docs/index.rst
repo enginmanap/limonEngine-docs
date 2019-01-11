@@ -33,6 +33,7 @@ License
 The project is licensed under the LGPL license.
 
 Contents:
+---------
 
 .. toctree::
    :maxdepth: 2
