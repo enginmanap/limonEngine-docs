@@ -177,7 +177,7 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |std::vector<ParameterRequest>  |:ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                                                 |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|void                           |:ref:`addTimedEvent(long waitTime, std::function\<void(const std::vector\<LimonAPI::ParameterRequest\>&)\> methodToCall, std::vector<LimonAPI::ParameterRequest> parameters)<LimonAPI-addTimedEvent>`                  |
+|void                           |:ref:`addTimedEvent(long waitTime, std::function\<void(const std::vector\<LimonAPI::ParameterRequest\>&)\> methodToCall, std::vector<LimonAPI::ParameterRequest> parameters)<LimonAPI-addTimedEvent>`              |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _LimonAPI-animateModel:
