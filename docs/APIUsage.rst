@@ -99,6 +99,8 @@ ___________
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`setModelAnimationSpeed(uint32_t modelID, float speed)<LimonAPI-setModelAnimationSpeed>`                                                                                                                      |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|std::vector<uint32_t>          |:ref:`getModelChildren(uint32_t modelID)<LimonAPI-getModelChildren>`                                                                                                                                               |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)<LimonAPI-addGuiText>`    |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`addGuiImage(const std::string &imageFilePath, const std::string &name, const glm::vec2 &position, const glm::vec2 &scale, float rotation)<LimonAPI-addGuiImage>`                                             |
@@ -247,6 +249,18 @@ Parameters:
 
 #. uint32_t modelID: handle ID of the model to animate
 #. float speed: Animation time multiplier
+
+
+.. _LimonAPI-getModelChildren:
+
+std::vector<uint32_t> getModelChildren(uint32_t modelID)
+========================================================
+
+Returns a vector of IDs with all children of model. Returns empty list for Model not found, as well as no children found.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to check for children
 
 .. _LimonAPI-addGuiText:
 
