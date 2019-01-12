@@ -79,6 +79,7 @@ Limon engine will try to load custom actions on engine startup, from libcustomTr
 
 This method should fill the triggerMap passed, with all the custom actions, like this:
 ::
+
     (*triggerMap)["$ACTION_NAME1$"] = &createT<$ActionClass1$>;
     (*triggerMap)["$ACTION_NAME2$"] = &createT<$ActionClass2$>;
 
