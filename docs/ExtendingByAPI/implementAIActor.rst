@@ -130,11 +130,11 @@ This struct is part of ActorInterface, and each frame Limon Engine checks all Ac
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 | Type                   | Name                        | Description                                                              |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
-|bool                    | routeToPlayer               | Request a route to Player                                                |
+| bool                   | routeToPlayer               | Request a route to Player                                                |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
-|bool                    | routeToCustomPosition       | Request a route to custom position(not implemented yet)                  |
+| bool                   | routeToCustomPosition       | Request a route to custom position(not implemented yet)                  |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
-|glm::vec3               | customPosition              | Position to course path                                                  |
+| glm::vec3              | customPosition              | Position to course path                                                  |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 
 .. _ActorInterface-enableDynamicDiscovery:
@@ -147,6 +147,7 @@ Limon engine will try to load custom actors on engine startup, from libcustomTri
 ``void registerActors(std::map<std::string, ActorInterface*(*)(uint32_t, LimonAPI*)>* actorMap)``
 
 This method should fill the actorMap passed, with all the custom actors, like this:
+::
 
-``(*actorMap)["$ACTORNAME1$"] = &createActorT<$ActorClass1$>;
-(*actorMap)["$ACTORNAME2$"] = &createActorT<$ActorClass2$>;``
+    (*actorMap)["$ACTORNAME1$"] = &createActorT<$ActorClass1$>;
+    (*actorMap)["$ACTORNAME2$"] = &createActorT<$ActorClass2$>;
