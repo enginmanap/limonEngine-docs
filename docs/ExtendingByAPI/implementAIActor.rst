@@ -127,6 +127,7 @@ InformationRequest struct
 _________________________
 
 This struct is part of ActorInterface, and each frame Limon Engine checks all Actors for request changes. When a request is checked, its information will be reset to prevent multiple requests.
+
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 | Type                   | Name                        | Description                                                              |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
@@ -143,11 +144,12 @@ How to enable Dynamic Library discovery
 _______________________________________
 
 Limon engine will try to load custom actors on engine startup, from libcustomTriggers file (extension based on platform). If the file is found, engine will check for a method with following signature:
+::
 
-``void registerActors(std::map<std::string, ActorInterface*(*)(uint32_t, LimonAPI*)>* actorMap)``
+    void registerActors(std::map<std::string, ActorInterface*(*)(uint32_t, LimonAPI*)>* actorMap)
 
 This method should fill the actorMap passed, with all the custom actors, like this:
 ::
 
-    (*actorMap)["$ACTORNAME1$"] = &createActorT<$ActorClass1$>;
-    (*actorMap)["$ACTORNAME2$"] = &createActorT<$ActorClass2$>;
+    (*actorMap)["$ACTOR_NAME1$"] = &createActorT<$ActorClass1$>;
+    (*actorMap)["$ACTOR_NAME2$"] = &createActorT<$ActorClass2$>;
