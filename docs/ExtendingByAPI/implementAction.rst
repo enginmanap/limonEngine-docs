@@ -66,3 +66,20 @@ Returns the name of the action.
 
 .. warning::
     The name must be unique, or the results will be undefined.
+
+.. _TriggerInterface-enableDynamicDiscovery:
+
+How to enable Dynamic Library discovery
+_______________________________________
+
+Limon engine will try to load custom actions on engine startup, from libcustomTriggers file (extension based on platform). If the file is found, engine will check for a method with following signature:
+
+
+``void registerAsTrigger(std::map<std::string, TriggerInterface*(*)(LimonAPI*)>* triggerMap)``
+
+This method should fill the triggerMap passed, with all the custom actions, like this:
+
+``
+    (*triggerMap)["$ACTION_NAME1$"] = &createT<$ActionClass1$>;
+    (*triggerMap)["$ACTION_NAME2$"] = &createT<$ActionClass2$>;
+``
