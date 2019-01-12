@@ -1,7 +1,7 @@
 .. _APIUsage:
 
 ================
-Action API Usage
+Limon API Usage
 ================
 
 Limon Engine provides an C++ API for extending and customising it to fit your game. The API has a parameter system for requesting and providing variables, and the parameters are connected to both editor and serialize/deserialize subsystem so saving and loading is handled by the engine.
