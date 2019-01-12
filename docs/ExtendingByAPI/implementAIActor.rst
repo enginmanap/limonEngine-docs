@@ -67,7 +67,7 @@ glm::vec3 customPosition: Position to course path
 |std::string                                        |:ref:`getName() const<ActorInterface-getName>`                                                             |
 +---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
 
-.. ActorInterface-ActorInterface:
+.. _ActorInterface-ActorInterface:
 
 ActorInterface(uint32_t id, LimonAPI \*limonAPI)
 ================================================
@@ -76,35 +76,35 @@ The constructor of the interface.
 .. note::
     All Actors must have the same signature, no other parameters should be required.
 
-.. ActorInterface-getParameters:
+.. _ActorInterface-getParameters:
 
 std::vector<LimonAPI::ParameterRequest> getParameters()
 =======================================================
 
 Returns a vector of :ref:`ParameterRequest`, These parameters are going to be set by map designer using the editor. These parameters should be filled with their current values, because Load/Save logic uses these parameters to persist AI information.
 
-.. ActorInterface-setParameters:
+.. _ActorInterface-setParameters:
 
 void setParameters(std::vector<LimonAPI::ParameterRequest> parameters)
 ======================================================================
 
 The parameters set by map designer will be passed to this method. It might be just set, or they might be loading as part of map load.
 
-.. ActorInterface-play:
+.. _ActorInterface-play:
 
 void play(long time, ActorInformation &information)
 ===================================================
 
 Called on each frame, with current information about player and world, in form of :ref:`ActorInterface-ActorInformation`
 
-.. ActorInterface-interaction:
+.. _ActorInterface-interaction:
 
 bool interaction(std::vector<LimonAPI::ParameterRequest> &interactionInformation)
 =================================================================================
 
 called by other entities, like Actors or Player. Used to pass information like hits, or alarming etc.
 
-.. ActorInterface-getName:
+.. _ActorInterface-getName:
 
 std::string getName() const
 ===============
@@ -114,6 +114,7 @@ Returns the name of the Actor.
 .. warning::
     The name must be unique, or the results will be undefined.
 
+.. _ActorInterface-enableDynamicDiscovery:
 
 How to enable Dynamic Library discovery
 _______________________________________
