@@ -11,47 +11,7 @@ Limon editor allows selecting Actor per model. After Actor selected, a new insta
 ActorInterface Class
 ____________________
 
-ActorInterface class has two helper structs used to pass information between engine and AI. Those are InformationRequest and ActorInformation. details are below.
-
-.. _ActorInterface-ActorInformation:
-
-ActorInformation struct
-_______________________
-
-This struct is feeded for each frame, and meant to contain information to trigger AI behaviour. It contains the following information
-
-bool canSeePlayerDirectly: Is there any object between Actor and Player.
-bool isPlayerLeft: Is Player at left of Actor.
-bool isPlayerRight: Is Player at right of Actor.
-bool isPlayerUp: Is Player higher up than Actor.
-bool isPlayerDown: Is Player lower than Actor.
-bool isPlayerFront: Is Player in front of the Actor.
-bool isPlayerBack: Is Player at back of the Actor.
-float cosineBetweenPlayer: What is the cosine of player and actor front vector.
-glm::vec3 playerDirection: What is the direction vector from actor to player.
-float playerDistance: What is the distance between actor and player (unit is close to meters).
-float cosineBetweenPlayerForSide: cosine of the angle between right vector of actor and player.
-bool playerDead: Is player dead?
-
-uint32_t maximumRouteDistance( = 128): how deep the route search should go. (maximum ~128 meters default)
-std::vector<glm::vec3> routeToRequest: Points to follow to reach the player.
-bool routeFound: Was route course succesful?
-bool routeReady: Was route course done?
-
-The first part of the information will be filled for each frame. The Route will not be filled until requested, and routeFound/routeReady will be false. To request route to player, check InformationRequest struct below.
-
-.. _ActorInterface-InformationRequest:
-
-InformationRequest struct
-_________________________
-
-This struct is part of ActorInterface, and each frame Limon Engine checks all Actors for request changes. When a request is checked, its information will be reset to prevent multiple requests.
-
-bool routeToPlayer: Request a route to Player
-bool routeToCustomPosition: Request a route to custom position(not implemented yet)
-glm::vec3 customPosition: Position to course path
-
-
+ActorInterface class has two helper structs used to pass information between engine and AI. Those are :ref:`ActorInterface-ActorInformation` and :ref:`ActorInterface-InformationRequest`. details are below.
 
 +---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
 |                                                   |:ref:`ActorInterface(uint32_t id, LimonAPI \*limonAPI)<ActorInterface-ActorInterface>`                     |
@@ -114,6 +74,69 @@ Returns the name of the Actor.
 .. warning::
     The name must be unique, or the results will be undefined.
 
+.. _ActorInterface-ActorInformation:
+
+ActorInformation struct
+_______________________
+
+This struct is feeded for each frame, and meant to contain information to trigger AI behaviour. It contains the following information
+
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+| Type                   | Name                        | Description                                                              |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | canSeePlayerDirectly        | Is there any object between Actor and Player.                            |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | isPlayerLeft                | Is Player at left of Actor.                                              |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | isPlayerRight               | Is Player at right of Actor.                                             |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | isPlayerUp                  | Is Player higher up than Actor.                                          |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | isPlayerDown                | Is Player lower than Actor.                                              |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | isPlayerFront               | Is Player in front of the Actor.                                         |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | isPlayerBack                | Is Player at back of the Actor.                                          |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|float                   | cosineBetweenPlayer         | What is the cosine of player and actor front vector.                     |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|glm::vec3               | playerDirection             | What is the direction vector from actor to player.                       |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|float                   | playerDistance              | What is the distance between actor and player (unit is close to meters). |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|float                   | cosineBetweenPlayerForSide  | cosine of the angle between right vector of actor and player.            |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | playerDead                  | Is player dead?                                                          |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|                        |                             |                                                                          |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+| uint32_t               | maximumRouteDistance(128)   | how deep the route search should go. (maximum ~128 meters default)       |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+| std::vector<glm::vec3> | routeToRequest              | Points to follow to reach the player.                                    |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+| bool                   | routeFound                  | Was route course successful?                                             |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+| bool                   | routeReady                  | Was route course done?                                                   |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+
+The first part of the information will be filled for each frame. The Route will not be filled until requested, and routeFound/routeReady will be false. To request route to player, check InformationRequest struct below.
+
+.. _ActorInterface-InformationRequest:
+
+InformationRequest struct
+_________________________
+
+This struct is part of ActorInterface, and each frame Limon Engine checks all Actors for request changes. When a request is checked, its information will be reset to prevent multiple requests.
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+| Type                   | Name                        | Description                                                              |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | routeToPlayer               | Request a route to Player                                                |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|bool                    | routeToCustomPosition       | Request a route to custom position(not implemented yet)                  |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+|glm::vec3               | customPosition              | Position to course path                                                  |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+
 .. _ActorInterface-enableDynamicDiscovery:
 
 How to enable Dynamic Library discovery
@@ -125,7 +148,5 @@ Limon engine will try to load custom actors on engine startup, from libcustomTri
 
 This method should fill the actorMap passed, with all the custom actors, like this:
 
-``
-    (*actorMap)["$ACTORNAME1$"] = &createActorT<$ActorClass1$>;
-    (*actorMap)["$ACTORNAME2$"] = &createActorT<$ActorClass2$>;
-``
+``(*actorMap)["$ACTORNAME1$"] = &createActorT<$ActorClass1$>;
+(*actorMap)["$ACTORNAME2$"] = &createActorT<$ActorClass2$>;``
