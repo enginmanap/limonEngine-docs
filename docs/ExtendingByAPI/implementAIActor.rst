@@ -13,6 +13,9 @@ ____________________
 
 ActorInterface class has two helper structs used to pass information between engine and AI. Those are :ref:`ActorInterface-ActorInformation` and :ref:`ActorInterface-InformationRequest`. details are below.
 
+.. warning::
+    Information requests are prepared by separate threads, and no guarantees made for when they will return. Check routeReady flag on ActorInformation before using the route.
+
 +---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
 |                                                   |:ref:`ActorInterface(uint32_t id, LimonAPI \*limonAPI)<ActorInterface-ActorInterface>`                     |
 +---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
