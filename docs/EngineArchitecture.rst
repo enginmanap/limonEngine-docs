@@ -35,10 +35,10 @@ Engine Overview
     :align: center
 
 Subsystems
-**********
+==========
 
 Rendering
-=========
+*********
 
 For rendering graphics, Limon uses a custom multi pass forward renderer, built using OpenGL.
 
@@ -49,7 +49,7 @@ There is a *PhysicalRenderable* child class, that is attached to the physics sub
 Each renderable implements *void render()* method. *World* class sets the render target, resolution etc. for shadow map generation. After that, for each light, all visible flagged *PhysicalRenderable* instances will be rendered using either *void renderWithProgram(GLSLProgram &program)* or *void renderWithProgramInstanced(std::vector<uint32_t> &modelIndices, GLSLProgram &program)* for instanced rendering. When the shadow maps for all the lights are ready, normal rendering will be done again using visiblity flags.
 
 Physics
-=======
+*******
 
 For physics Limon uses Bullet Physics. The only *PhysicalObject* children are registered to physics subsystem. At version 0.6, there are *Model* and *ModelGroup* classes that use Physics. The physical representation of Models are auto generated using the following logic:
 
@@ -61,27 +61,27 @@ For physics Limon uses Bullet Physics. The only *PhysicalObject* children are re
 Model groups just groups the models with given physical representations.
 
 IO
-==
+**
 
 IO is handled with multiple levels of abstraction. Part of platform wrapper maps raw input to engine inputs. After that, an implementer of *Player* will get the input in form of *void move(moveDirections)* and *void rotate(float xPosition, float yPosition, float xChange, float yChange)* methods. The Player class has settings that allow different types of interaction, like physical, editor etc. In the end, the inputs are feed to PlayerExtensions, so they can handle them as they see fit.
 
 Sound
-=====
+*****
 
 Sound backend is OpenAL. A separate thread is used to refresh sound buffers. Sound Assets and sound subsystem complexities are abstracted by Sound GameObject.
 
 GUI
-===
+***
 
 GUI is rendered and IO is handled by normal subsystems. GUI objects must implement *GUIRenderable* class. If the current *Player* is flagged with *menuInteraction*, the GUI objects will react to player input.
 
 Editor
-======
+******
 
 Editor is built using Dear ImGui library. Main part of it is within *World* class, but to enable custom behaviour, objects get to implement their own editor interfaces.
 
 Game Play and Game Objects
-==========================
+**************************
 
 As of version 0.6, Limon engine has following game objects:
 
@@ -100,6 +100,6 @@ As of version 0.6, Limon engine has following game objects:
 Those object can be used in Editor, and by Triggers. Gameplay layer has an API called LimonAPI, and it has an interface to allow extending, and Limon Engine supports dynamically loading those custom triggers. For details, please check :ref:`implementAction`
 
 AI
-==
+**
 
 Limon has an interface called *ActorInterface* that is used to allow custom AI implementations to be used. Each actor will be triggered each simulation step with *ActorInformation*, which contains the player direction, whether or not player is visible etc. It is possible to ask for a route to player using this interface too, assuming actor is same size with the player.
