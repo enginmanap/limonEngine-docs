@@ -571,7 +571,7 @@ Parameters:
 bool loadAndSwitchWorld(const std::string& worldFileName)
 =========================================================
 
-Loads a world file, then switches the current world to the newly loaded one. If the world file was already loaded, removes the old one, effectively resetting the world. Returns false if the world file couldn't be loaded.
+Loads a world file, then switches the current world to the newly loaded one. If the world file was already loaded, removes the old one, effectively resetting the world. Returns false if the world file couldn't be loaded, or it is the current world. Since caller is part of current world, removing it is not possible.
 
 Parameters:
 
