@@ -58,6 +58,7 @@ InputStates Class Usage
 _______________________
 
 InputStates is a thin wrapper around SDL2 input events. It has 4 main methods that can be used:
+
 #. getInputStatus: Allows checking if a key is down or up, for keys used by engine. 3 buttons of mouse is included.
 #. getInputEvents: Allows if a key state changed in last frame, for keys used by engine. 3 buttons of mouse is included.
 #. getRawKeyStates: Allows to check all key states for current frame.
