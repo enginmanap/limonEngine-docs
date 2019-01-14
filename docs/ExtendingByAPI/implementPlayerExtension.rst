@@ -12,7 +12,7 @@ ______________________________
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 |                                                   |:ref:`PlayerExtensionInterface(LimonAPI \*limonAPI)<PlayerExtensionInterface-PlayerExtensionInterface>`             |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| void                                              |:ref:`processInput(InputHandler &inputHandler, long time)<PlayerExtensionInterface-processInput>`                   |
+| void                                              |:ref:`processInput(const InputStates &inputState, long time)<PlayerExtensionInterface-processInput>`                   |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 | bool                                              |:ref:`interact(std::vector\<LimonAPI::ParameterRequest\> &parameters)<PlayerExtensionInterface-interact>`           |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ The constructor of the interface.
 
 .. _PlayerExtensionInterface-processInput:
 
-void processInput(InputHandler &inputHandler, long time)
+void processInput(const InputStates &inputState, long time)
 =======================================================
 
 Called each frame with updated input information, and time of frame in milliseconds.
@@ -51,6 +51,17 @@ Returns the name of the Player Extension.
 
 .. warning::
     The name must be unique, or the results will be undefined.
+
+.. _ActorInterface-InputStatesUsage:
+
+InputStates Class Usage
+_______________________
+
+InputStates is a thin wrapper around SDL2 input events. It has 4 main methods that can be used:
+getInputStatus: Allows checking if a key is down or up, for keys used by engine. 3 buttons of mouse is included.
+getInputEvents: Allows if a key state changed in last frame, for keys used by engine. 3 buttons of mouse is included.
+getRawKeyStates: Allows to check all key states for current frame.
+getMouseChange: Allows checking for relative or absolute position of the mouse, depending of the mode(Menu player uses absolute).
 
 .. _ActorInterface-enableDynamicDiscovery:
 
