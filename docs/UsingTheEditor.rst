@@ -31,6 +31,7 @@ World editor loads up with almost all the features hidden by the titles. The fre
 There are 2 main types of elements that can be used to build the world.
 
 * 3D Objects
+* Lights
 * GUI elements
 
 To make selection easier, click to select doesn't work for both types at the same time. At launch you can select Objects. If you click "Switch to GUI selection mode", you will be able to select GUI elements, but not Objects. The button will be replaced by "Switch to World selection mode".
@@ -42,6 +43,8 @@ There are 2 types of 3D object you can add to the world.
 
 * Models
 * Trigger volumes
+
+It is also possible to create a ModelGroup.
 
 .. figure:: _static/media/images/WorldEditor/addObjectSelected.png
     :align: center
@@ -78,6 +81,23 @@ Static object have a full mesh representing physical object. It is possible to r
     Because physical representation is dependent on the mass, mass setting cant be changed once an model is added to the world. If you need to change the mass, remove and add again.
 
 Add Trigger Volume button will create an empty cube. That cube can be used to trigger custom code paths. The details are at :ref:`Trigger Object Editor`.
+
+Creating ModelGroups
+____________________
+
+.. figure:: _static/media/images/WorldEditor/modelGroup.png
+    :align: center
+
+A model group can hold unlimited number of models, or other model groups. It is used to make operations on multiple objects easier. First part of Model Groups section is used to put a model to a model group. Second part is used to create a new model group with given name.
+
+Adding Lights
+_____________
+
+.. figure:: _static/media/images/WorldEditor/addLight.png
+    :align: center
+
+Limon Engine uses a custom forward renderer with full dynamic light calculation. Since these calculations are resource hungry, only 4 lights will be enabled at any given time. This value is set at compile time, and not expected to be changed by game developers.
+To make usage easier, only 1 directional light is allowed, but that light is never disabled (assumed Moon/Sun), so 1 directional + 3 point, or 4 point lights may be active at any given time. Engine itself decides which ones to activate and deactivate using player position, so adding more than 4 light is allowed.
 
 Adding GUI Elements
 ___________________
@@ -131,33 +151,68 @@ The layer of the button can be selected from the drop down.
 
 This Widget is not fully functional at 0.6 release. Please avoid until next release.
 
-Setting Up Map Properties
-_________________________
+Player Properties
+_________________
 
-.. figure:: _static/media/images/editor-world.png
+.. figure:: _static/media/images/WorldEditor/playerProp.png
     :align: center
 
-You can set the following using the world editor.
+The Player properties section allows to set what is the launch time player mode. For game release, this should be either Menu, or Physical. Other types can be useful for development.
 
-#. You can add triggers to run after the world load finished. For details please check  :ref:`Triggers`.
-#. You can set the music that will be playing after map load finished.
-#. You can set what kind of interaction will be possible at the launch of the map. Possible values are
-  * Physical: Normal Player for game play
-  * Debug: The player that controls exactly like physical, but doesn't interact with physics, so can fly and walkthrough objects. Also renders physics meshes, GUI borders and AI walk grid to allow debugging issues.
-  * Editor: Builtin editor.
-  * Menu: Menu interaction is allowed, and animation, AI and Physics subsystems are stopped.
-#. You can set what should be done when player press ESC key.
-  * Quit Game: exits the game immediately without asking for a verification
-  * Return Previous: Loaded maps list is kept within the engine. This option returns the world before current one. If this is the first world, or this world is loaded with force new directive, this option does nothing.
-  * Load World: This option add a new text input to the editor. The map at the path entered will be loaded if not already, and the current map will switch to the entered one.
+* Physical: Normal Player for game play
+* Debug: The player that controls exactly like physical, but doesn't interact with physics, so can fly and walkthrough objects. Also renders physics meshes, GUI borders and AI walk grid to allow debugging issues.
+* Editor: Builtin editor.
+* Menu: Menu interaction is allowed, movement and screen rotation disallowed. Mouse is set to free movement.
 
-.. warning::
-    For a game release, Debug and Editor types should be removed. Those types are only for development purposes.
+If a custom player extension is going to be used, entering its name will load and enable the extension. If player has a Model attached, there will be an "Disconnect Attachment" button.
+
+Setting Up World Properties
+_________________________
+
+The world properties is used to set map global properties.
+
+**OnLoad Actions**
+.. figure:: _static/media/images/WorldEditor/WP_Onload.png
+    :align: center
+
+If map designer wants to launch some custom action at map load, this interface can be used to set as many as required. Details of them are at :ref:`Triggers`
+
+**Music**
+
+.. figure:: _static/media/images/WorldEditor/WP_Onload.png
+    :align: center
+
+Music of the map can be set using the directory listing
+
+**SkyBox**
+
+.. figure:: _static/media/images/WorldEditor/WP_Sky1.png
+    :align: center
+
+.. figure:: _static/media/images/WorldEditor/WP_Sky2.png
+    :align: center
+
+Setting skybox is two step process. First directory that contains the images is set, then 6 image that form up the skybox will be selected.
+
+**Loading Image**
+
+.. figure:: _static/media/images/WorldEditor/WP_Loading.png
+    :align: center
+
+A loading image can be set using the loading image directory listing. If no image is set, an empty screen will be shown.
+
+**ESC Handling**
+
+This setting allows customising the behaviour of ESC key.
+
+* Quit Game: exits the game immediately without asking for a verification
+* Return Previous: Loaded maps list is kept within the engine. This option returns the world before current one. If this is the first world, or this world is loaded with force new directive, this option does nothing.
+* Load World: This option add a new text input to the editor. The map at the path entered will be loaded if not already, and the current map will switch to the entered one.
 
 Other editor controls
 _____________________
 
-.. figure:: _static/media/images/editor-others.png
+.. figure:: _static/media/images/WorldEditor/customAnim.png
     :align: center
 
 Loaded custom animations will be listed under custom animations for convenience. You can load other custom animation by entering the file path.
@@ -166,6 +221,9 @@ Saving the map
 ______________
 
 The map will be saved at the path when save world is clicked, overriding if it already exists.
+Limon Auto generates a walking grid for path finding, used by AI Actors. Generating such data takes minutes on big maps, so saving it with map is a must for load speed of a map.
+There are 2 types of saving supported for this grid, binary and XML. XML should be avoided by game developers, it is only useful for engine developers. XML format can take up to 2GB of memory. Binary format is the go-to format.
+Convert models to binary button scans all the models used in the map, and converts used assets to "*.limonmdel" files. This files use less ram, faster to load and not reversable, making them suitable for game releases. Map itself will be updated to use them if this button is pressed.
 
 .. warning::
     It is worth repeating. The save button overrides if there is a file with same name. Please pay attention.
