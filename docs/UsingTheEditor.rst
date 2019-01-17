@@ -84,9 +84,6 @@ ___________________
 
 GUI elements are rendered using layers. Each layer has a level, with default layer at level 0. Bigger levels are higher up, meaning when overlapped, the one with the higher level will be rendered.
 
-.. figure:: _static/media/images/editor-addGUI.png
-    :align: center
-
 You can add the following using the editor:
 
 * Layer
@@ -95,10 +92,14 @@ You can add the following using the editor:
 * Button
 * Animation
 
+**GUI Layer**
+
 .. figure:: _static/media/images/WorldEditor/GUI_Layer.png
     :align: center
 
 Add GUI layer menu allows you to add a new layer, with set level.
+
+**GUI Text**
 
 .. figure:: _static/media/images/WorldEditor/GUI_Text.png
     :align: center
@@ -108,10 +109,14 @@ To add GUI text, you need to set the font, font size and name. The layer of the 
 .. note::
     Text scaling will be converted to font size on next load, to provide better quality
 
+**GUI Image**
+
 .. figure:: _static/media/images/WorldEditor/GUI_Image.png
     :align: center
 
 When adding Image as GUI element, a directory tree of ./Data will be shown, filtered based on supported image formats. To filter based on file names, the fiter text box on top of directory listing can be used. The layer of the image can be selected from the drop down.
+
+**GUI Button**
 
 .. figure:: _static/media/images/WorldEditor/GUI_Button.png
     :align: center
@@ -119,7 +124,9 @@ When adding Image as GUI element, a directory tree of ./Data will be shown, filt
 To add GUI Button, you need to set the name, and set normal image using directory tree. The rest of the fields are optional. For details please check :ref:`GUI Button Settings`.
 The layer of the button can be selected from the drop down.
 
-.. figure:: _static/media/images/WorldEditor/GUI_Animation.png
+**GUI Animation**
+
+.. figure:: _static/media/images/WorldEditor/GUI_Anim.png
     :align: center
 
 This Widget is not fully functional at 0.6 release. Please avoid until next release.
