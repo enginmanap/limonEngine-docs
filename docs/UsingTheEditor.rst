@@ -236,15 +236,15 @@ Object Editor Details
 
 Object editor has two parts. One is the window that is on the left by default, and the other is the gizmos that appear at the position of the object. The window content changes based on the selected object. Each possible object type is documented separately below.
 
-Object editor has selected object in a drop-down that lists all the game objects, you can select another object using this drop down. All object have a remove button at the end of the window, which removes selected object completely.
+Object editor has tree view of the map, you can use it to change selected object, as well as clicking on them. All object have a remove button at the end of the window, which removes selected object completely.
 
-.. figure:: _static/media/images/editor-object_marked.png
+.. figure:: _static/media/images/ObjectEditor/object_marked.png
     :align: center
 
 Model Object Settings
 _____________________
 
-.. figure:: _static/media/images/editor-object_model.png
+.. figure:: _static/media/images/ObjectEditor/model.png
     :align: center
 
     The model window with all options visible
@@ -253,9 +253,9 @@ There are 3 radio buttons under the selected object Drop-down. These are "Transl
 
 Just under these settings, there is snap settings. It is used by gizmo. For details check :ref:`Gizmo Usage`.
 
-If the loaded model contains animations within, these animations are listed under the "Model animation properties", and the speed of this animation can be set using "Animation time scale".
+If the loaded model contains animations within, these animations are listed under the "Model animation properties", and the speed of this animation can be set using "Animation time scale". If a new animation as part of old one is needed, "Seperate selected animation by time" part can be used. It takes 2 floats as input, and a name. After Create section button is clicked, the animation will be listed just as others.
 
-AI properties only contain "AI Driven" at the current version.
+AI properties section has a list of available Actors. Game developers can write custom actors using API provided. Please check :ref:`implementAIActor` for details. If selected actor has settings exposed, they will be listed under actor type drop-down.
 
 .. note::
     If model has no animation, it can't be assigned an AI. Both Animation properties and AI properties will be hidden in that case.
@@ -271,7 +271,7 @@ Disconnect from physics button removes the collision mesh from map so the object
 Trigger Object Settings
 _______________________
 
-.. figure:: _static/media/images/editor-object_trigger.png
+.. figure:: _static/media/images/ObjectEditor/trigger.png
     :align: center
 
 The trigger object has same interfaces with model for transformation settings. The difference is at "Trigger Properties" section.
@@ -298,7 +298,7 @@ The logic of triggers is as follows:
 GUI Text Settings
 _________________
 
-.. figure:: _static/media/images/editor-object_GUIText.png
+.. figure:: _static/media/images/ObjectEditor/guiText.png
     :align: center
 
 GUI Text has custom name that can be updated using the name field. This field doesn't allow spaces of any kind.
@@ -310,7 +310,7 @@ Position X and Position Y is used for transformation of the text, and Color R G 
 GUI Image Settings
 __________________
 
-.. figure:: _static/media/images/editor-object_GUIImage.png
+.. figure:: _static/media/images/ObjectEditor/guiImage.png
     :align: center
 
 GUI Image has custom name that can be updated using the name field. This field doesn't allow spaces of any kind.
@@ -326,7 +326,7 @@ Position and Scale are used to set the Transform of the image.
 GUI Button Settings
 ___________________
 
-.. figure:: _static/media/images/editor-object_GUIButton.png
+.. figure:: _static/media/images/ObjectEditor/guiButton.png
     :align: center
 
 GUI Button has custom name that can be updated using the name field. This field doesn't allow spaces of any kind.
