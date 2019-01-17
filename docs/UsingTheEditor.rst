@@ -172,6 +172,7 @@ ___________________________
 The world properties is used to set map global properties.
 
 **OnLoad Actions**
+
 .. figure:: _static/media/images/WorldEditor/WP_Onload.png
     :align: center
 
