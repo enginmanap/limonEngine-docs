@@ -222,8 +222,10 @@ Saving the map
 ______________
 
 The map will be saved at the path when save world is clicked, overriding if it already exists.
+
 Limon Auto generates a walking grid for path finding, used by AI Actors. Generating such data takes minutes on big maps, so saving it with map is a must for load speed of a map.
 There are 2 types of saving supported for this grid, binary and XML. XML should be avoided by game developers, it is only useful for engine developers. XML format can take up to 2GB of memory. Binary format is the go-to format.
+
 Convert models to binary button scans all the models used in the map, and converts used assets to "*.limonmdel" files. This files use less ram, faster to load and not reversable, making them suitable for game releases. Map itself will be updated to use them if this button is pressed.
 
 .. warning::
