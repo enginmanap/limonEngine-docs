@@ -255,6 +255,8 @@ Just under these settings, there is snap settings. It is used by gizmo. For deta
 
 If the loaded model contains animations within, these animations are listed under the "Model animation properties", and the speed of this animation can be set using "Animation time scale". If a new animation as part of old one is needed, "Seperate selected animation by time" part can be used. It takes 2 floats as input, and a name. After Create section button is clicked, the animation will be listed just as others.
 
+Limon also supports loading animations from another file, specifically to support Mixamo.com animations. When a model is loaded, Limon checks if there is a "Mixamo" directory at the same path, and if it exists, try to loads the files in that directory as animations for model.
+
 AI properties section has a list of available Actors. Game developers can write custom actors using API provided. Please check :ref:`implementAIActor` for details. If selected actor has settings exposed, they will be listed under actor type drop-down.
 
 .. note::
