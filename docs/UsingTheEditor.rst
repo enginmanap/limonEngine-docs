@@ -17,7 +17,7 @@ Editor mode uses a free cursor control scheme. You can move around by "WASD" and
 
 The editor has 3 main windows. By default left of the screen is object properties, right is world properties and bottom is animation sequencer. As expected you can drag and drop and resize the windows. If no object is selected, only the world properties window is visible. Animation sequencer is visible only when creating an animation.
 
-.. figure:: _static/media/images/editor-world-withAnimation.jpg
+.. figure:: _static/media/images/editor-world-withAnimation.png
     :align: center
 
 World Editor Details
@@ -25,7 +25,7 @@ World Editor Details
 
 World editor loads up with almost all the features hidden by the titles. The fresh loaded window looks like this:
 
-.. figure:: _static/media/images/editor-world-nonSelected.jpg
+.. figure:: _static/media/images/editor-world-nonSelected.png
     :align: center
 
 There are 2 main types of elements that can be used to build the world.
@@ -43,12 +43,14 @@ There are 2 types of 3D object you can add to the world.
 * Models
 * Trigger volumes
 
-.. figure:: _static/media/images/editor-addObject.png
+.. figure:: _static/media/images/WorldEditor/addObjectSelected.png
     :align: center
 
-Models list is loaded from "./Data/Models/" directory. You can select a model from the drop down list. When mass is set to 0, the object will be marked "static" by physics system. This means the model will not be able to move, outside of the editor. It is the default setting, to be used for building the world. Any other value will mark the object as "dynamic", meaning the objects movements will be governed by physics engine.
+A directory tree of ./Data folder will be loaded, with directories that don't contain model files filtered out. For filtering based on  file name, the text box just above can be used.
+When mass is set to 0, the object will be marked "static" by physics system. This means the model will not be able to move, outside of the editor. It is the default setting, to be used for building the world. Any other value will mark the object as "dynamic", meaning the objects movements will be governed by physics engine.
 
-If an object is already selected, "Copy position offsets" settings and "Copy Selected Objects" button is shown. These are used to copy selected object, with given offsets. Offsets can be used to make copy automatically position so a grid or a wall can be created.
+
+If an object is already selected, "Copy position offsets" settings and "Copy Selected Objects" button is shown. These are used to copy selected object, with given offsets. Offsets can be used to make copy automatically position so a grid or a wall can be easily created.
 
 .. figure:: _static/media/images/physics-hull_vs_full.png
     :align: center
@@ -91,19 +93,36 @@ You can add the following using the editor:
 * Text
 * Image
 * Button
+* Animation
+
+.. figure:: _static/media/images/WorldEditor/GUI_Layer.png
+    :align: center
 
 Add GUI layer menu allows you to add a new layer, with set level.
+
+.. figure:: _static/media/images/WorldEditor/GUI_Text.png
+    :align: center
 
 To add GUI text, you need to set the font, font size and name. The layer of the text can be selected from the drop down.
 
 .. note::
-    Since the font renderer is building the text using the set font size. GUI texts are not scalable.
+    Text scaling will be converted to font size on next load, to provide better quality
 
-To add GUI Image, you need to set the name and image files path relative to the engine. The layer of the image can be selected from the drop down.
+.. figure:: _static/media/images/WorldEditor/GUI_Image.png
+    :align: center
 
-To add GUI Button, you need to set the name, and normal image file path relative to the engine. The rest of the fields are optional. For details please check :ref:`GUI Button Settings`.
+When adding Image as GUI element, a directory tree of ./Data will be shown, filtered based on supported image formats. To filter based on file names, the fiter text box on top of directory listing can be used. The layer of the image can be selected from the drop down.
 
+.. figure:: _static/media/images/WorldEditor/GUI_Button.png
+    :align: center
+
+To add GUI Button, you need to set the name, and set normal image using directory tree. The rest of the fields are optional. For details please check :ref:`GUI Button Settings`.
 The layer of the button can be selected from the drop down.
+
+.. figure:: _static/media/images/WorldEditor/GUI_Animation.png
+    :align: center
+
+This Widget is not fully functional at 0.6 release. Please avoid until next release.
 
 Setting Up Map Properties
 _________________________
