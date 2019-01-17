@@ -167,7 +167,7 @@ The Player properties section allows to set what is the launch time player mode.
 If a custom player extension is going to be used, entering its name will load and enable the extension. If player has a Model attached, there will be an "Disconnect Attachment" button.
 
 Setting Up World Properties
-_________________________
+___________________________
 
 The world properties is used to set map global properties.
 
