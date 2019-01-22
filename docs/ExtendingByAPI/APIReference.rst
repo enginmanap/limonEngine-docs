@@ -61,7 +61,7 @@ Limon Engine API Reference
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`detachSoundFromObject(uint32_t objectWorldID)<LimonAPI-detachSoundFromObject>`                                                                                                                               |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|uint32_t                       |:ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)<LimonAPI-playSound>`                                                                                                         |
+|uint32_t                       |:ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative, bool looped)<LimonAPI-playSound>`                                                                                                         |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`getPlayerAttachedModel()<LimonAPI-getPlayerAttachedModel>`                                                                                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -461,7 +461,7 @@ Parameter:
 
 .. _LimonAPI-playSound:
 
-uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool looped)
+uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative bool looped)
 ====================================================================================
 
 Creates and plays a sound. Returns uin32_t playing sound ID.
@@ -470,7 +470,8 @@ Parameters:
 
 #. const std::string &soundPath: Path of the sound to play.
 #. const glm::vec3 &position: World position of the sound source.
-#. bool looped: Play once or play in a loop
+#. bool positionRelative: True if position given it relative to player. Defaults to false.
+#. bool looped: Play once or play in a loop. Defaults to false
 
 .. _LimonAPI-getPlayerAttachedModel:
 
