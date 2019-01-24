@@ -21,9 +21,10 @@ Main goal of this release was fighting. All of the listed functionality implemen
 Version 0.7
 ===========
 
-#. Material editor
-#. Particle emitters
+#. Material editor.
+#. Particle emitters.
 #. Shadow mapping improvements.
+
 
 Before 1.0
 ==========
@@ -34,8 +35,14 @@ Before 1.0
 #. Mixamo support. Done
 #. Directory listings should auto generate for assets, and it should be able to refresh. Partially done, no refresh.
 #. There is no stair support, there should be.
+#. Editor should support undo/redo.
+#. Auto Align objects.
 
 Possible Additions
 ==================
 
 #. Custom shaders
+#. Vulkan backend
+#. Python scripting support
+#. Android support
+#. Emscripten/webassembly support
