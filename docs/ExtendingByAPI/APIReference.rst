@@ -201,7 +201,7 @@ Parameters:
 #. uint32_t fontSize: Font size
 #. const std::string &name: Name of the GameObject GUIText
 #. const std::string &text: Text to render
-#. const glm::vec3 &color: Text color
+#. const glm::vec3 &color: Text color. Values should be between 0 and 256.
 #. const glm::vec2 &position: Position of the Text. This values will be between 0 and 1. 0,0 means left bottom and 1,1 means right top
 #. float rotation: Rotation of the text. 0 is upwards. it is in rads and clockwise.
 
