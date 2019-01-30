@@ -513,7 +513,7 @@ Parameters:
 
 none
 
-.. _LimonAPI-setPlayerAttachedModelOffsetWithAI:
+.. _LimonAPI-setPlayerAttachedModelOffset:
 
 bool setPlayerAttachedModelOffset(LimonAPI::Vec4 newOffset)
 ====================================================================================
