@@ -59,6 +59,8 @@ Limon Engine API Reference
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`applyForce(uint32_t modelID, const LimonAPI::Vec4 &forcePosition, const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForce>`                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`applyForceToPlayer(LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath)<LimonAPI-attachSoundToObjectAndPlay>`                                                                                       |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`detachSoundFromObject(uint32_t objectWorldID)<LimonAPI-detachSoundFromObject>`                                                                                                                               |
@@ -449,6 +451,17 @@ Parameters:
 
 #. uint32_t modelID: handle id of the model to connect.
 #. const LimonAPI::Vec4 &forcePosition: World position for the force vector to originate. Raycast results can be used for this method. Only 3 components of this method will be used, w component will be ignored.
+#. const LimonAPI::Vec4 &forceAmount: Force vector. Only 3 components of this method will be used, w component will be ignored.
+
+.. _LimonAPI-applyForceToPlayer:
+
+bool applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)
+====================================================================================================
+
+Applies force to player using physics engine. Returns false if physical player is not used in this world(map).
+
+Parameters:
+
 #. const LimonAPI::Vec4 &forceAmount: Force vector. Only 3 components of this method will be used, w component will be ignored.
 
 .. _LimonAPI-attachSoundToObjectAndPlay:
