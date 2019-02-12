@@ -54,7 +54,7 @@ After cmake is done creating the build files, you can build and copy the sample 
 Running
 =======
 
-Limon engine takes single parameter, and that is the path to first map file to load. If no parameter is passed, it defaults to "./Data/Maps/World001.xml", which is a test map that has samples for capabilities of the engine.
+Limon engine takes single parameter, and that is the path to first map file to load. If no parameter is passed, Limon first tries to get the file name from release settings file, at ./Data/Release.xml, if file not found, or no world name specified, it defaults to "./Data/Maps/World001.xml", which is a test map that has samples for capabilities of the engine.
 
 The Custom trigger are automatically loaded from the same directory of the engine binary, with name  *libcustomTriggers*, the extension of that file depends on the platform(dll, so, dynlib).
 
