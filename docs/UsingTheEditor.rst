@@ -370,12 +370,15 @@ Animation Sequencer Details
 .. figure:: _static/media/images/editor-animation_sequencer.png
     :align: center
 
-Limon Engine can be used to animate objects using all three transformations. You can select the object you want to animate, and use the custom animation section. If you choose to create a new custom animation, the animation sequencer will be shown.
+Limon Engine can be used to animate objects or GUI elements using all three transformations. You can select the object you want to animate, and use the custom animation section. If you choose to create a new custom animation, the animation sequencer will be shown.
 
-The sequencer starts with animation name. You can't save/finish an animation without a name.
+The sequencer starts with animation name. You can't save/finish an animation without a name. If animated object is a GUI element, translate z component will be used by alpha channel, enabling animating alpha changes.
 
 .. warning::
     If an animation with the same name exists, the old one will be overriden.
+
+.. warning::
+    Animations for GUI elements and 3D objects can be used interchangeably, but the results might not be as predicted.
 
 Second line is how many frames long the animation will be. After that the main sequencer part comes. The "-" symbol is used to hide/show the sequences. "+" sign is used to add a section to the end of the animation. Each section has "+" and "-" symbols next to them. "-" removes the section, and "+" add a section just after the selected one, with the same length.
 
