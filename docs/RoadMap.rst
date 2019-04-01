@@ -37,6 +37,11 @@ Before 1.0
 #. There is no stair support, there should be.
 #. Editor should support undo/redo.
 #. Auto Align objects.
+#. Spot lights should be added.
+#. Debug draw needs improvements, like duration.
+#. Opacity should be better handled.
+#. Object culling should be implemented.
+#. File logger should be implemented.
 
 Possible Additions
 ==================
