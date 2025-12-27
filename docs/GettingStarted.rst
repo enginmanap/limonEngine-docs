@@ -40,16 +40,16 @@ Limon Engine uses cmake as build system, if all the libraries are installed and 
 
 In the cloned directory, call these commands:
 ::
-    mkdir build
-    cd build
-    cmake ../
-    cd ..
+mkdir build
+cd build
+cmake ../
+cd ..
 
 After cmake is done creating the build files, you can build and copy the sample data using these commands:
 ::
-    cd build
-    make
-    cp -a ../Data .
+cd build
+make
+cp -a ../Data .
 
 Running
 =======

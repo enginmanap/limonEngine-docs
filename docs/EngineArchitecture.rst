@@ -53,7 +53,7 @@ Physics
 
 For physics Limon uses Bullet Physics. The only *PhysicalObject* children are registered to physics subsystem. At version 0.6, there are *Model* and *ModelGroup* classes that use Physics. The physical representation of Models are auto generated using the following logic:
 
-#. For each mesh, if another mesh with same name prefixed with "UCX_" that mesh will be used.
+#. For each mesh, if another mesh with same name prefixed with \"UCX_\" that mesh will be used.
 #. Else if object is not animated, and static, use the full mesh data to generate rigid body. This is because static objects might be concave.
 #. Else if object is not animated, and dynamic, auto generate a hull that encapsulates whole object. Dynamic objects are forced to be convex.
 #. Else if object is animated, for each bone, auto generate a hull for the vertices that are attached to that bone. Each of those hulls animate with the object itself
