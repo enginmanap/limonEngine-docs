@@ -59,4 +59,3 @@ sphinx:
 python:
   install:
     - requirements: docs/requirements.txt
-    pip install sphinx-rtd-theme
