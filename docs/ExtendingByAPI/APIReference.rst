@@ -33,9 +33,9 @@ Limon Engine API Reference
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`setObjectTemporary(uint32_t objectID, bool temporary)<LimonAPI-setObjectTemporary>`                                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|std::vector<ParameterRequest>  |:ref:`getObjectTransformation(uint32_t objectID)<LimonAPI-getObjectTransformation>`                                                                                                                                |
+|std::vector<LimonTypes::GenericParameter>  |:ref:`getObjectTransformation(uint32_t objectID)<LimonAPI-getObjectTransformation>`                                                                                                                                |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|std::vector<ParameterRequest>  |:ref:`getObjectTransformationMatrix(uint32_t objectID)<LimonAPI-getObjectTransformationMatrix>`                                                                                                                    |
+|std::vector<LimonTypes::GenericParameter>  |:ref:`getObjectTransformationMatrix(uint32_t objectID)<LimonAPI-getObjectTransformationMatrix>`                                                                                                                    |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`setObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)<LimonAPI-setObjectTranslate>`                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -49,7 +49,7 @@ Limon Engine API Reference
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`addObjectOrientation(uint32_t objectID, const LimonAPI::Vec4& orientation)<LimonAPI-addObjectOrientation>`                                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|bool                           |:ref:`removeObject(uint32_t objectID)<LimonAPI-removeObject>`                                                                                                                                                      |
+|bool                           |:ref:`removeObject(uint32_t objectID, const bool &removeChildren = true)<LimonAPI-removeObject>`                                                                                                                                                      |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                 |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -59,25 +59,25 @@ Limon Engine API Reference
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`applyForce(uint32_t modelID, const LimonAPI::Vec4 &forcePosition, const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForce>`                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|bool                           |:ref:`applyForceToPlayer(LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                |
+|bool                           |:ref:`applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath)<LimonAPI-attachSoundToObjectAndPlay>`                                                                                       |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`detachSoundFromObject(uint32_t objectWorldID)<LimonAPI-detachSoundFromObject>`                                                                                                                               |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|uint32_t                       |:ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative, bool looped)<LimonAPI-playSound>`                                                                                  |
+|uint32_t                       |:ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false)<LimonAPI-playSound>`                                                                                  |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |uint32_t                       |:ref:`getPlayerAttachedModel()<LimonAPI-getPlayerAttachedModel>`                                                                                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |LimonAPI::Vec4                 |:ref:`getPlayerAttachedModelOffset()<LimonAPI-getPlayerAttachedModelOffset>`                                                                                                                                       |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|bool                           |:ref:`setPlayerAttachedModelOffset(LimonAPI::Vec4 &newOffset)<LimonAPI-setPlayerAttachedModelOffset>`                                                                                                              |
+|bool                           |:ref:`setPlayerAttachedModelOffset(LimonTypes::Vec4 newOffset)<LimonAPI-setPlayerAttachedModelOffset>`                                                                                                              |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|void                           |:ref:`interactWithPlayer(std::vector\<ParameterRequest\>& input)<LimonAPI-interactWithPlayer>`                                                                                                                     |
+|void                           |:ref:`interactWithPlayer(std::vector\<LimonTypes::GenericParameter\>& input)<LimonAPI-interactWithPlayer>`                                                                                                                     |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |void                           |:ref:`killPlayer()<LimonAPI-killPlayer>`                                                                                                                                                                           |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|bool                           |:ref:`interactWithAI(uint32_t AIID, std::vector\<LimonAPI::ParameterRequest\> &interactionInformation)<LimonAPI-interactWithAI>`                                                                                   |
+|bool                           |:ref:`interactWithAI(uint32_t AIID, std::vector\<LimonTypes::GenericParameter\> &interactionInformation)<LimonAPI-interactWithAI>`                                                                                   |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                           |:ref:`addLightTranslate(uint32_t lightID, const LimonAPI::Vec4& translate)<LimonAPI-addLightTranslate>`                                                                                                            |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -93,14 +93,62 @@ Limon Engine API Reference
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |void                           |:ref:`quitGame()<LimonAPI-quitGame>`                                                                                                                                                                               |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|std::vector<ParameterRequest>  |:ref:`getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                           |
+|std::vector<LimonTypes::GenericParameter>  |:ref:`getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                           |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|LimonAPI::ParameterRequest&    |:ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                          |
+|LimonTypes::GenericParameter&  |:ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                          |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|std::vector<ParameterRequest>  |:ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                                                 |
+|std::vector<LimonTypes::GenericParameter>  |:ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                                                 |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|void                           |:ref:`addTimedEvent(long waitTime, std::function\<void(const std::vector\<LimonAPI::ParameterRequest\>&)\> methodToCall, std::vector\<LimonAPI::ParameterRequest\> parameters)<LimonAPI-addTimedEvent>`            |
+|long                           |:ref:`addTimedEvent(uint64_t waitTime, bool useWallTime, std::function\<void(const std::vector\<LimonTypes::GenericParameter\>&)\> methodToCall, std::vector\<LimonTypes::GenericParameter\> parameters)<LimonAPI-addTimedEvent>`            |
 +-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|const OptionsUtil::Options *    |:ref:`getOptions()<LimonAPI-getOptions>`                                                                                                                                                                          |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`generateEditorElementsForParameters(std::vector<LimonTypes::GenericParameter> &runParameters, uint32_t index)<LimonAPI-generateEditorElementsForParameters>`                                                                 |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|void                           |:ref:`simulateInput(const InputStates& input)<LimonAPI-simulateInput>`                                                                                                                                            |
++-------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                           |:ref:`changeRenderPipeline(const std::string& pipelineFileName)<LimonAPI-changeRenderPipeline>`                                                                                                                      |
+
+.. _LimonAPI-getOptions:
+
+const OptionsUtil::Options *getOptions()
+========================================
+
+Returns a pointer to the current options.
+
+.. _LimonAPI-generateEditorElementsForParameters:
+
+bool generateEditorElementsForParameters(std::vector<LimonTypes::GenericParameter> &runParameters, uint32_t index)
+================================================================================================================
+
+Generates editor UI elements for the given parameters.
+
+Parameters:
+1. std::vector<LimonTypes::GenericParameter> &runParameters: The parameters to generate UI for
+2. uint32_t index: The index of the parameter to generate UI for
+
+.. _LimonAPI-simulateInput:
+
+void simulateInput(const InputStates& input)
+===========================================
+
+Simulates input events for testing or automation purposes.
+
+Parameters:
+1. const InputStates& input: The input state to simulate
+
+.. _LimonAPI-changeRenderPipeline:
+
+bool changeRenderPipeline(const std::string& pipelineFileName)
+============================================================
+
+Changes the current rendering pipeline to the one specified by the given file.
+
+Parameters:
+1. const std::string& pipelineFileName: The filename of the pipeline configuration to load
+
+Returns:
+   bool: True if the pipeline was changed successfully, false otherwise
 
 .. _LimonAPI-animateModel:
 
