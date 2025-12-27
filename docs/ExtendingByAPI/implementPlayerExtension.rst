@@ -12,7 +12,7 @@ ______________________________
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 |                                                   |:ref:`PlayerExtensionInterface(LimonAPI \*limonAPI)<PlayerExtensionInterface-PlayerExtensionInterface>`             |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| void                                              |:ref:`processInput(const InputStates &inputState, long time)<PlayerExtensionInterface-processInput>`                   |
+| void                                              |:ref:`processInput(const InputStates &inputState, long time)<PlayerExtensionInterface-processInput>`                |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 | bool                                              |:ref:`interact(std::vector\<LimonAPI::ParameterRequest\> &parameters)<PlayerExtensionInterface-interact>`           |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
@@ -22,7 +22,7 @@ ______________________________
 .. _PlayerExtensionInterface-PlayerExtensionInterface:
 
 PlayerExtensionInterface(LimonAPI \*limonAPI)
-================================================
+=============================================
 The constructor of the interface.
 
 .. note::
@@ -31,7 +31,7 @@ The constructor of the interface.
 .. _PlayerExtensionInterface-processInput:
 
 void processInput(const InputStates &inputState, long time)
-=======================================================
+===========================================================
 
 Called each frame with updated input information, and time of frame in milliseconds.
 
@@ -45,7 +45,7 @@ Called by other entities to interact with player.
 .. _PlayerExtensionInterface-getName:
 
 std::string getName() const
-===============
+===========================
 
 Returns the name of the Player Extension.
 

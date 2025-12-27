@@ -39,7 +39,6 @@ _________
    :maxdepth: 1
    :glob:
 
-   index
    GettingStarted
    UsingTheEditor
    ExtendingByAPI/index
