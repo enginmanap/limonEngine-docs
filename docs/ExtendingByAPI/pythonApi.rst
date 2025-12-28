@@ -1,7 +1,7 @@
 Limon Engine Python API Documentation
 =====================================
 
-This document provides a comprehensive guide to using the Limon Engine's Python API, generated directly from the pybind11 bindings in ``ScriptManager.cpp``.
+This page is the API reference for Python users.
 
 .. contents:: Table of Contents
    :depth: 3
