@@ -10,3 +10,4 @@ Extending Engine Capabilities
    implementPlayerExtension
    implementAIActor
    APIReference
+   pythonApi
