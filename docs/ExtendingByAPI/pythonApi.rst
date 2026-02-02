@@ -150,52 +150,314 @@ remove_gui_element
 Object Manipulation
 ~~~~~~~~~~~~~~~~~~~
 
+set_object_temporary
+^^^^^^^^^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Set if an object is temporary
-    set_object_temporary(object_id: int, temporary: bool)
+    def set_object_temporary(object_id: int, temporary: bool) -> None:
+        """
+        Set if an object is temporary (will be removed when world changes).
 
-    # Attach one object to another
-    attach_object_to_object(object_id: int, object_to_attach_to_id: int)
+        Args:
+            object_id: ID of the object
+            temporary: True if object should be temporary
+        """
 
-    # Remove a trigger object
-    remove_trigger_object(trigger_object_id: int)
+attach_object_to_object
+^^^^^^^^^^^^^^^^^^^^^^^
 
-    # Disable physics for an object
-    disconnect_object_from_physics(object_id: int)
+.. code-block:: python
 
-    # Re-enable physics for an object
-    reconnect_object_to_physics(object_id: int)
+    def attach_object_to_object(object_id: int, object_to_attach_to_id: int) -> None:
+        """
+        Attach one object to another.
 
-    # Apply force to an object
-    apply_force(object_id: int, force_position: Vec4, force_amount: Vec4) -> bool
+        Args:
+            object_id: ID of the object to attach
+            object_to_attach_to_id: ID of the object to attach to
+        """
 
-    # Apply force to the player
-    apply_force_to_player(force_amount: Vec4) -> bool
+remove_trigger_object
+^^^^^^^^^^^^^^^^^^^^^
 
-    # Add to an object's position
-    add_object_translate(object_id: int, translation: Vec4) -> bool
+.. code-block:: python
 
-    # Add to an object's scale
-    add_object_scale(object_id: int, scale: Vec4) -> bool
+    def remove_trigger_object(trigger_object_id: int) -> None:
+        """
+        Remove a trigger object.
 
-    # Add to an object's orientation (quaternion)
-    add_object_orientation(object_id: int, orientation: Vec4) -> bool
+        Args:
+            trigger_object_id: ID of the trigger object
+        """
 
-    # Get an object's transformation matrix
-    get_object_transformation_matrix(object_id: int) -> list
+disconnect_object_from_physics
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # Get children of a model
-    get_model_children(model_id: int) -> list
+.. code-block:: python
 
-    # Set an animation for a model
-    set_model_animation(model_id: int, animation_name: str, looped: bool = True)
+    def disconnect_object_from_physics(object_id: int) -> None:
+        """
+        Disable physics for an object.
 
-    # Set an animation for a model with blending
-    set_model_animation_with_blend(model_id: int, animation_name: str, looped: bool = True, blend_time: int = 100)
+        Args:
+            object_id: ID of the object
+        """
 
-    # Set the animation speed for a model
-    set_model_animation_speed(model_id: int, speed: float)
+reconnect_object_to_physics
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def reconnect_object_to_physics(object_id: int) -> None:
+        """
+        Re-enable physics for an object.
+
+        Args:
+            object_id: ID of the object
+        """
+
+apply_force
+^^^^^^^^^^^
+
+.. code-block:: python
+
+    def apply_force(object_id: int, force_position: Vec4, force_amount: Vec4) -> bool:
+        """
+        Apply force to an object.
+
+        Args:
+            object_id: ID of the object
+            force_position: Position where force is applied
+            force_amount: Force vector and magnitude
+
+        Returns:
+            bool: True if force was applied successfully
+        """
+
+apply_force_to_player
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def apply_force_to_player(force_amount: Vec4) -> bool:
+        """
+        Apply force to the player.
+
+        Args:
+            force_amount: Force vector and magnitude
+
+        Returns:
+            bool: True if force was applied successfully
+        """
+
+add_object_translate
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_object_translate(object_id: int, translation: Vec4) -> bool:
+        """
+        Add to an object's position.
+
+        Args:
+            object_id: ID of the object
+            translation: Translation vector to add
+
+        Returns:
+            bool: True if translation was applied successfully
+        """
+
+add_object_scale
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_object_scale(object_id: int, scale: Vec4) -> bool:
+        """
+        Add to an object's scale.
+
+        Args:
+            object_id: ID of the object
+            scale: Scale vector to add
+
+        Returns:
+            bool: True if scale was applied successfully
+        """
+
+add_object_orientation
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_object_orientation(object_id: int, orientation: Vec4) -> bool:
+        """
+        Add to an object's orientation (quaternion).
+
+        Args:
+            object_id: ID of the object
+            orientation: Quaternion orientation to add
+
+        Returns:
+            bool: True if orientation was applied successfully
+        """
+
+get_object_transformation_matrix
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_transformation_matrix(object_id: int) -> list:
+        """
+        Get an object's transformation matrix.
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            list: List of GenericParameter objects containing the 4x4 transformation matrix
+        """
+
+get_model_children
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_model_children(model_id: int) -> list:
+        """
+        Get children of a model.
+
+        Args:
+            model_id: ID of the model
+
+        Returns:
+            list: List of child object IDs
+        """
+
+set_model_animation
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_model_animation(model_id: int, animation_name: str, looped: bool = True) -> None:
+        """
+        Set an animation for a model.
+
+        Args:
+            model_id: ID of the model
+            animation_name: Name of the animation to play
+            looped: Whether the animation should loop
+        """
+
+set_model_animation_with_blend
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_model_animation_with_blend(model_id: int, animation_name: str, looped: bool = True, blend_time: int = 100) -> None:
+        """
+        Set an animation for a model with blending.
+
+        Args:
+            model_id: ID of the model
+            animation_name: Name of the animation to play
+            looped: Whether the animation should loop
+            blend_time: Time in milliseconds for blending animations
+        """
+
+set_model_animation_speed
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_model_animation_speed(model_id: int, speed: float) -> None:
+        """
+        Set the animation speed for a model.
+
+        Args:
+            model_id: ID of the model
+            speed: Animation speed multiplier (1.0 = normal speed)
+        """
+
+get_model_animation_name
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_model_animation_name(model_id: int) -> str:
+        """
+        Get the name of the current animation for a model.
+
+        Args:
+            model_id: ID of the model
+
+        Returns:
+            str: Name of the current animation
+        """
+
+get_model_animation_finished
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_model_animation_finished(model_id: int) -> bool:
+        """
+        Check if model's animation has finished.
+
+        Args:
+            model_id: ID of the model
+
+        Returns:
+            bool: True if animation has finished
+        """
+
+animate_model
+^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def animate_model(model_id: int, animation_id: int, looped: bool = False, sound_path: str = None) -> None:
+        """
+        Animate a model with specific animation ID.
+
+        Args:
+            model_id: ID of the model
+            animation_id: ID of the animation to play
+            looped: Whether the animation should loop
+            sound_path: Optional path to sound file to play with animation
+        """
+
+    # Add a new object to the scene
+    add_object(model_file_path: str, model_weight: float = 1.0, physical: bool = True,
+               position: tuple = (0, 0, 0), scale: tuple = (1, 1, 1),
+               orientation: tuple = (1.0, 0.0, 0.0, 0.0)) -> int
+
+    # Remove an object from the scene
+    remove_object(object_id: int, remove_children: bool = True)
+
+    # Get player position and orientation
+    get_player_position() -> tuple  # Returns (position, center, up, right) as dictionaries
+
+    # Get the ID of the model attached to the player
+    get_player_attached_model() -> int
+
+    # Get the offset of the model attached to the player
+    get_player_attached_model_offset() -> tuple
+
+    # Set the offset of the model attached to the player
+    set_player_attached_model_offset(new_offset: tuple)
+
+    # Load and switch to a new world
+    load_and_switch_world(world_file_name: str)
+
+    # Return to a previously loaded world
+    return_to_world(world_file_name: str)
+
+    # Get result of a trigger
+    get_result_of_trigger(trigger_object_id: int, trigger_code_id: int) -> list
+
+    # Get engine options
+    get_options() -> any
 
 Sound
 ~~~~~
@@ -203,13 +465,13 @@ Sound
 .. code-block:: python
 
     # Attach and play a sound on an object
-    attach_sound_to_object(object_id: int, sound_path: str)
+    attach_sound_to_object(object_id: int, sound_path: str) -> None
 
     # Detach sound from an object
-    detach_sound_from_object(object_id: int)
+    detach_sound_from_object(object_id: int) -> None
 
     # Play a sound at a position
-    play_sound(sound_path: str, position: tuple, position_relative: bool = False, looped: bool = False)
+    play_sound(sound_path: str, position: tuple, position_relative: bool = False, looped: bool = False) -> None
 
 AI Interaction
 ~~~~~~~~~~~~~~
@@ -217,7 +479,7 @@ AI Interaction
 .. code-block:: python
 
     # Interact with an AI
-    interact_with_ai(ai_id: int, interaction_information: dict)
+    interact_with_ai(ai_id: int, interaction_information: dict) -> None
 
 Particle Systems
 ~~~~~~~~~~~~~~~~
@@ -225,43 +487,73 @@ Particle Systems
 .. code-block:: python
 
     # Disable a particle emitter
-    disable_particle_emitter(emitter_id: int)
+    disable_particle_emitter(emitter_id: int) -> None
 
     # Enable a particle emitter
-    enable_particle_emitter(emitter_id: int)
+    enable_particle_emitter(emitter_id: int) -> None
 
     # Add a new particle emitter
     add_particle_emitter(
-        name: str, 
+        name: str,
         texture_file: str,
-        start_position: tuple, 
-        max_start_distances: tuple, 
-        size: float, 
+        start_position: tuple,
+        max_start_distances: tuple,
+        size: float,
         count: int,
-        life_time: float, 
+        life_time: float,
         particles_per_ms: float,
         continuously_emit: bool
-    ) -> int
+    ) -> int  # Returns emitter ID
 
     # Remove a particle emitter
-    remove_particle_emitter(emitter_id: int)
+    remove_particle_emitter(emitter_id: int) -> None
 
     # Set particle speed for an emitter
-    set_emitter_particle_speed(emitter_id: int, speed_multiplier: float, speed_offset: float)
+    set_emitter_particle_speed(emitter_id: int, speed_multiplier: float, speed_offset: float) -> None
 
     # Set particle gravity for an emitter
-    set_emitter_particle_gravity(emitter_id: int, gravity: float)
+    set_emitter_particle_gravity(emitter_id: int, gravity: float) -> None
 
 Ray Casting
 ~~~~~~~~~~~
 
+ray_cast_to_cursor
+^^^^^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Cast a ray from camera to cursor position
-    ray_cast_to_cursor()
+    def ray_cast_to_cursor() -> list:
+        """
+        Cast a ray from camera to cursor position.
 
-    # Cast a ray from start point in direction
-    ray_cast(start: tuple, direction: tuple)
+        Returns:
+            list: List of GenericParameter objects containing hit details such as:
+                  - hit coordinates (VEC4)
+                  - hit object ID (LONG)
+                  - hit normal vector (VEC4)
+                  - distance to hit (DOUBLE)
+        """
+
+ray_cast
+^^^^^^^^
+
+.. code-block:: python
+
+    def ray_cast(start: tuple, direction: tuple) -> list:
+        """
+        Cast a ray from start point in direction.
+
+        Args:
+            start: Starting position as (x, y, z, w)
+            direction: Direction vector as (x, y, z, w)
+
+        Returns:
+            list: List of GenericParameter objects containing hit details such as:
+                  - hit coordinates (VEC4)
+                  - hit object ID (LONG)
+                  - hit normal vector (VEC4)
+                  - distance to hit (DOUBLE)
+        """
 
 Lighting
 ~~~~~~~~
@@ -269,10 +561,10 @@ Lighting
 .. code-block:: python
 
     # Translate a light
-    add_light_translate(light_id: int, translation: tuple)
+    add_light_translate(light_id: int, translation: tuple) -> None
 
     # Set a light's color
-    set_light_color(light_id: int, color: tuple)
+    set_light_color(light_id: int, color: tuple) -> None
 
 World Management
 ~~~~~~~~~~~~~~~~
@@ -280,16 +572,16 @@ World Management
 .. code-block:: python
 
     # Load a new world and remove the current one
-    load_and_remove_world(world_file_name: str)
+    load_and_remove_world(world_file_name: str) -> None
 
     # Return to the previously loaded world
-    return_to_previous_world()
+    return_to_previous_world() -> None
 
     # Quit the game
-    quit_game()
+    quit_game() -> None
 
     # Change the render pipeline
-    change_render_pipeline(pipeline_file_name: str)
+    change_render_pipeline(pipeline_file_name: str) -> None
 
 Timed Events
 ~~~~~~~~~~~~
@@ -299,23 +591,43 @@ add_timed_event
 
 .. code-block:: python
 
-    def add_timed_event(wait_time: int, use_wall_time: bool, callback: callable, 
+    def add_timed_event(wait_time: int, use_wall_time: bool, callback: callable,
                       parameters: list = []) -> int:
         """
         Schedule a function to be called after a specified delay.
-        
+
         Args:
             wait_time: Time to wait before triggering the event, in milliseconds
             use_wall_time: If True, uses real-world time. If False, uses in-game time
                          (affected by game speed/pause state)
             callback: Python function to call when the timer expires.
-                     The function should accept a single parameter which will be the 
+                     The function should accept a single parameter which will be the
                      list of parameters provided.
             parameters: Optional list of GenericParameter objects to pass to the callback.
                        Each parameter's value will be passed to the callback function.
-        
+
         Returns:
             int: ID of the created timer event, which can be used to cancel it.
+        """
+
+cancel_timed_event
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def cancel_timed_event(timer_id: int) -> bool:
+        """
+        Cancel a previously scheduled timed event.
+
+        Args:
+            timer_id: ID of the timer event to cancel (returned by add_timed_event)
+
+        Returns:
+            bool: True if the event was successfully cancelled, False if not found
+
+        Note:
+            This method exists in the C++ API but is not yet bound to Python.
+            It needs to be added to the Python bindings in ScriptManager.cpp.
         """
 
 Player Related
@@ -324,7 +636,7 @@ Player Related
 .. code-block:: python
 
     # Kill the player
-    kill_player()
+    kill_player() -> None
 
 Variable Management
 ~~~~~~~~~~~~~~~~~~
@@ -334,11 +646,34 @@ Variable Management
     # Get a script variable by name
     get_variable(variable_name: str) -> any
 
-    # Set a script variable
-    set_variable(variable_name: str, value: any)
-
 Input System
 ------------
+
+Input Methods
+~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    # Simulate input events
+    simulate_input(input_states: InputStates) -> None
+
+    # Get mouse change information
+    changed, x_pos, y_pos, x_change, y_change = input_states.get_mouse_change()  # Returns tuple
+
+    # Set mouse change
+    input_states.set_mouse_change(x_pos: float, y_pos: float, x_change: float, y_change: float) -> None
+
+    # Get text input
+    text = input_states.get_text() -> str
+
+    # Set text input
+    input_states.set_text(text: str) -> None
+
+    # Reset all input events
+    input_states.reset_all_events() -> None
+
+    # Get input events for a specific input
+    events = input_states.get_input_events(input_code: int) -> bool
 
 Input States
 ~~~~~~~~~~~~
@@ -353,12 +688,25 @@ Input States
         MOUSE_BUTTON_RIGHT = 4
         MOUSE_WHEEL_UP = 5
         MOUSE_WHEEL_DOWN = 6
-        KEY_ESCAPE = 7
-        KEY_F1 = 8
-        # ... (other key codes)
+        MOVE_FORWARD = 7
+        MOVE_BACKWARD = 8
+        MOVE_LEFT = 9
+        MOVE_RIGHT = 10
+        JUMP = 11
+        RUN = 12
+        DEBUG = 13
+        EDITOR = 14
+        KEY_SHIFT = 15
+        KEY_CTRL = 16
+        KEY_ALT = 17
+        KEY_SUPER = 18
+        TEXT_INPUT = 19
+        NUMBER_1 = 20
+        NUMBER_2 = 21
+        F4 = 22
 
     # Example usage:
-    if input_states.get_input_status(limon.Inputs.KEY_W):
+    if input_states.get_input_status(limon.Inputs.MOVE_FORWARD):
         # Move forward
         pass
 
@@ -372,23 +720,23 @@ Base class for custom camera attachments.
 .. code-block:: python
 
     class MyCamera(limon.CameraAttachment):
-        def __init__(self):
-            super().__init__()
-            
+        def __init__(self, limon_api):
+            super().__init__(limon_api)
+
         def is_dirty(self) -> bool:
             """Return True if the camera parameters have changed."""
             return True
-            
+
         def clear_dirty(self) -> None:
             """Mark the camera parameters as clean."""
             pass
-            
+
         def get_camera_variables(self) -> tuple:
             """
             Get camera position and orientation.
-            
+
             Returns:
-                tuple: (position, center, up, right) vectors
+                tuple: (position, center, up, right) vectors as dictionaries with x,y,z keys
             """
             return position, center, up, right
 
@@ -403,11 +751,11 @@ Base class for creating custom triggers.
         def __init__(self, limon_api):
             super().__init__(limon_api)
             self._limon_api = limon_api
-            
+
         def get_parameters(self) -> list:
             """
             Return a list of parameters this trigger requires.
-            
+
             Returns:
                 list: List of GenericParameter objects
             """
@@ -416,14 +764,14 @@ Base class for creating custom triggers.
             param.description = "Message to display"
             param.value = "Hello from Python!"
             return [param]
-            
+
         def run(self, parameters: list) -> bool:
             """
             Called when the trigger is activated.
-            
+
             Args:
                 parameters: List of GenericParameter objects with user-provided values
-                
+
             Returns:
                 bool: True if successful, False otherwise
             """
@@ -431,20 +779,20 @@ Base class for creating custom triggers.
                 message = parameters[0].value
                 print(f"Trigger activated: {message}")
             return True
-            
+
         def get_results(self) -> list:
             """
             Return any results from the trigger execution.
-            
+
             Returns:
                 list: List of GenericParameter objects with results
             """
             return []
-            
+
         def get_name(self) -> str:
             """
             Get the name of this trigger.
-            
+
             Returns:
                 str: The trigger's name
             """
@@ -461,11 +809,11 @@ Base class for creating player extensions.
         def __init__(self, limon_api):
             super().__init__(limon_api)
             self._limon_api = limon_api
-            
+
         def process_input(self, input_states, player_info, time):
             """
             Process input for the player.
-            
+
             Args:
                 input_states: InputStates object containing current input state
                 player_info: PlayerInformation object with player state
@@ -473,33 +821,155 @@ Base class for creating player extensions.
             """
             if input_states.get_input_status(limon.Inputs.KEY_SPACE):
                 print("Jump!")
-                
+
         def interact(self, interaction_data):
             """
             Handle interaction with the player.
-            
+
             Args:
                 interaction_data: List of GenericParameter objects with interaction data
             """
             print(f"Player interaction: {interaction_data}")
-            
+
         def get_name(self) -> str:
             """
             Get the name of this extension.
-            
+
             Returns:
                 str: The extension's name
             """
             return "My Player Extension"
-            
+
         def get_custom_camera_attachment(self):
             """
             Get a custom camera attachment for this extension.
-            
+
             Returns:
                 CameraAttachment: A camera attachment, or None to use default
             """
             return None
+
+Actor Interface
+---------------
+
+Base class for creating AI actors.
+
+.. code-block:: python
+
+    class MyActor(limon.ActorInterface):
+        def __init__(self, limon_api):
+            super().__init__(limon_api)
+            self._limon_api = limon_api
+
+        def get_name(self) -> str:
+            """
+            Get the name of this actor.
+
+            Returns:
+                str: The actor's name
+            """
+            return "My Custom Actor"
+
+        def play(self, time: int, actor_information):
+            """
+            Called each frame to update the actor's behavior.
+
+            Args:
+                time: Current game time
+                actor_information: ActorInformation object with environment state
+            """
+            if actor_information.can_see_player_directly:
+                print("Player spotted!")
+                # React to player
+
+        def interaction(self, interaction_data):
+            """
+            Handle interaction with this actor.
+
+            Args:
+                interaction_data: List of GenericParameter objects with interaction data
+
+            Returns:
+                bool: True if interaction was successful
+            """
+            print(f"Actor interaction: {interaction_data}")
+            return True
+
+        def get_parameters(self):
+            """
+            Get the current parameters of this actor.
+
+            Returns:
+                list: List of GenericParameter objects
+            """
+            param = limon.GenericParameter()
+            param.request_type = limon.RequestParameterType.FREE_TEXT
+            param.description = "Actor behavior"
+            param.value = "friendly"
+            return [param]
+
+        def set_parameters(self, parameters):
+            """
+            Set the parameters of this actor.
+
+            Args:
+                parameters: List of GenericParameter objects to set
+            """
+            if parameters and parameters[0].is_set:
+                behavior = parameters[0].value
+                print(f"Setting actor behavior to: {behavior}")
+
+ActorInformation
+~~~~~~~~~~~~~~~~
+
+Contains information about the actor's environment and player state.
+
+.. code-block:: python
+
+    class ActorInformation:
+        # Player detection
+        can_see_player_directly: bool
+        is_player_left: bool
+        is_player_right: bool
+        is_player_up: bool
+        is_player_down: bool
+        is_player_front: bool
+        is_player_back: bool
+
+        # Player relationship
+        cosine_between_player: float
+        player_direction: tuple  # (x, y, z)
+        player_distance: float
+        cosine_between_player_for_side: float
+        player_dead: bool
+
+        # Pathfinding
+        route_to_request: list
+        maximum_route_distance: int
+        route_found: bool
+        route_ready: bool
+
+Utility Functions
+-----------------
+
+.. code-block:: python
+
+    # Create a new Vec4
+    vec = limon.create_vec4(x=1.0, y=2.0, z=3.0, w=4.0)
+
+    # Register custom trigger, extension and actor types
+    limon.register_trigger_type(name: str, factory_function)
+    limon.register_extension_type(name: str, factory_function)
+    limon.register_actor_type(name: str, factory_function)
+
+    # Get available trigger, extension and actor names
+    trigger_names = limon.get_trigger_names()
+    extension_names = limon.get_extension_names()
+    actor_names = limon.get_actor_names()
+
+    # Create player extension and actor dynamically
+    extension = limon.PlayerExtensionInterface.create_extension(name: str, limon_api)
+    actor = limon.ActorInterface.create_actor(name: str, id: int, limon_api)
 
 Best Practices
 --------------
