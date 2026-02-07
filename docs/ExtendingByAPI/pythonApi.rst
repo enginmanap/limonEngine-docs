@@ -10,15 +10,77 @@ This page is the API reference for Python users.
 Core Types
 ----------
 
-Enums
-~~~~~
-
-RequestParameterType
-^^^^^^^^^^^^^^^^^^^
+Vec3
+~~~~
+3D vector class with comprehensive mathematical operations.
 
 .. code-block:: python
 
-    class RequestParameterType:
+    # Create Vec3 objects
+    vec = Vec3(x=1.0, y=2.0, z=3.0)
+    vec = Vec3()  # Defaults to (0, 0, 0)
+
+    # Access components
+    x, y, z = vec.x, vec.y, vec.z
+
+    # Mathematical operations
+    vec1 = Vec3(1, 2, 3)
+    vec2 = Vec3(4, 5, 6)
+
+    # Addition
+    result = vec1 + vec2  # Vec3(5, 7, 9)
+    vec1 += vec2          # In-place addition
+
+    # Subtraction
+    result = vec1 - vec2  # Vec3(-3, -3, -3)
+
+    # Scalar multiplication
+    result = vec1 * 2.0   # Vec3(2, 4, 6)
+
+    # Vector operations
+    dot_product = vec1.dot(vec2)
+    cross_product = vec1.cross(vec2)
+
+    # Length and normalization
+    length = vec1.length()
+    normalized = vec1.normalized()
+    vec1.normalize()  # In-place normalization
+
+    # Utility methods
+    tuple_vec = vec1.to_tuple()
+    list_vec = vec1.to_list()
+
+    # Class methods for common vectors
+    zero = Vec3.zero()      # (0, 0, 0)
+    one = Vec3.one()        # (1, 1, 1)
+    up = Vec3.up()          # (0, 1, 0)
+    right = Vec3.right()    # (1, 0, 0)
+    forward = Vec3.forward() # (0, 0, 1)
+
+    # Create from GenericParameter
+    vec3 = Vec3.from_generic_parameter(param)
+
+Enums
+~~~~~
+
+**ValueType** and **RequestParameterType** are now defined as Python enums in the ``generic_parameter`` module:
+
+.. code-block:: python
+
+    from generic_parameter import RequestParameterType, ValueType, GenericParameter
+
+    # ValueType enum
+    class ValueType(Enum):
+        STRING = 0
+        DOUBLE = 1
+        LONG = 2
+        LONG_ARRAY = 3
+        BOOLEAN = 4
+        VEC4 = 5
+        MAT4 = 6
+
+    # RequestParameterType enum
+    class RequestParameterType(Enum):
         MODEL = 0
         ANIMATION = 1
         SWITCH = 2
@@ -30,32 +92,47 @@ RequestParameterType
         TRANSFORM = 8
         MULTI_SELECT = 9
 
-ValueType
-^^^^^^^^^
-
-.. code-block:: python
-
-    class ValueType:
-        STRING = 0
-        DOUBLE = 1
-        LONG = 2
-        LONG_ARRAY = 3
-        BOOLEAN = 4
-        VEC4 = 5
-        MAT4 = 6
-
 GenericParameter
 ~~~~~~~~~~~~~~~~
 A flexible parameter type that can hold different types of values.
 
 .. code-block:: python
 
-    param = limon.GenericParameter()
-    param.request_type = limon.RequestParameterType.FREE_TEXT
-    param.description = "Parameter description"
-    param.value_type = limon.ValueType.STRING
-    param.value = "Default value"  # Automatically handles type conversion
-    param.is_set = True
+    from generic_parameter import RequestParameterType, ValueType, GenericParameter
+
+    # Create with enum values
+    param = GenericParameter(
+        request_type=RequestParameterType.FREE_TEXT,
+        description="Parameter description",
+        value_type=ValueType.STRING,
+        value="Default value",
+        is_set=True
+    )
+
+    # Create with integer values (backward compatibility)
+    param = GenericParameter(
+        request_type=3,  # RequestParameterType.FREE_TEXT
+        description="Parameter description",
+        value_type=0,    # ValueType.STRING
+        value="Default value",
+        is_set=True
+    )
+
+    # Type checking methods
+    if param.is_string():
+        text = param.get_string()
+    elif param.is_vec4():
+        vec4 = param.get_vec4()
+    elif param.is_double():
+        number = param.get_double()
+    elif param.is_boolean():
+        flag = param.get_boolean()
+    elif param.is_long():
+        integer = param.get_long()
+    elif param.is_mat4():
+        matrix = param.get_mat4()
+    elif param.is_long_array():
+        array = param.get_long_array()
 
 Vec4
 ~~~~
@@ -81,11 +158,11 @@ add_gui_text
 
 .. code-block:: python
 
-    def add_gui_text(font_file_path: str, font_size: int, name: str, text: str, 
+    def add_gui_text(font_file_path: str, font_size: int, name: str, text: str,
                     color: tuple = None, position: tuple = None, rotation: float = 0.0) -> int:
         """
         Add a text element to the GUI.
-        
+
         Args:
             font_file_path: Path to the font file
             font_size: Size of the font
@@ -94,7 +171,7 @@ add_gui_text
             color: RGB color as (r, g, b). Defaults to white (1.0, 1.0, 1.0).
             position: Position as (x, y). Defaults to (0.0, 0.0).
             rotation: Rotation in degrees. Defaults to 0.0.
-        
+
         Returns:
             int: ID of the created GUI element
         """
@@ -104,18 +181,18 @@ add_gui_image
 
 .. code-block:: python
 
-    def add_gui_image(image_file_path: str, name: str, position: tuple = None, 
+    def add_gui_image(image_file_path: str, name: str, position: tuple = None,
                      scale: tuple = None, rotation: float = 0.0) -> int:
         """
         Add an image to the GUI.
-        
+
         Args:
             image_file_path: Path to the image file
             name: Name of the image element
             position: Position as (x, y). Defaults to (0.0, 0.0).
             scale: Scale as (x, y). Defaults to (1.0, 1.0).
             rotation: Rotation in degrees. Defaults to 0.0.
-        
+
         Returns:
             int: ID of the created GUI element
         """
@@ -128,7 +205,7 @@ update_gui_text
     def update_gui_text(gui_text_id: int, new_text: str) -> None:
         """
         Update the text of a GUI text element.
-        
+
         Args:
             gui_text_id: ID of the GUI text element
             new_text: New text to display
@@ -142,7 +219,7 @@ remove_gui_element
     def remove_gui_element(gui_element_id: int) -> None:
         """
         Remove a GUI element.
-        
+
         Args:
             gui_element_id: ID of the GUI element to remove
         """
@@ -731,14 +808,19 @@ Base class for custom camera attachments.
             """Mark the camera parameters as clean."""
             pass
 
-        def get_camera_variables(self) -> tuple:
+        def get_camera_variables(self, position: Vec3, center: Vec3, up: Vec3, right: Vec3) -> None:
             """
             Get camera position and orientation.
 
-            Returns:
-                tuple: (position, center, up, right) vectors as dictionaries with x,y,z keys
+            The parameters are Vec3 objects that can be modified directly.
+            Changes to these objects will be reflected in the camera.
+
+            Args:
+                position: Camera position vector (modifiable)
+                center: Camera center/look-at point (modifiable)
+                up: Camera up vector (modifiable)
+                right: Camera right vector (modifiable)
             """
-            return position, center, up, right
 
 Trigger Interface
 -----------------
@@ -759,8 +841,9 @@ Base class for creating custom triggers.
             Returns:
                 list: List of GenericParameter objects
             """
-            param = limon.GenericParameter()
-            param.request_type = limon.RequestParameterType.FREE_TEXT
+            from generic_parameter import RequestParameterType, ValueType, GenericParameter
+            param = GenericParameter()
+            param.request_type = RequestParameterType.FREE_TEXT
             param.description = "Message to display"
             param.value = "Hello from Python!"
             return [param]
@@ -902,8 +985,9 @@ Base class for creating AI actors.
             Returns:
                 list: List of GenericParameter objects
             """
-            param = limon.GenericParameter()
-            param.request_type = limon.RequestParameterType.FREE_TEXT
+            from generic_parameter import RequestParameterType, ValueType, GenericParameter
+            param = GenericParameter()
+            param.request_type = RequestParameterType.FREE_TEXT
             param.description = "Actor behavior"
             param.value = "friendly"
             return [param]
@@ -922,32 +1006,90 @@ Base class for creating AI actors.
 ActorInformation
 ~~~~~~~~~~~~~~~~
 
-Contains information about the actor's environment and player state.
+Contains information about the actor's environment and player state, passed to the `play()` method of ActorInterface.
+
+**Player Visibility and Position Detection**
+
+``can_see_player_directly`` : bool
+    True if the actor has direct line of sight to the player.
+
+``is_player_left`` : bool
+    True if the player is to the left of the actor.
+
+``is_player_right`` : bool
+    True if the player is to the right of the actor.
+
+``is_player_up`` : bool
+    True if the player is above the actor.
+
+``is_player_down`` : bool
+    True if the player is below the actor.
+
+``is_player_front`` : bool
+    True if the player is in front of the actor.
+
+``is_player_back`` : bool
+    True if the player is behind the actor.
+
+**Player Relationship and Spatial Information**
+
+``cosine_between_player`` : float
+    Cosine of the angle between actor's forward vector and direction to player.
+    Range: -1.0 (opposite direction) to 1.0 (same direction).
+
+``player_direction`` : tuple
+    Vector from actor to player position as (x, y, z).
+
+``player_distance`` : float
+    Distance from actor to player.
+
+``cosine_between_player_for_side`` : float
+    Cosine of the angle for side detection (left/right).
+
+``player_dead`` : bool
+    True if the player is dead.
+
+**Pathfinding Information**
+
+``route_to_request`` : list
+    List of Vec3 waypoints for pathfinding route to requested destination.
+
+``maximum_route_distance`` : int
+    Maximum route distance in node count (default: 128).
+
+``route_found`` : bool
+    True if a valid route was found.
+
+``route_ready`` : bool
+    True if the route data is ready for use.
+
+**Usage Example**
 
 .. code-block:: python
 
-    class ActorInformation:
-        # Player detection
-        can_see_player_directly: bool
-        is_player_left: bool
-        is_player_right: bool
-        is_player_up: bool
-        is_player_down: bool
-        is_player_front: bool
-        is_player_back: bool
+    class MyActor(limon.ActorInterface):
+        def play(self, time: int, actor_information):
+            # Check if player is visible
+            if actor_information.can_see_player_directly:
+                print(f"Player spotted at distance {actor_information.player_distance}")
 
-        # Player relationship
-        cosine_between_player: float
-        player_direction: tuple  # (x, y, z)
-        player_distance: float
-        cosine_between_player_for_side: float
-        player_dead: bool
+                # Check player position relative to actor
+                if actor_information.is_player_front:
+                    print("Player is in front")
+                elif actor_information.is_player_back:
+                    print("Player is behind")
 
-        # Pathfinding
-        route_to_request: list
-        maximum_route_distance: int
-        route_found: bool
-        route_ready: bool
+                # Use cosine values for precise angle calculations
+                if abs(actor_information.cosine_between_player) > 0.9:
+                    print("Player is directly facing or opposite to actor")
+
+            # Check pathfinding status
+            if actor_information.route_ready and actor_information.route_found:
+                print(f"Route found with {len(actor_information.route_to_request)} waypoints")
+
+            # Check if player is dead
+            if actor_information.player_dead:
+                print("Player is dead")
 
 Utility Functions
 -----------------
