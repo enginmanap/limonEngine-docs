@@ -79,6 +79,10 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`interactWithAI(uint32_t AIID, std::vector<LimonTypes::GenericParameter> &interactionInformation)<LimonAPI-interactWithAI>`                                                                                            |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`addLight(uint32_t lightType, const LimonAPI::Vec4& position, const LimonAPI::Vec4& color)<LimonAPI-addLight>`                                                                                                         |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`removeLight(uint32_t lightID)<LimonAPI-removeLight>`                                                                                                                                                                  |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`addLightTranslate(uint32_t lightID, const LimonAPI::Vec4& translate)<LimonAPI-addLightTranslate>`                                                                                                                     |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setLightColor(uint32_t lightID, const LimonAPI::Vec4& color)<LimonAPI-setLightColor>`                                                                                                                                 |
@@ -99,7 +103,11 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                                                          |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``std::vector<LimonTypes::GenericParameter>`` | :ref:`rayCastFirstHit(const LimonTypes::Vec4& start, const LimonTypes::Vec4& direction)<LimonAPI-rayCastFirstHit>`                                                                                                          |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``long``                                      | :ref:`addTimedEvent(uint64_t waitTime, bool useWallTime, std::function<void(const std::vector<LimonTypes::GenericParameter>&)> methodToCall, std::vector<LimonTypes::GenericParameter> parameters)<LimonAPI-addTimedEvent>` |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`cancelTimedEvent(long handleId)<LimonAPI-cancelTimedEvent>`                                                                                                                                                           |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``const OptionsUtil::Options*``               | :ref:`getOptions()<LimonAPI-getOptions>`                                                                                                                                                                                    |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -108,6 +116,16 @@ Limon Engine API Reference
 |void                                           | :ref:`simulateInput(const InputStates& input)<LimonAPI-simulateInput>`                                                                                                                                                      |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                                           | :ref:`changeRenderPipeline(const std::string& pipelineFileName)<LimonAPI-changeRenderPipeline>`                                                                                                                             |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``ProfileScope``                              | :ref:`profileScope(const std::string& name)<LimonAPI-profileScope>`                                                                                                                                                         |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|void                                           | :ref:`log(Logger::Subsystem subsystem, Logger::Level level, const std::string& text)<LimonAPI-log>`                                                                                                                         |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|uint32_t                                       | :ref:`drawDebugLine(const LimonTypes::Vec4& from, const LimonTypes::Vec4& to, const LimonTypes::Vec4& fromColor, const LimonTypes::Vec4& toColor, bool requireCameraTransform)<LimonAPI-drawDebugLine>`                     |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                                           | :ref:`addToDebugLine(uint32_t bufferIndex, const LimonTypes::Vec4& from, const LimonTypes::Vec4& to, const LimonTypes::Vec4& fromColor, const LimonTypes::Vec4& toColor, bool requireCameraTransform)<LimonAPI-addToDebugLine>` |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|bool                                           | :ref:`clearDebugLines(uint32_t bufferIndex)<LimonAPI-clearDebugLines>`                                                                                                                                                      |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _LimonAPI-getOptions:
@@ -339,8 +357,8 @@ Parameters:
 
 .. _LimonAPI-getObjectTransformation:
 
-std::vector<LimonAPI::ParameterRequest> getObjectTransformation(uint32_t objectID)
-==================================================================================
+std::vector<LimonTypes::GenericParameter> getObjectTransformation(uint32_t objectID)
+=====================================================================================
 
 returns objects transformation information. If the object ID is valid, the returned vector will contain 3 vec4 parameters, translate, scale, orientation in respective order. For translate and scale, w component is not used. Orientation is in quaternion form. Returns empty vector if object not found.
 
@@ -350,8 +368,8 @@ Parameters:
 
 .. _LimonAPI-getObjectTransformationMatrix:
 
-std::vector<LimonAPI::ParameterRequest> getObjectTransformationMatrix(uint32_t objectID)
-========================================================================================
+std::vector<LimonTypes::GenericParameter> getObjectTransformationMatrix(uint32_t objectID)
+===========================================================================================
 
 returns objects transformation matrix. If object has custom matrix generation (Physical object can define offsets), transformation might not be enough to build the matrix. This method provides objects matrix as Limon Engine has it. Returns empty vector if object not found.
 
@@ -445,14 +463,15 @@ Parameters:
 
 .. _LimonAPI-removeObject:
 
-bool removeObject(uint32_t objectID)
-====================================
+bool removeObject(uint32_t objectID, const bool &removeChildren = true)
+=======================================================================
 
 Removes object indicated by the handle ID passed. Returns true for success, false for invalid Handle ID.
 
 Parameters:
 
-#. uint32_t objectID: handle id of the object to remove. Note the variable name is wrong.
+#. uint32_t objectID: handle id of the object to remove.
+#. const bool &removeChildren: if true, child objects are also removed. Defaults to true.
 
 
 .. _LimonAPI-removeTriggerObject:
@@ -588,14 +607,14 @@ Parameters:
 
 .. _LimonAPI-interactWithPlayer:
 
-void interactWithPlayer(std::vector<LimonAPI::ParameterRequest> &interactionInformation)
-========================================================================================
+void interactWithPlayer(std::vector<LimonTypes::GenericParameter> &interactionInformation)
+===========================================================================================
 
 Sends the interaction information to player Extension. If no extension is loaded, it will not have any effect.
 
 Parameters:
 
-#. std::vector<LimonAPI::ParameterRequest> &interactionInformation: Parameters to pass.
+#. std::vector<LimonTypes::GenericParameter> &interactionInformation: Parameters to pass.
 
 .. _LimonAPI-killPlayer:
 
@@ -610,15 +629,44 @@ none
 
 .. _LimonAPI-interactWithAI:
 
-bool interactWithAI(uint32_t AIID, std::vector<LimonAPI::ParameterRequest> &interactionInformation)
-===================================================================================================
+bool interactWithAI(uint32_t AIID, std::vector<LimonTypes::GenericParameter> &interactionInformation)
+======================================================================================================
 
 Sends the parameters to AI as new interaction. Since AI is an extension point, the parameters required are not defined by Limon engine. Returns false if no AI actor with given ID found.
 
 Parameters:
 
 #. uint32_t AIID: ID of AI actor to send the data
-#. std::vector<LimonAPI::ParameterRequest> &interactionInformation: Parameters to pass.
+#. std::vector<LimonTypes::GenericParameter> &interactionInformation: Parameters to pass.
+
+.. _LimonAPI-addLight:
+
+uint32_t addLight(uint32_t lightType, const LimonAPI::Vec4& position, const LimonAPI::Vec4& color)
+===================================================================================================
+
+Creates and adds a new light to the world. Returns the new light's handle ID, or 0 on failure.
+
+``lightType`` values:
+
+* ``1`` — Directional light (position parameter is used as direction, normalized internally)
+* ``2`` — Point light
+
+Parameters:
+
+#. uint32_t lightType: Type of light to create. 1 = directional, 2 = point.
+#. const LimonAPI::Vec4& position: World position for point lights; direction vector for directional lights. W component ignored.
+#. const LimonAPI::Vec4& color: RGB color of the light. Each component is clamped to [0, 1]. W component ignored.
+
+.. _LimonAPI-removeLight:
+
+bool removeLight(uint32_t lightID)
+==================================
+
+Removes the light indicated by lightID. Properly shuts down visibility threads associated with the light's shadow cameras before deletion. Returns true on success, false if no light with the given ID is found.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light to remove.
 
 .. _LimonAPI-addLightTranslate:
 
@@ -702,8 +750,8 @@ Clears the open devices and quits the game, shutting down the engine process.
 
 .. _LimonAPI-getResultOfTrigger:
 
-std::vector<LimonAPI::ParameterRequest> getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
-============================================================================================================
+std::vector<LimonTypes::GenericParameter> getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
+=============================================================================================================
 
 Returns the result of the trigger object. For details, check :ref:`trigger object editor<Trigger Object Editor>`
 
@@ -715,15 +763,15 @@ Parameters:
 
 .. _LimonAPI-getVariable:
 
-LimonAPI::ParameterRequest& getVariable(const std::string& variableName)
-========================================================================
+LimonTypes::GenericParameter& getVariable(const std::string& variableName)
+==========================================================================
 
 Returns variable from global variable store. If the variable is never set, it will be 0 initialized. Returned reference can be updated, doing so will be setting the parameter.
 
 The variables are accessible by all triggers, and there are no safety checks. User is fully responsible for use of them.
 
 .. warning::
-    The variables are not save with world itself, so they should be considered temporary.
+    The variables are not saved with world itself, so they should be considered temporary.
 
 Parameters:
 
@@ -731,8 +779,8 @@ Parameters:
 
 .. _LimonAPI-rayCastToCursor:
 
-std::vector<ParameterRequest> rayCastToCursor()
-===============================================
+std::vector<LimonTypes::GenericParameter> rayCastToCursor()
+============================================================
 
 Returns information about what is under player cursor (crosshair). If nothing is found, empty vector is returned.
 if something is hit, return vector will have the following information:
@@ -748,19 +796,134 @@ none
 
 .. _LimonAPI-addTimedEvent:
 
-void addTimedEvent(long waitTime, std::function<void(const std::vector<LimonAPI::ParameterRequest>&)> methodToCall, std::vector<LimonAPI::ParameterRequest> parameters)
-=======================================================================================================================================================================
+long addTimedEvent(uint64_t waitTime, bool useWallTime, std::function<void(const std::vector<LimonTypes::GenericParameter>&)> methodToCall, std::vector<LimonTypes::GenericParameter> parameters)
+==================================================================================================================================================================================================
 
-Runs the given method, with passed parameters, after a given amount of time.
+Runs the given method, with passed parameters, after a given amount of time. Returns a handle ID that can be passed to :ref:`cancelTimedEvent <LimonAPI-cancelTimedEvent>` to cancel the event before it fires.
 
 Parameters:
 
-#. long waitTime: How long to wait before call, in milliseconds.
-#. std::function<void(const std::vector<LimonAPI::ParameterRequest>&)> methodToCall: function to call.
-#. std::vector<LimonAPI::ParameterRequest> parameters: parameters of that function call.
+#. uint64_t waitTime: How long to wait before call, in milliseconds.
+#. bool useWallTime: If true, real wall-clock time is used. If false, in-game time is used (pauses when the game is paused or a menu world is active).
+#. std::function<void(const std::vector<LimonTypes::GenericParameter>&)> methodToCall: function to call.
+#. std::vector<LimonTypes::GenericParameter> parameters: parameters passed to the function call.
 
 .. note::
     Wait time is not precise beyond game ticks. Limon Engine internally ticks each 1/60 seconds.
 
 .. warning::
     If function is part of an object, and that object is removed, engine might crash. Avoiding those situations are game developers responsibility.
+
+.. _LimonAPI-cancelTimedEvent:
+
+bool cancelTimedEvent(long handleId)
+=====================================
+
+Cancels a previously scheduled timed event before it fires. Returns true if the event was found and cancelled, false if no event with the given handle ID exists.
+
+Parameters:
+
+#. long handleId: The handle ID returned by :ref:`addTimedEvent <LimonAPI-addTimedEvent>`.
+
+.. _LimonAPI-rayCastFirstHit:
+
+std::vector<LimonTypes::GenericParameter> rayCastFirstHit(const LimonTypes::Vec4& start, const LimonTypes::Vec4& direction)
+===========================================================================================================================
+
+Casts a ray from the given start position in the given direction and returns information about the first physics object hit. Returns an empty vector if nothing is hit.
+
+If something is hit, the return vector contains the same fields as :ref:`rayCastToCursor <LimonAPI-rayCastToCursor>`:
+
+#. ObjectID of the hit object
+#. hit coordinates
+#. hit normal
+#. if the object has AI, its AI id. Otherwise this parameter is absent.
+
+Parameters:
+
+#. const LimonTypes::Vec4& start: World-space ray origin. The w component is ignored.
+#. const LimonTypes::Vec4& direction: Ray direction (need not be normalized). The w component is ignored.
+
+.. _LimonAPI-profileScope:
+
+ProfileScope profileScope(const std::string& name)
+===================================================
+
+Opens a named Tracy profiler zone and returns a ``ProfileScope`` RAII guard. The zone is closed automatically when the returned object goes out of scope.
+
+.. code-block:: cpp
+
+    {
+        auto scope = limonAPI->profileScope("MyTrigger::run");
+        // ... work being profiled ...
+    }  // zone ends here
+
+Parameters:
+
+#. const std::string& name: Name shown in the Tracy profiler for this zone.
+
+.. _LimonAPI-log:
+
+void log(Logger::Subsystem subsystem, Logger::Level level, const std::string& text)
+====================================================================================
+
+Writes a message to the engine's log system. The message will appear in the in-game log overlay (if enabled) and in the engine's log output.
+
+Parameters:
+
+#. Logger::Subsystem subsystem: Which engine subsystem the message belongs to. Available values: ``log_Subsystem_RENDER``, ``log_Subsystem_MODEL``, ``log_Subsystem_INPUT``, ``log_Subsystem_SETTINGS``, ``log_Subsystem_AI``, ``log_Subsystem_LOAD_SAVE``, ``log_Subsystem_EDITOR``, ``log_Subsystem_ANIMATION``.
+#. Logger::Level level: Severity of the message. Available values: ``log_level_TRACE``, ``log_level_DEBUG``, ``log_level_INFO``, ``log_level_WARN``, ``log_level_ERROR``.
+#. const std::string& text: The message text.
+
+.. _LimonAPI-drawDebugLine:
+
+uint32_t drawDebugLine(const LimonTypes::Vec4& from, const LimonTypes::Vec4& to, const LimonTypes::Vec4& fromColor, const LimonTypes::Vec4& toColor, bool requireCameraTransform)
+==================================================================================================================================================================================
+
+Creates a new debug line buffer containing one line segment and returns its buffer ID. The line persists across frames until the buffer is explicitly removed with :ref:`clearDebugLines <LimonAPI-clearDebugLines>`. Additional segments can be appended to the same buffer via :ref:`addToDebugLine <LimonAPI-addToDebugLine>`.
+
+The typical per-frame pattern is: clear the previous buffer, then call ``drawDebugLine`` to create a fresh one.
+
+Parameters:
+
+#. const LimonTypes::Vec4& from: World-space start point of the line. The w component is ignored.
+#. const LimonTypes::Vec4& to: World-space end point of the line. The w component is ignored.
+#. const LimonTypes::Vec4& fromColor: RGB color at the start vertex. The w component is ignored.
+#. const LimonTypes::Vec4& toColor: RGB color at the end vertex. The w component is ignored.
+#. bool requireCameraTransform: Pass ``true`` for 3D world-space lines; ``false`` for screen-space (2D GUI) lines.
+
+Returns:
+    uint32_t: The new buffer's ID. Pass this to ``addToDebugLine`` or ``clearDebugLines``.
+
+.. _LimonAPI-addToDebugLine:
+
+bool addToDebugLine(uint32_t bufferIndex, const LimonTypes::Vec4& from, const LimonTypes::Vec4& to, const LimonTypes::Vec4& fromColor, const LimonTypes::Vec4& toColor, bool requireCameraTransform)
+=====================================================================================================================================================================================================
+
+Appends a line segment to an existing debug line buffer. All segments in a buffer are rendered and cleared together.
+
+Parameters:
+
+#. uint32_t bufferIndex: ID of the buffer to append to, as returned by :ref:`drawDebugLine <LimonAPI-drawDebugLine>`.
+#. const LimonTypes::Vec4& from: World-space start point of the segment. The w component is ignored.
+#. const LimonTypes::Vec4& to: World-space end point of the segment. The w component is ignored.
+#. const LimonTypes::Vec4& fromColor: RGB color at the start vertex. The w component is ignored.
+#. const LimonTypes::Vec4& toColor: RGB color at the end vertex. The w component is ignored.
+#. bool requireCameraTransform: Should match the value used when the buffer was created.
+
+Returns:
+    bool: ``true`` on success; ``false`` if ``bufferIndex`` does not refer to an existing buffer.
+
+.. _LimonAPI-clearDebugLines:
+
+bool clearDebugLines(uint32_t bufferIndex)
+==========================================
+
+Removes a debug line buffer, hiding all line segments it contained.
+
+Parameters:
+
+#. uint32_t bufferIndex: ID of the buffer to remove, as returned by :ref:`drawDebugLine <LimonAPI-drawDebugLine>`.
+
+Returns:
+    bool: ``true`` on success; ``false`` if ``bufferIndex`` does not refer to an existing buffer.

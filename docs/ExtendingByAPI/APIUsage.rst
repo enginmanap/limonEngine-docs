@@ -9,11 +9,11 @@ Limon Engine provides an C++ API for extending and customising it to fit your ga
 LimonAPI class
 ##############
 
-The LimonAPI class has all the methods available for usage. It also provides means to pass data around, namely ParameterRequest struct. This struct is used for both asking for and providing data. This struct is de/serialized by the engine, and editor can build graphical interfaces for it, there is no need to worry about that aspects of development.
+The LimonAPI class has all the methods available for usage. It also provides means to pass data around, namely ``LimonTypes::GenericParameter`` struct. This struct is used for both asking for and providing data. This struct is de/serialized by the engine, and editor can build graphical interfaces for it, there is no need to worry about that aspects of development.
 
-.. _ParameterRequest:
+.. _GenericParameter:
 
-ParameterRequest struct
+GenericParameter struct
 _______________________
 
 The struct is main means of data transfer. The serialize and deserialize methods are meant to be used by engine internals, they should be ignored for API usage purposes.
@@ -50,6 +50,7 @@ Possible values:
 * DOUBLE
 * LONG
 * LONG_ARRAY
+* FLOAT_ARRAY
 * BOOLEAN
 * VEC4
 * MAT4
@@ -69,13 +70,14 @@ Union variables
 * char stringValue[64]
 * long longValue
 * long longValues[16]
+* float floatValues[16]
 * double doubleValue
 * bool boolValue
 * Vec4 vectorValue
 * Mat4 matrixValue
 
 .. note::
-    if long values array is used, first element should be used element count.
+    For ``longValues`` and ``floatValues`` array types, the first element (index 0) stores the element count. The actual data starts at index 1, giving a maximum of 15 usable elements.
 
 isSet
 =====

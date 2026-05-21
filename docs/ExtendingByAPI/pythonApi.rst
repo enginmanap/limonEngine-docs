@@ -75,9 +75,10 @@ Enums
         DOUBLE = 1
         LONG = 2
         LONG_ARRAY = 3
-        BOOLEAN = 4
-        VEC4 = 5
-        MAT4 = 6
+        FLOAT_ARRAY = 4
+        BOOLEAN = 5
+        VEC4 = 6
+        MAT4 = 7
 
     # RequestParameterType enum
     class RequestParameterType(Enum):
@@ -91,6 +92,39 @@ Enums
         COORDINATE = 7
         TRANSFORM = 8
         MULTI_SELECT = 9
+
+LogSubsystem
+~~~~~~~~~~~~
+
+Identifies which engine subsystem a log message belongs to. Used as the first argument to ``api.log()``.
+
+.. code-block:: python
+
+    import limon
+
+    limon.LogSubsystem.RENDER    # graphics/rendering
+    limon.LogSubsystem.MODEL     # model loading
+    limon.LogSubsystem.INPUT     # input handling
+    limon.LogSubsystem.SETTINGS  # options/settings
+    limon.LogSubsystem.AI        # actor/AI system
+    limon.LogSubsystem.LOAD_SAVE # world load/save
+    limon.LogSubsystem.EDITOR    # editor
+    limon.LogSubsystem.ANIMATION # animation system
+
+LogLevel
+~~~~~~~~
+
+Severity level for a log message. Used as the second argument to ``api.log()``.
+
+.. code-block:: python
+
+    import limon
+
+    limon.LogLevel.TRACE  # very verbose, internal tracing
+    limon.LogLevel.DEBUG  # debug information
+    limon.LogLevel.INFO   # general information
+    limon.LogLevel.WARN   # warnings
+    limon.LogLevel.ERROR  # errors
 
 GenericParameter
 ~~~~~~~~~~~~~~~~
@@ -133,6 +167,8 @@ A flexible parameter type that can hold different types of values.
         matrix = param.get_mat4()
     elif param.is_long_array():
         array = param.get_long_array()
+    elif param.is_float_array():
+        array = param.get_float_array()
 
 Vec4
 ~~~~
@@ -379,8 +415,76 @@ add_object_orientation
             bool: True if orientation was applied successfully
         """
 
+get_object_transformation
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_transformation(object_id: int) -> list:
+        """
+        Get an object's transformation as three Vec4 parameters.
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            list: [translate (Vec4), scale (Vec4), orientation quaternion (Vec4 x,y,z,w)],
+                  or empty list if object not found.
+        """
+
+set_object_translate
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_object_translate(object_id: int, position: Vec4) -> bool:
+        """
+        Set an object's world position.
+
+        Args:
+            object_id: ID of the object
+            position: New world position (w component ignored)
+
+        Returns:
+            bool: True if successful, False if object not found
+        """
+
+set_object_scale
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_object_scale(object_id: int, scale: Vec4) -> bool:
+        """
+        Set an object's scale.
+
+        Args:
+            object_id: ID of the object
+            scale: New scale (w component ignored)
+
+        Returns:
+            bool: True if successful, False if object not found
+        """
+
+set_object_orientation
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_object_orientation(object_id: int, orientation: Vec4) -> bool:
+        """
+        Set an object's orientation as a quaternion.
+
+        Args:
+            object_id: ID of the object
+            orientation: Quaternion as Vec4 (x, y, z, w)
+
+        Returns:
+            bool: True if successful, False if object not found
+        """
+
 get_object_transformation_matrix
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -555,8 +659,11 @@ AI Interaction
 
 .. code-block:: python
 
-    # Interact with an AI
-    interact_with_ai(ai_id: int, interaction_information: dict) -> None
+    # Interact with an AI; returns False if no actor with that ID exists
+    interact_with_ai(ai_id: int, interaction_information: list) -> bool
+
+    # Send interaction data to the active player extension
+    interact_with_player(interaction_information: list) -> None
 
 Particle Systems
 ~~~~~~~~~~~~~~~~
@@ -616,13 +723,13 @@ ray_cast
 
 .. code-block:: python
 
-    def ray_cast(start: tuple, direction: tuple) -> list:
+    def ray_cast(start: Vec4, direction: Vec4) -> list:
         """
         Cast a ray from start point in direction.
 
         Args:
-            start: Starting position as (x, y, z, w)
-            direction: Direction vector as (x, y, z, w)
+            start: Starting position as Vec4 (w component ignored)
+            direction: Direction vector as Vec4 (w component ignored, need not be normalized)
 
         Returns:
             list: List of GenericParameter objects containing hit details such as:
@@ -637,11 +744,17 @@ Lighting
 
 .. code-block:: python
 
-    # Translate a light
-    add_light_translate(light_id: int, translation: tuple) -> None
+    # Add a new light. light_type: 1=directional, 2=point. Returns light ID, or 0 on failure.
+    add_light(light_type: int, position: Vec4, color: Vec4) -> int
 
-    # Set a light's color
-    set_light_color(light_id: int, color: tuple) -> None
+    # Remove a light by ID
+    remove_light(light_id: int) -> bool
+
+    # Translate a light (adds to current position)
+    add_light_translate(light_id: int, translation: Vec4) -> bool
+
+    # Set a light's color (RGB components in [0, 1])
+    set_light_color(light_id: int, color: Vec4) -> bool
 
 World Management
 ~~~~~~~~~~~~~~~~
@@ -701,10 +814,28 @@ cancel_timed_event
 
         Returns:
             bool: True if the event was successfully cancelled, False if not found
+        """
 
-        Note:
-            This method exists in the C++ API but is not yet bound to Python.
-            It needs to be added to the Python bindings in ScriptManager.cpp.
+Profiling
+~~~~~~~~~
+
+profile_scope
+^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def profile_scope(name: str):
+        """
+        Open a named Tracy profiler zone. Returns a context manager; the zone
+        closes when the ``with`` block exits.
+
+        Args:
+            name: Label shown in the Tracy profiler timeline.
+
+        Example:
+            with api.profile_scope("MyActor::play"):
+                # ... work being profiled ...
+                pass
         """
 
 Player Related
@@ -722,6 +853,103 @@ Variable Management
 
     # Get a script variable by name
     get_variable(variable_name: str) -> any
+
+Logging
+~~~~~~~
+
+log
+^^^
+
+.. code-block:: python
+
+    def log(subsystem: limon.LogSubsystem, level: limon.LogLevel, text: str) -> None:
+        """
+        Write a message to the engine log.
+
+        Args:
+            subsystem: Which subsystem the message belongs to (limon.LogSubsystem.*)
+            level:     Severity of the message (limon.LogLevel.*)
+            text:      The message text
+
+        Example:
+            api.log(limon.LogSubsystem.AI,    limon.LogLevel.INFO,  "actor reached waypoint")
+            api.log(limon.LogSubsystem.INPUT, limon.LogLevel.WARN,  "unexpected input state")
+        """
+
+Debug Line Drawing
+~~~~~~~~~~~~~~~~~~
+
+Lines are stored in numbered buffers managed by the engine. Each buffer persists across frames
+until explicitly removed. The typical per-frame pattern is **clear → draw**.
+
+draw_debug_line
+^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def draw_debug_line(from_pos: Vec4, to_pos: Vec4,
+                        from_color: Vec4, to_color: Vec4,
+                        require_camera_transform: bool = True) -> int:
+        """
+        Create a new debug line buffer containing one line segment.
+
+        Args:
+            from_pos:                 World-space start point (w ignored)
+            to_pos:                   World-space end point (w ignored)
+            from_color:               RGB color at the start vertex (w ignored)
+            to_color:                 RGB color at the end vertex (w ignored)
+            require_camera_transform: True for 3D world-space lines; False for 2D screen-space
+
+        Returns:
+            int: Buffer ID — pass to add_to_debug_line() or clear_debug_lines()
+        """
+
+add_to_debug_line
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_to_debug_line(buffer_id: int,
+                          from_pos: Vec4, to_pos: Vec4,
+                          from_color: Vec4, to_color: Vec4,
+                          require_camera_transform: bool = True) -> bool:
+        """
+        Append a line segment to an existing debug line buffer.
+
+        Args:
+            buffer_id:                ID returned by draw_debug_line()
+            from_pos:                 World-space start point (w ignored)
+            to_pos:                   World-space end point (w ignored)
+            from_color:               RGB color at the start vertex (w ignored)
+            to_color:                 RGB color at the end vertex (w ignored)
+            require_camera_transform: Should match the value used when the buffer was created
+
+        Returns:
+            bool: True on success; False if buffer_id is not found
+        """
+
+clear_debug_lines
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def clear_debug_lines(buffer_id: int) -> bool:
+        """
+        Remove a debug line buffer, hiding all its segments immediately.
+
+        Args:
+            buffer_id: ID returned by draw_debug_line()
+
+        Returns:
+            bool: True on success; False if buffer_id is not found
+
+        Example (per-frame pattern inside an actor's play() or camera's getCameraVariables()):
+            if self._line_buf != 0:
+                api.clear_debug_lines(self._line_buf)
+            self._line_buf = api.draw_debug_line(
+                limon.Vec4(x1, y1, z1, 1), limon.Vec4(x2, y2, z2, 1),
+                limon.Vec4(1, 0, 0, 1),    limon.Vec4(1, 0, 0, 1))
+        """
 
 Input System
 ------------

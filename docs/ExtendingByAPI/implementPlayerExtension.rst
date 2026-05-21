@@ -12,11 +12,13 @@ ______________________________
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 |                                                   |:ref:`PlayerExtensionInterface(LimonAPI \*limonAPI)<PlayerExtensionInterface-PlayerExtensionInterface>`             |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| void                                              |:ref:`processInput(const InputStates &inputState, long time)<PlayerExtensionInterface-processInput>`                |
+| void                                              |:ref:`processInput(const InputStates &inputState, const PlayerInformation &playerInformation, long time)<PlayerExtensionInterface-processInput>` |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| bool                                              |:ref:`interact(std::vector\<LimonAPI::ParameterRequest\> &parameters)<PlayerExtensionInterface-interact>`           |
+| void                                              |:ref:`interact(std::vector\<LimonTypes::GenericParameter\> &parameters)<PlayerExtensionInterface-interact>`         |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 | std::string                                       |:ref:`getName() const<PlayerExtensionInterface-getName>`                                                            |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| CameraAttachment\*                                |:ref:`getCustomCameraAttachment()<PlayerExtensionInterface-getCustomCameraAttachment>`                               |
 +---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 
 .. _PlayerExtensionInterface-PlayerExtensionInterface:
@@ -30,15 +32,21 @@ The constructor of the interface.
 
 .. _PlayerExtensionInterface-processInput:
 
-void processInput(const InputStates &inputState, long time)
-===========================================================
+void processInput(const InputStates &inputState, const PlayerInformation &playerInformation, long time)
+========================================================================================================
 
-Called each frame with updated input information, and time of frame in milliseconds.
+Called each frame with updated input information, current player state, and the frame time in milliseconds.
+
+Parameters:
+
+#. const InputStates &inputState: Current input state for this frame.
+#. const PlayerInformation &playerInformation: Current player position and look direction. See :ref:`PlayerInformation struct<PlayerExtensionInterface-PlayerInformation>` below.
+#. long time: Frame time in milliseconds.
 
 .. _PlayerExtensionInterface-interact:
 
-void interact(std::vector<LimonAPI::ParameterRequest> &interactionData)
-=======================================================================
+void interact(std::vector<LimonTypes::GenericParameter> &interactionData)
+=========================================================================
 
 Called by other entities to interact with player.
 
@@ -51,6 +59,29 @@ Returns the name of the Player Extension.
 
 .. warning::
     The name must be unique, or the results will be undefined.
+
+.. _PlayerExtensionInterface-getCustomCameraAttachment:
+
+CameraAttachment* getCustomCameraAttachment()
+=============================================
+
+Returns a custom ``CameraAttachment`` instance for this extension, or ``nullptr`` to use the default first-person camera. Override this method to provide a third-person or any other custom camera. The default implementation returns ``nullptr``.
+
+.. _PlayerExtensionInterface-PlayerInformation:
+
+PlayerInformation struct
+________________________
+
+Passed to :ref:`processInput <PlayerExtensionInterface-processInput>` each frame.
+
++-----------------------------+------------------------+---------------------------------------------------+
+| Type                        | Name                   | Description                                       |
++-----------------------------+------------------------+---------------------------------------------------+
+| LimonTypes::Vec4            | position               | Current world-space position of the player.       |
++-----------------------------+------------------------+---------------------------------------------------+
+| LimonTypes::Vec4            | lookDirection          | Normalized direction the player is looking at.    |
+|                             |                        | w component unused.                               |
++-----------------------------+------------------------+---------------------------------------------------+
 
 .. _ActorInterface-InputStatesUsage:
 
