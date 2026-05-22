@@ -761,17 +761,24 @@ World Management
 
 .. code-block:: python
 
-    # Load a new world and remove the current one
-    load_and_remove_world(world_file_name: str) -> None
+    # Load a world and switch to it. If already loaded, resets it. Returns False if load fails
+    # or if caller is part of the current world (can't remove it from itself).
+    load_and_switch_world(world_file_name: str) -> bool
 
-    # Return to the previously loaded world
+    # Load world if not already loaded, then switch to it. Returns False if load fails.
+    return_to_world(world_file_name: str) -> bool
+
+    # Load a new world and remove the current one. Returns False if load fails.
+    load_and_remove_world(world_file_name: str) -> bool
+
+    # Return to the previously loaded world (no-op if no previous world exists).
     return_to_previous_world() -> None
 
     # Quit the game
     quit_game() -> None
 
     # Change the render pipeline
-    change_render_pipeline(pipeline_file_name: str) -> None
+    change_render_pipeline(pipeline_file_name: str) -> bool
 
 Timed Events
 ~~~~~~~~~~~~

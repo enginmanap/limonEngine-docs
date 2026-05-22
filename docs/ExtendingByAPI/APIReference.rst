@@ -79,6 +79,18 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`interactWithAI(uint32_t AIID, std::vector<LimonTypes::GenericParameter> &interactionInformation)<LimonAPI-interactWithAI>`                                                                                            |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`addParticleEmitter(const std::string &name, const std::string &textureFile, const LimonTypes::Vec4 &startPosition, const LimonTypes::Vec4 &maxStartDistances, const LimonTypes::Vec2 &size, uint32_t count, uint32_t lifeTime, float particlePerMs, bool continuouslyEmit)<LimonAPI-addParticleEmitter>` |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`removeParticleEmitter(uint32_t emitterID)<LimonAPI-removeParticleEmitter>`                                                                                                                                            |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`enableParticleEmitter(uint32_t particleEmitterId)<LimonAPI-enableParticleEmitter>`                                                                                                                                    |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`disableParticleEmitter(uint32_t particleEmitterId)<LimonAPI-disableParticleEmitter>`                                                                                                                                  |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setEmitterParticleSpeed(uint32_t emitterID, const LimonTypes::Vec4 &speedMultiplier, const LimonTypes::Vec4 &speedOffset)<LimonAPI-setEmitterParticleSpeed>`                                                         |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setEmitterParticleGravity(uint32_t emitterID, const LimonTypes::Vec4 &gravity)<LimonAPI-setEmitterParticleGravity>`                                                                                                   |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`addLight(uint32_t lightType, const LimonAPI::Vec4& position, const LimonAPI::Vec4& color)<LimonAPI-addLight>`                                                                                                         |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`removeLight(uint32_t lightID)<LimonAPI-removeLight>`                                                                                                                                                                  |
@@ -639,6 +651,83 @@ Parameters:
 #. uint32_t AIID: ID of AI actor to send the data
 #. std::vector<LimonTypes::GenericParameter> &interactionInformation: Parameters to pass.
 
+.. _LimonAPI-addParticleEmitter:
+
+uint32_t addParticleEmitter(const std::string &name, const std::string &textureFile, const LimonTypes::Vec4 &startPosition, const LimonTypes::Vec4 &maxStartDistances, const LimonTypes::Vec2 &size, uint32_t count, uint32_t lifeTime, float particlePerMs, bool continuouslyEmit)
+=================================================================================================================================================================================================================================================================================
+
+Creates a new particle emitter in the world and returns its handle ID.
+
+Parameters:
+
+#. const std::string &name: Name of the emitter.
+#. const std::string &textureFile: Path to the texture used for each particle.
+#. const LimonTypes::Vec4 &startPosition: World-space origin of the emitter. W component ignored.
+#. const LimonTypes::Vec4 &maxStartDistances: Maximum random offset applied to each particle's spawn position. W component ignored.
+#. const LimonTypes::Vec2 &size: Width and height of each particle billboard.
+#. uint32_t count: Maximum number of live particles at any time.
+#. uint32_t lifeTime: How long each particle lives, in milliseconds.
+#. float particlePerMs: How many particles are spawned per millisecond.
+#. bool continuouslyEmit: If true the emitter keeps spawning particles indefinitely; if false it emits one burst of ``count`` particles and stops.
+
+.. _LimonAPI-removeParticleEmitter:
+
+bool removeParticleEmitter(uint32_t emitterID)
+==============================================
+
+Removes the particle emitter indicated by the handle ID. Returns true on success, false if the ID is not found.
+
+Parameters:
+
+#. uint32_t emitterID: Handle ID of the emitter to remove.
+
+.. _LimonAPI-enableParticleEmitter:
+
+bool enableParticleEmitter(uint32_t particleEmitterId)
+======================================================
+
+Resumes a previously disabled particle emitter. Returns true on success, false if the ID is not found.
+
+Parameters:
+
+#. uint32_t particleEmitterId: Handle ID of the emitter to enable.
+
+.. _LimonAPI-disableParticleEmitter:
+
+bool disableParticleEmitter(uint32_t particleEmitterId)
+=======================================================
+
+Pauses a particle emitter so it stops spawning new particles. Existing live particles continue until their lifetime expires. Returns true on success, false if the ID is not found.
+
+Parameters:
+
+#. uint32_t particleEmitterId: Handle ID of the emitter to disable.
+
+.. _LimonAPI-setEmitterParticleSpeed:
+
+bool setEmitterParticleSpeed(uint32_t emitterID, const LimonTypes::Vec4 &speedMultiplier, const LimonTypes::Vec4 &speedOffset)
+==============================================================================================================================
+
+Sets the speed parameters for particles spawned by the emitter. ``speedMultiplier`` scales the base velocity and ``speedOffset`` adds a constant velocity component. Returns false if the emitter ID is not found.
+
+Parameters:
+
+#. uint32_t emitterID: Handle ID of the emitter.
+#. const LimonTypes::Vec4 &speedMultiplier: Per-axis scale applied to the particle's initial velocity. W component ignored.
+#. const LimonTypes::Vec4 &speedOffset: Constant velocity added to every particle on spawn. W component ignored.
+
+.. _LimonAPI-setEmitterParticleGravity:
+
+bool setEmitterParticleGravity(uint32_t emitterID, const LimonTypes::Vec4 &gravity)
+====================================================================================
+
+Sets the gravity vector applied to particles spawned by the emitter each tick. Returns false if the emitter ID is not found.
+
+Parameters:
+
+#. uint32_t emitterID: Handle ID of the emitter.
+#. const LimonTypes::Vec4 &gravity: Per-axis acceleration applied each frame. W component ignored.
+
 .. _LimonAPI-addLight:
 
 uint32_t addLight(uint32_t lightType, const LimonAPI::Vec4& position, const LimonAPI::Vec4& color)
@@ -807,6 +896,9 @@ Parameters:
 #. bool useWallTime: If true, real wall-clock time is used. If false, in-game time is used (pauses when the game is paused or a menu world is active).
 #. std::function<void(const std::vector<LimonTypes::GenericParameter>&)> methodToCall: function to call.
 #. std::vector<LimonTypes::GenericParameter> parameters: parameters passed to the function call.
+
+Returns:
+    long: A handle ID for the scheduled event. Pass it to :ref:`cancelTimedEvent <LimonAPI-cancelTimedEvent>` to cancel before it fires. Returns -1 on failure.
 
 .. note::
     Wait time is not precise beyond game ticks. Limon Engine internally ticks each 1/60 seconds.
