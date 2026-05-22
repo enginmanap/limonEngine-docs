@@ -206,7 +206,7 @@ add_gui_text
             text: The text to display
             color: RGB color as (r, g, b). Defaults to white (1.0, 1.0, 1.0).
             position: Position as (x, y). Defaults to (0.0, 0.0).
-            rotation: Rotation in degrees. Defaults to 0.0.
+            rotation: Rotation in radians, clockwise. Defaults to 0.0.
 
         Returns:
             int: ID of the created GUI element
@@ -227,7 +227,7 @@ add_gui_image
             name: Name of the image element
             position: Position as (x, y). Defaults to (0.0, 0.0).
             scale: Scale as (x, y). Defaults to (1.0, 1.0).
-            rotation: Rotation in degrees. Defaults to 0.0.
+            rotation: Rotation in radians, clockwise. Defaults to 0.0.
 
         Returns:
             int: ID of the created GUI element
@@ -238,13 +238,16 @@ update_gui_text
 
 .. code-block:: python
 
-    def update_gui_text(gui_text_id: int, new_text: str) -> None:
+    def update_gui_text(gui_text_id: int, new_text: str) -> bool:
         """
         Update the text of a GUI text element.
 
         Args:
             gui_text_id: ID of the GUI text element
             new_text: New text to display
+
+        Returns:
+            bool: True if the element was found and updated, False if ID is invalid
         """
 
 remove_gui_element
@@ -252,12 +255,15 @@ remove_gui_element
 
 .. code-block:: python
 
-    def remove_gui_element(gui_element_id: int) -> None:
+    def remove_gui_element(gui_element_id: int) -> bool:
         """
         Remove a GUI element.
 
         Args:
             gui_element_id: ID of the GUI element to remove
+
+        Returns:
+            bool: True if the element was found and removed, False if ID is invalid
         """
 
 Object Manipulation
@@ -268,13 +274,16 @@ set_object_temporary
 
 .. code-block:: python
 
-    def set_object_temporary(object_id: int, temporary: bool) -> None:
+    def set_object_temporary(object_id: int, temporary: bool) -> bool:
         """
         Set if an object is temporary (will be removed when world changes).
 
         Args:
             object_id: ID of the object
             temporary: True if object should be temporary
+
+        Returns:
+            bool: True if the object was found and updated
         """
 
 attach_object_to_object
@@ -282,13 +291,16 @@ attach_object_to_object
 
 .. code-block:: python
 
-    def attach_object_to_object(object_id: int, object_to_attach_to_id: int) -> None:
+    def attach_object_to_object(object_id: int, object_to_attach_to_id: int) -> bool:
         """
         Attach one object to another.
 
         Args:
             object_id: ID of the object to attach
             object_to_attach_to_id: ID of the object to attach to
+
+        Returns:
+            bool: True if attachment succeeded
         """
 
 remove_trigger_object
@@ -296,12 +308,81 @@ remove_trigger_object
 
 .. code-block:: python
 
-    def remove_trigger_object(trigger_object_id: int) -> None:
+    def remove_trigger_object(trigger_object_id: int) -> bool:
         """
         Remove a trigger object.
 
         Args:
             trigger_object_id: ID of the trigger object
+
+        Returns:
+            bool: True if the object was found and removed
+        """
+
+is_trigger_active
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def is_trigger_active(trigger_id: int) -> bool:
+        """
+        Returns True if a player is currently inside the trigger volume.
+
+        Args:
+            trigger_id: ID of the trigger object
+
+        Returns:
+            bool: True if the player is inside the volume, False if not or trigger not found
+        """
+
+get_object_linear_velocity
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_linear_velocity(object_id: int) -> Vec4:
+        """
+        Returns the linear velocity of an object's rigid body as Vec4 (w=0).
+        Returns zero Vec4 if the object is not found or has no rigid body.
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            Vec4: Linear velocity in world space, w=0
+        """
+
+set_object_linear_velocity
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_object_linear_velocity(object_id: int, velocity: Vec4) -> bool:
+        """
+        Set the linear velocity of an object's rigid body. Wakes the body if sleeping.
+
+        Args:
+            object_id: ID of the object
+            velocity: Desired velocity in world space (w is ignored)
+
+        Returns:
+            bool: True if the object was found and velocity set
+        """
+
+get_object_mass
+^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_mass(object_id: int) -> float:
+        """
+        Returns the mass of an object in kilograms. Returns 0.0 for static objects or if not found.
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            float: Mass in kg, or 0.0 for static objects / not found
         """
 
 disconnect_object_from_physics
@@ -309,12 +390,15 @@ disconnect_object_from_physics
 
 .. code-block:: python
 
-    def disconnect_object_from_physics(object_id: int) -> None:
+    def disconnect_object_from_physics(object_id: int) -> bool:
         """
         Disable physics for an object.
 
         Args:
             object_id: ID of the object
+
+        Returns:
+            bool: True if the object was found and disconnected
         """
 
 reconnect_object_to_physics
@@ -322,12 +406,15 @@ reconnect_object_to_physics
 
 .. code-block:: python
 
-    def reconnect_object_to_physics(object_id: int) -> None:
+    def reconnect_object_to_physics(object_id: int) -> bool:
         """
         Re-enable physics for an object.
 
         Args:
             object_id: ID of the object
+
+        Returns:
+            bool: True if the object was found and reconnected
         """
 
 apply_force
@@ -430,6 +517,12 @@ get_object_transformation
         Returns:
             list: [translate (Vec4), scale (Vec4), orientation quaternion (Vec4 x,y,z,w)],
                   or empty list if object not found.
+
+        Note:
+            Prefer get_object_transformation_matrix() when you need the final world matrix.
+            Physical objects can define collision-shape offsets that are baked into the matrix
+            but are not reflected in the decomposed TRS values returned here. Use this method
+            only when you specifically need the individual translate/scale/orientation components.
         """
 
 set_object_translate
@@ -520,7 +613,7 @@ set_model_animation
 
 .. code-block:: python
 
-    def set_model_animation(model_id: int, animation_name: str, looped: bool = True) -> None:
+    def set_model_animation(model_id: int, animation_name: str, looped: bool = True) -> bool:
         """
         Set an animation for a model.
 
@@ -528,6 +621,9 @@ set_model_animation
             model_id: ID of the model
             animation_name: Name of the animation to play
             looped: Whether the animation should loop
+
+        Returns:
+            bool: True if the model was found and animation applied
         """
 
 set_model_animation_with_blend
@@ -535,7 +631,7 @@ set_model_animation_with_blend
 
 .. code-block:: python
 
-    def set_model_animation_with_blend(model_id: int, animation_name: str, looped: bool = True, blend_time: int = 100) -> None:
+    def set_model_animation_with_blend(model_id: int, animation_name: str, looped: bool = True, blend_time: int = 100) -> bool:
         """
         Set an animation for a model with blending.
 
@@ -543,7 +639,10 @@ set_model_animation_with_blend
             model_id: ID of the model
             animation_name: Name of the animation to play
             looped: Whether the animation should loop
-            blend_time: Time in milliseconds for blending animations
+            blend_time: Time in milliseconds to blend from the previous animation
+
+        Returns:
+            bool: True if the model was found and animation applied
         """
 
 set_model_animation_speed
@@ -551,13 +650,16 @@ set_model_animation_speed
 
 .. code-block:: python
 
-    def set_model_animation_speed(model_id: int, speed: float) -> None:
+    def set_model_animation_speed(model_id: int, speed: float) -> bool:
         """
         Set the animation speed for a model.
 
         Args:
             model_id: ID of the model
             speed: Animation speed multiplier (1.0 = normal speed)
+
+        Returns:
+            bool: True if the model was found and speed applied
         """
 
 get_model_animation_name
@@ -597,62 +699,177 @@ animate_model
 
 .. code-block:: python
 
-    def animate_model(model_id: int, animation_id: int, looped: bool = False, sound_path: str = None) -> None:
+    def animate_model(model_id: int, animation_id: int, looped: bool = False, sound_path: str = "") -> int:
         """
-        Animate a model with specific animation ID.
+        Animate a model with a specific animation ID (numeric, not by name).
 
         Args:
             model_id: ID of the model
-            animation_id: ID of the animation to play
+            animation_id: Index of the animation in the world's loaded animation list
             looped: Whether the animation should loop
-            sound_path: Optional path to sound file to play with animation
+            sound_path: Path to a sound file to play with the animation. Pass "" for no sound.
+
+        Returns:
+            int: Animation status ID, or 0 on failure
         """
 
-    # Add a new object to the scene
-    add_object(model_file_path: str, model_weight: float = 1.0, physical: bool = True,
-               position: tuple = (0, 0, 0), scale: tuple = (1, 1, 1),
-               orientation: tuple = (1.0, 0.0, 0.0, 0.0)) -> int
+    def add_object(model_file_path: str, model_weight: float = 1.0, physical: bool = True,
+                   position: tuple = (0, 0, 0), scale: tuple = (1, 1, 1),
+                   orientation: tuple = (1.0, 0.0, 0.0, 0.0)) -> int:
+        """
+        Add a new object to the scene.
 
-    # Remove an object from the scene
-    remove_object(object_id: int, remove_children: bool = True)
+        Args:
+            model_file_path: Path to the model file
+            model_weight: Physics mass of the object
+            physical: Whether the object participates in physics simulation
+            position: Initial position as (x, y, z)
+            scale: Initial scale as (x, y, z)
+            orientation: Initial orientation as quaternion (w, x, y, z)
 
-    # Get player position and orientation
-    get_player_position() -> tuple  # Returns (position, center, up, right) as dictionaries
+        Returns:
+            int: ID of the created object, or 0 on failure
+        """
 
-    # Get the ID of the model attached to the player
-    get_player_attached_model() -> int
+    def remove_object(object_id: int, remove_children: bool = True) -> bool:
+        """
+        Remove an object from the scene.
 
-    # Get the offset of the model attached to the player
-    get_player_attached_model_offset() -> tuple
+        Args:
+            object_id: ID of the object to remove
+            remove_children: Whether to also remove child objects
 
-    # Set the offset of the model attached to the player
-    set_player_attached_model_offset(new_offset: tuple)
+        Returns:
+            bool: True if the object was found and removed
+        """
 
-    # Load and switch to a new world
-    load_and_switch_world(world_file_name: str)
+    def get_player_position() -> tuple:
+        """
+        Get the player's camera position and orientation vectors.
 
-    # Return to a previously loaded world
-    return_to_world(world_file_name: str)
+        Returns:
+            tuple: (position, center, up, right) each as a dict with x, y, z keys.
+                   ``center`` is the camera look-at point, not a direction vector.
+        """
 
-    # Get result of a trigger
-    get_result_of_trigger(trigger_object_id: int, trigger_code_id: int) -> list
+    def get_player_attached_model() -> int:
+        """
+        Get the ID of the model currently attached to the player.
 
-    # Get engine options
-    get_options() -> any
+        Returns:
+            int: Model ID, or 0 if no model is attached
+        """
+
+    def get_player_attached_model_offset() -> Vec4:
+        """
+        Get the position offset of the model attached to the player.
+
+        Returns:
+            Vec4: Offset vector
+        """
+
+    def set_player_attached_model_offset(new_offset: Vec4) -> bool:
+        """
+        Set the position offset of the model attached to the player.
+
+        Args:
+            new_offset: New offset as Vec4
+
+        Returns:
+            bool: True if the offset was applied
+        """
+
+    def get_result_of_trigger(trigger_object_id: int, trigger_code_id: int) -> list:
+        """
+        Get the result parameters of a trigger.
+
+        Args:
+            trigger_object_id: ID of the trigger object
+            trigger_code_id: Code ID selecting which result set to retrieve
+
+        Returns:
+            list: List of GenericParameter objects with the trigger's results
+        """
+
+    def get_options() -> any:
+        """
+        Get the engine options object.
+
+        Returns:
+            Options object with current engine configuration
+        """
 
 Sound
 ~~~~~
 
 .. code-block:: python
 
-    # Attach and play a sound on an object
-    attach_sound_to_object(object_id: int, sound_path: str) -> None
+    # Attach and play a sound on an object. Loops by default.
+    attach_sound_to_object_and_play(object_id: int, sound_path: str, looped: bool = True) -> bool
 
     # Detach sound from an object
-    detach_sound_from_object(object_id: int) -> None
+    detach_sound_from_object(object_id: int) -> bool
 
-    # Play a sound at a position
-    play_sound(sound_path: str, position: tuple, position_relative: bool = False, looped: bool = False) -> None
+    # Play a non-attached sound at a world position. Returns a sound ID.
+    play_sound(sound_path: str, position: Vec4, position_relative: bool = False, looped: bool = False) -> int
+
+    # Stop a playing sound by its ID
+    stop_sound(sound_id: int) -> bool
+
+    # Set the volume (gain) of a sound. Returns False if not found or not yet started
+    set_sound_volume(sound_id: int, volume: float) -> bool
+
+    # Returns True if the sound is currently playing
+    is_sound_playing(sound_id: int) -> bool
+
+stop_sound
+^^^^^^^^^^
+
+.. code-block:: python
+
+    def stop_sound(sound_id: int) -> bool:
+        """
+        Stop a playing sound.
+
+        Args:
+            sound_id: Sound ID returned by play_sound
+
+        Returns:
+            bool: True if the sound was found and stopped
+        """
+
+set_sound_volume
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_sound_volume(sound_id: int, volume: float) -> bool:
+        """
+        Set the volume (gain) of a sound.
+
+        Args:
+            sound_id: Sound ID returned by play_sound
+            volume: New gain value
+
+        Returns:
+            bool: True if the sound was found and volume updated. False if not found or sound not yet started
+        """
+
+is_sound_playing
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def is_sound_playing(sound_id: int) -> bool:
+        """
+        Returns True if the sound is currently playing.
+
+        Args:
+            sound_id: Sound ID returned by play_sound
+
+        Returns:
+            bool: True if playing, False if stopped or not found
+        """
 
 AI Interaction
 ~~~~~~~~~~~~~~
@@ -671,32 +888,32 @@ Particle Systems
 .. code-block:: python
 
     # Disable a particle emitter
-    disable_particle_emitter(emitter_id: int) -> None
+    disable_particle_emitter(emitter_id: int) -> bool
 
     # Enable a particle emitter
-    enable_particle_emitter(emitter_id: int) -> None
+    enable_particle_emitter(emitter_id: int) -> bool
 
     # Add a new particle emitter
     add_particle_emitter(
         name: str,
         texture_file: str,
-        start_position: tuple,
-        max_start_distances: tuple,
+        start_position: Vec4,
+        max_start_distances: Vec4,
         size: float,
         count: int,
         life_time: float,
         particles_per_ms: float,
         continuously_emit: bool
-    ) -> int  # Returns emitter ID
+    ) -> int  # Returns emitter ID, or 0 on failure
 
     # Remove a particle emitter
-    remove_particle_emitter(emitter_id: int) -> None
+    remove_particle_emitter(emitter_id: int) -> bool
 
-    # Set particle speed for an emitter
-    set_emitter_particle_speed(emitter_id: int, speed_multiplier: float, speed_offset: float) -> None
+    # Set particle speed for an emitter (Vec4 for per-axis control)
+    set_emitter_particle_speed(emitter_id: int, speed_multiplier: Vec4, speed_offset: Vec4) -> bool
 
-    # Set particle gravity for an emitter
-    set_emitter_particle_gravity(emitter_id: int, gravity: float) -> None
+    # Set particle gravity for an emitter (Vec4 for per-axis control)
+    set_emitter_particle_gravity(emitter_id: int, gravity: Vec4) -> bool
 
 Ray Casting
 ~~~~~~~~~~~
@@ -718,25 +935,26 @@ ray_cast_to_cursor
                   - distance to hit (DOUBLE)
         """
 
-ray_cast
-^^^^^^^^
+ray_cast_first_hit
+^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-    def ray_cast(start: Vec4, direction: Vec4) -> list:
+    def ray_cast_first_hit(start: Vec4, direction: Vec4) -> list:
         """
-        Cast a ray from start point in direction.
+        Cast a ray from start point in direction and return the first hit.
 
         Args:
             start: Starting position as Vec4 (w component ignored)
             direction: Direction vector as Vec4 (w component ignored, need not be normalized)
 
         Returns:
-            list: List of GenericParameter objects containing hit details such as:
+            list: List of GenericParameter objects containing hit details:
                   - hit coordinates (VEC4)
                   - hit object ID (LONG)
                   - hit normal vector (VEC4)
                   - distance to hit (DOUBLE)
+                  Empty list if nothing was hit.
         """
 
 Lighting
@@ -769,10 +987,10 @@ World Management
     return_to_world(world_file_name: str) -> bool
 
     # Load a new world and remove the current one. Returns False if load fails.
-    load_and_remove_world(world_file_name: str) -> bool
+    load_and_remove(world_file_name: str) -> bool
 
     # Return to the previously loaded world (no-op if no previous world exists).
-    return_to_previous_world() -> None
+    return_previous_world() -> None
 
     # Quit the game
     quit_game() -> None
@@ -789,19 +1007,20 @@ add_timed_event
 .. code-block:: python
 
     def add_timed_event(wait_time: int, use_wall_time: bool, callback: callable,
-                      parameters: list = []) -> int:
+                      parameters: list = None) -> int:
         """
         Schedule a function to be called after a specified delay.
 
         Args:
             wait_time: Time to wait before triggering the event, in milliseconds
-            use_wall_time: If True, uses real-world time. If False, uses in-game time
-                         (affected by game speed/pause state)
+            use_wall_time: If True, uses real wall-clock time and is unaffected by
+                         game pause or world transitions. If False, uses in-game time
+                         which stops when the game is paused or a menu world is loaded.
             callback: Python function to call when the timer expires.
                      The function should accept a single parameter which will be the
                      list of parameters provided.
             parameters: Optional list of GenericParameter objects to pass to the callback.
-                       Each parameter's value will be passed to the callback function.
+                       Pass None or omit to use no parameters.
 
         Returns:
             int: ID of the created timer event, which can be used to cancel it.
@@ -853,13 +1072,36 @@ Player Related
     # Kill the player
     kill_player() -> None
 
+    # Returns the player's world position as Vec4 (w=1)
+    get_player_position() -> Vec4
+
+    # Returns the player's normalized look direction as Vec4 (w=0)
+    get_player_look_direction() -> Vec4
+
+    # Returns the camera's world position as Vec4 (same as player position, w=1)
+    get_camera_position() -> Vec4
+
+    # Returns the camera's normalized look direction as Vec4 (same as player look, w=0)
+    get_camera_look_direction() -> Vec4
+
 Variable Management
 ~~~~~~~~~~~~~~~~~~
 
+.. note::
+
+    Variables are **not** saved with the world. They exist only for the lifetime of
+    the current world session and are lost on world reload or world switch.
+    Use them for transient in-session state only.
+
+.. note::
+
+    Any parameter passed to the editor must have ``is_set = True``.
+    The editor will refuse to save a trigger if any parameter is not set.
+
 .. code-block:: python
 
-    # Get a script variable by name
-    get_variable(variable_name: str) -> any
+    # Get (or create) a script variable by name. Returns a reference — mutate it in place.
+    get_variable(variable_name: str) -> GenericParameter
 
 Logging
 ~~~~~~~

@@ -5,7 +5,7 @@ Limon Engine API Reference
 ==========================
 
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``uint32_t``                                  | :ref:`animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string *soundPath)<LimonAPI-animateModel>`                                                                                               |
+| ``uint32_t``                                  | :ref:`animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string\& soundPath = "")<LimonAPI-animateModel>`                                                                                         |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::string``                               | :ref:`getModelAnimationName(uint32_t modelID)<LimonAPI-getModelAnimationName>`                                                                                                                                              |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -13,7 +13,7 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setModelAnimation(uint32_t modelID, const std::string& animationName, bool isLooped = true)<LimonAPI-setModelAnimation>`                                                                                              |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, long blendTime = 100)<LimonAPI-setModelAnimationWithBlend>`                                                      |
+| ``bool``                                      | :ref:`setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, uint64_t blendTime = 100)<LimonAPI-setModelAnimationWithBlend>`                                                  |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setModelAnimationSpeed(uint32_t modelID, float speed)<LimonAPI-setModelAnimationSpeed>`                                                                                                                               |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -25,7 +25,7 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`updateGuiText(uint32_t guiTextID, const std::string &newText)<LimonAPI-updateGuiText>`                                                                                                                                |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``uint32_t``                                  | :ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                                   |
+| ``bool``                                      | :ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                                   |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)<LimonAPI-addObject>`                                   |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -53,6 +53,12 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                          |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getObjectLinearVelocity(uint32_t objectID)<LimonAPI-getObjectLinearVelocity>`                                                                                                                                         |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setObjectLinearVelocity(uint32_t objectID, const LimonTypes::Vec4& velocity)<LimonAPI-setObjectLinearVelocity>`                                                                                                       |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``float``                                     | :ref:`getObjectMass(uint32_t objectID)<LimonAPI-getObjectMass>`                                                                                                                                                             |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`disconnectObjectFromPhysics(uint32_t modelID)<LimonAPI-disconnectObjectFromPhysics>`                                                                                                                                  |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`reconnectObjectToPhysics(uint32_t modelID)<LimonAPI-reconnectObjectToPhysics>`                                                                                                                                        |
@@ -61,11 +67,25 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                   |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath)<LimonAPI-attachSoundToObjectAndPlay>`                                                                                                |
+| ``bool``                                      | :ref:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)<LimonAPI-attachSoundToObjectAndPlay>`                                                                            |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`detachSoundFromObject(uint32_t objectWorldID)<LimonAPI-detachSoundFromObject>`                                                                                                                                        |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false)<LimonAPI-playSound>`                                                                           |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`stopSound(uint32_t soundID)<LimonAPI-stopSound>`                                                                                                                                                                      |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setSoundVolume(uint32_t soundID, float volume)<LimonAPI-setSoundVolume>`                                                                                                                                              |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`isSoundPlaying(uint32_t soundID)<LimonAPI-isSoundPlaying>`                                                                                                                                                            |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getPlayerPosition()<LimonAPI-getPlayerPosition>`                                                                                                                                                                      |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getPlayerLookDirection()<LimonAPI-getPlayerLookDirection>`                                                                                                                                                             |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getCameraPosition()<LimonAPI-getCameraPosition>`                                                                                                                                                                      |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getCameraLookDirection()<LimonAPI-getCameraLookDirection>`                                                                                                                                                             |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`getPlayerAttachedModel()<LimonAPI-getPlayerAttachedModel>`                                                                                                                                                            |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -103,7 +123,7 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`returnToWorld(const std::string& worldFileName)<LimonAPI-returnToWorld>`                                                                                                                                              |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`LoadAndRemove(const std::string& worldFileName)<LimonAPI-LoadAndRemove>`                                                                                                                                              |
+| ``bool``                                      | :ref:`loadAndRemove(const std::string& worldFileName)<LimonAPI-loadAndRemove>`                                                                                                                                              |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``void``                                      | :ref:`returnPreviousWorld()<LimonAPI-returnPreviousWorld>`                                                                                                                                                                  |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -111,7 +131,11 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                                    |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`isTriggerActive(uint32_t triggerID)<LimonAPI-isTriggerActive>`                                                                                                                                                        |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``LimonTypes::GenericParameter&``             | :ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                                   |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``std::vector<LimonTypes::GenericParameter>`` | :ref:`buildMultiSelect(const std::string& description, const std::vector\<std::string\>& options, size_t selectedIndex)<LimonAPI-buildMultiSelect>` *(static inline)*                                                       |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`rayCastToCursor()<LimonAPI-rayCastToCursor>`                                                                                                                                                                          |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -122,8 +146,6 @@ Limon Engine API Reference
 | ``bool``                                      | :ref:`cancelTimedEvent(long handleId)<LimonAPI-cancelTimedEvent>`                                                                                                                                                           |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``const OptionsUtil::Options*``               | :ref:`getOptions()<LimonAPI-getOptions>`                                                                                                                                                                                    |
-+-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`generateEditorElementsForParameters(std::vector<LimonTypes::GenericParameter> &runParameters, uint32_t index)<LimonAPI-generateEditorElementsForParameters>`                                                          |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |void                                           | :ref:`simulateInput(const InputStates& input)<LimonAPI-simulateInput>`                                                                                                                                                      |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -146,17 +168,6 @@ const OptionsUtil::Options *getOptions()
 ========================================
 
 Returns a pointer to the current options.
-
-.. _LimonAPI-generateEditorElementsForParameters:
-
-bool generateEditorElementsForParameters(std::vector<LimonTypes::GenericParameter> &runParameters, uint32_t index)
-==================================================================================================================
-
-Generates editor UI elements for the given parameters.
-
-Parameters:
-1. std::vector<LimonTypes::GenericParameter> &runParameters: The parameters to generate UI for
-2. uint32_t index: The index of the parameter to generate UI for
 
 .. _LimonAPI-simulateInput:
 
@@ -183,17 +194,17 @@ Returns:
 
 .. _LimonAPI-animateModel:
 
-uint32_t animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string \*soundPath)
-=========================================================================================================
+uint32_t animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string& soundPath = "")
+============================================================================================================
 
-Applies an custom animation to a model. returns model handle ID.
+Applies a custom animation to a model. Returns model handle ID.
 
 Parameters:
 
 #. uint32_t modelID: handle ID of the model to animate
 #. uint32_t animationID: handle ID of the animation
 #. bool looped: whether the animation is looped or one off.
-#. const std::string \*soundPath: sound to play while animation goes.  If NULL, no sound plays. Otherwise sound will be played in loop until the animation stops.
+#. const std::string& soundPath: path of the sound to play while the animation runs. If empty (default), no sound plays. Otherwise the sound will be played in a loop until the animation stops.
 
 .. _LimonAPI-getModelAnimationName:
 
@@ -235,8 +246,8 @@ Parameters:
 
 .. _LimonAPI-setModelAnimationWithBlend:
 
-bool setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, long blendTime = 100)
-===============================================================================================================================
+bool setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, uint64_t blendTime = 100)
+=================================================================================================================================
 
 Applies an "Asset" animation to a model, blending it (using linear interpolation) with the previous animation. Returns false if model is not found.
 
@@ -245,7 +256,7 @@ Parameters:
 #. uint32_t modelID: handle ID of the model to animate
 #. const std::string& animationName: Name of the animation to play
 #. bool isLooped: Whether play animation and stop, or play in a loop
-#. long blendTime: How long the previous animation will effect state.
+#. uint64_t blendTime: How long (in milliseconds) the previous animation will influence the blended state.
 
 .. _LimonAPI-setModelAnimationSpeed:
 
@@ -317,14 +328,14 @@ Parameters:
 
 .. _LimonAPI-removeGuiElement:
 
-uint32_t removeGuiElement(uint32_t guiElementID)
-================================================
+bool removeGuiElement(uint32_t guiElementID)
+============================================
 
-Removes the GUIText indicated by the handle ID. Returns 0 for success, 1 for invalid Handle ID
+Removes the GUI element indicated by the handle ID. Returns true for success, false for invalid handle ID.
 
 Parameters:
 
-#. uint32_t guiElementID: GUIText handle ID
+#. uint32_t guiElementID: GUI element handle ID
 
 .. _LimonAPI-addObject:
 
@@ -373,6 +384,9 @@ std::vector<LimonTypes::GenericParameter> getObjectTransformation(uint32_t objec
 =====================================================================================
 
 returns objects transformation information. If the object ID is valid, the returned vector will contain 3 vec4 parameters, translate, scale, orientation in respective order. For translate and scale, w component is not used. Orientation is in quaternion form. Returns empty vector if object not found.
+
+.. note::
+    Prefer :ref:`getObjectTransformationMatrix <LimonAPI-getObjectTransformationMatrix>` when you need the final world matrix. Physical objects can define collision-shape offsets that are baked into the matrix but are not reflected in the decomposed translate/scale/orientation values returned here. Use this method only when you specifically need the individual TRS components.
 
 Parameters:
 
@@ -471,7 +485,7 @@ Rotates the object from current orientation. Returns false if object ID not foun
 Parameters:
 
 #. uint32_t objectID: handle id of the object to change orientation.
-#. const LimonAPI::Vec4& orientation: new position of the object
+#. const LimonAPI::Vec4& orientation: new orientation of the object
 
 .. _LimonAPI-removeObject:
 
@@ -496,6 +510,40 @@ Removes trigger volume indicated by the handle ID passed. Returns true for succe
 Parameters:
 
 #. uint32_t TriggerObjectID: handle id of the trigger volume to remove.
+
+.. _LimonAPI-getObjectLinearVelocity:
+
+LimonTypes::Vec4 getObjectLinearVelocity(uint32_t objectID)
+============================================================
+
+Returns the linear velocity of the object's rigid body as a Vec4 (w=0). Returns a zero Vec4 if the object is not found or has no rigid body.
+
+Parameters:
+
+#. uint32_t objectID: Handle ID of the model.
+
+.. _LimonAPI-setObjectLinearVelocity:
+
+bool setObjectLinearVelocity(uint32_t objectID, const LimonTypes::Vec4& velocity)
+==================================================================================
+
+Sets the linear velocity of the object's rigid body. Wakes the body if sleeping. Returns false if the object is not found or has no rigid body.
+
+Parameters:
+
+#. uint32_t objectID: Handle ID of the model.
+#. const LimonTypes::Vec4& velocity: Desired velocity in world space (w is ignored).
+
+.. _LimonAPI-getObjectMass:
+
+float getObjectMass(uint32_t objectID)
+=======================================
+
+Returns the mass of the object in kilograms. Returns 0.0 for static objects or if the object is not found.
+
+Parameters:
+
+#. uint32_t objectID: Handle ID of the model.
 
 .. _LimonAPI-disconnectObjectFromPhysics:
 
@@ -529,7 +577,7 @@ Applies force to object using physics engine. This method have effect on only dy
 
 Parameters:
 
-#. uint32_t modelID: handle id of the model to connect.
+#. uint32_t modelID: handle id of the model to apply force to.
 #. const LimonAPI::Vec4 &forcePosition: World position for the force vector to originate. Raycast results can be used for this method. Only 3 components of this method will be used, w component will be ignored.
 #. const LimonAPI::Vec4 &forceAmount: Force vector. Only 3 components of this method will be used, w component will be ignored.
 
@@ -546,15 +594,16 @@ Parameters:
 
 .. _LimonAPI-attachSoundToObjectAndPlay:
 
-bool attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath)
-=====================================================================================
+bool attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)
+=========================================================================================================
 
-Creates a sound, attaches it to an object and plays. The sound is played in loop. Attaching an object means the sound source position and velocity will follow the object. Returns false if the object is not found.
+Creates a sound, attaches it to an object and plays it. Attaching means the sound source position and velocity follow the object. Returns false if the object is not found.
 
-Parameter:
+Parameters:
 
 #. uint32_t objectWorldID: Handle id of the object to attach.
 #. const std::string &soundPath: Path of the sound to play.
+#. bool looped: Whether the sound plays in a loop. Defaults to true.
 
 .. _LimonAPI-detachSoundFromObject:
 
@@ -569,7 +618,7 @@ Parameter:
 
 .. _LimonAPI-playSound:
 
-uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative bool looped)
+uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative, bool looped)
 ==============================================================================================================
 
 Creates and plays a sound. Returns uin32_t playing sound ID.
@@ -580,6 +629,84 @@ Parameters:
 #. const glm::vec3 &position: World position of the sound source.
 #. bool positionRelative: True if position given it relative to player. Defaults to false.
 #. bool looped: Play once or play in a loop. Defaults to false
+
+.. _LimonAPI-stopSound:
+
+bool stopSound(uint32_t soundID)
+================================
+
+Stops a playing sound. Returns false if the sound ID is not found.
+
+Parameters:
+
+#. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
+
+.. _LimonAPI-setSoundVolume:
+
+bool setSoundVolume(uint32_t soundID, float volume)
+===================================================
+
+Sets the volume (gain) of a sound. Returns false if the sound ID is not found or the sound has not started playing yet.
+
+Parameters:
+
+#. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
+#. float volume: New gain value.
+
+.. _LimonAPI-isSoundPlaying:
+
+bool isSoundPlaying(uint32_t soundID)
+=====================================
+
+Returns true if the sound is currently playing or finishing a non-looped play-through. Returns false if not found.
+
+Parameters:
+
+#. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
+
+.. _LimonAPI-getPlayerPosition:
+
+LimonTypes::Vec4 getPlayerPosition()
+=====================================
+
+Returns the player's current world position as a Vec4 (w=1).
+
+Parameters:
+
+none
+
+.. _LimonAPI-getPlayerLookDirection:
+
+LimonTypes::Vec4 getPlayerLookDirection()
+==========================================
+
+Returns the player's normalized look direction as a Vec4 (w=0).
+
+Parameters:
+
+none
+
+.. _LimonAPI-getCameraPosition:
+
+LimonTypes::Vec4 getCameraPosition()
+=====================================
+
+Returns the camera's world position as a Vec4 (w=1). In the current design the camera is always at the player position.
+
+Parameters:
+
+none
+
+.. _LimonAPI-getCameraLookDirection:
+
+LimonTypes::Vec4 getCameraLookDirection()
+==========================================
+
+Returns the camera's normalized look direction as a Vec4 (w=0). In the current design this is identical to :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
+
+Parameters:
+
+none
 
 .. _LimonAPI-getPlayerAttachedModel:
 
@@ -803,9 +930,9 @@ Parameters:
 
 #. const std::string& worldFileName: The file path+name of the world to load.
 
-.. _LimonAPI-LoadAndRemove:
+.. _LimonAPI-loadAndRemove:
 
-bool LoadAndRemove(const std::string& worldFileName)
+bool loadAndRemove(const std::string& worldFileName)
 ====================================================
 
 Loads the world requested, and removes the current world. Returns true if load successful, false if not. If not successful, world doesn't change.
@@ -850,6 +977,19 @@ Parameters:
 #. uint32_t TriggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
 
 
+.. _LimonAPI-isTriggerActive:
+
+bool isTriggerActive(uint32_t triggerID)
+========================================
+
+Returns whether a player is currently inside the trigger volume.
+
+Parameters:
+
+#. uint32_t triggerID: The handleID of the trigger object
+
+Returns true if the player is inside the volume, false if not or if the trigger ID is not found.
+
 .. _LimonAPI-getVariable:
 
 LimonTypes::GenericParameter& getVariable(const std::string& variableName)
@@ -865,6 +1005,27 @@ The variables are accessible by all triggers, and there are no safety checks. Us
 Parameters:
 
 #. const std::string& variableName: The name of the variable that should be returned.
+
+.. _LimonAPI-buildMultiSelect:
+
+std::vector<LimonTypes::GenericParameter> buildMultiSelect(const std::string& description, const std::vector<std::string>& options, size_t selectedIndex) *(static inline)*
+===========================================================================================================================================================================
+
+Builds the parameter block that the editor expects for a ``MULTI_SELECT`` parameter. Returns a vector of ``GenericParameter`` objects: the first element holds the currently selected string; subsequent elements are one entry per option.
+
+Append the returned vector to your ``getParameters()`` result at the position where the multi-select should appear.
+
+.. code-block:: cpp
+
+    // Example: select which gun type the enemy carries
+    auto gunOptions = LimonAPI::buildMultiSelect("Gun type", {"Pistol", "Rifle", "Shotgun"}, 0);
+    for(auto& p : gunOptions) parameters.push_back(p);
+
+Parameters:
+
+#. const std::string& description: Display label shown in the editor. All generated parameters share this description — the editor uses it to group them.
+#. const std::vector<std::string>& options: List of option strings.
+#. size_t selectedIndex: Index into ``options`` of the currently selected item. If out of range, the selection string is left empty.
 
 .. _LimonAPI-rayCastToCursor:
 
