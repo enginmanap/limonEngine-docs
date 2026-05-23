@@ -184,40 +184,13 @@ Limon Engine API Reference
 |bool                                           | :ref:`clearDebugLines(uint32_t bufferIndex)<LimonAPI-clearDebugLines>`                                                                                                                                                      |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-.. _LimonAPI-getOptions:
-
-const OptionsUtil::Options *getOptions()
-========================================
-
-Returns a pointer to the current options.
-
-.. _LimonAPI-simulateInput:
-
-void simulateInput(const InputStates& input)
-============================================
-
-Simulates input events for testing or automation purposes.
-
-Parameters:
-1. const InputStates& input: The input state to simulate
-
-.. _LimonAPI-changeRenderPipeline:
-
-bool changeRenderPipeline(const std::string& pipelineFileName)
-==============================================================
-
-Changes the current rendering pipeline to the one specified by the given file.
-
-Parameters:
-1. const std::string& pipelineFileName: The filename of the pipeline configuration to load
-
-Returns:
-   bool: True if the pipeline was changed successfully, false otherwise
+Animation
+=========
 
 .. _LimonAPI-animateModel:
 
 uint32_t animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string& soundPath = "")
-============================================================================================================
+-------------------------------------------------------------------------------------------------------------
 
 Applies a custom animation to a model. Returns model handle ID.
 
@@ -231,7 +204,7 @@ Parameters:
 .. _LimonAPI-getModelAnimationName:
 
 std::string getModelAnimationName(uint32_t modelID)
-===================================================
+----------------------------------------------------
 
 Returns current "Asset" animation name of the model. If a custom animation is applied to the model, it is not returned. Returns empty string when model is not found.
 
@@ -245,7 +218,7 @@ Parameters:
 .. _LimonAPI-getModelAnimationFinished:
 
 bool getModelAnimationFinished(uint32_t modelID)
-================================================
+-------------------------------------------------
 
 Returns true if model finished playing animation. For looped animations always returns false. Also returns false if model is not found.
 
@@ -256,7 +229,7 @@ Parameters:
 .. _LimonAPI-getModelAnimationProgress:
 
 float getModelAnimationProgress(uint32_t modelID)
-=================================================
+--------------------------------------------------
 
 Returns the normalized progress [0.0, 1.0] of the custom animation currently running on the model (started via ``animateModel``). For looped animations the value wraps back to 0.0 at the end of each cycle. Returns 0.0 if the model has no active custom animation or is not found.
 
@@ -267,7 +240,7 @@ Parameters:
 .. _LimonAPI-listModelAnimations:
 
 std::vector<std::string> listModelAnimations(uint32_t modelID)
-==============================================================
+---------------------------------------------------------------
 
 Returns the names of all animations embedded in the model's asset file. These names can be passed to ``setModelAnimation``. Returns an empty vector if the model is not found.
 
@@ -278,7 +251,7 @@ Parameters:
 .. _LimonAPI-setModelAnimation:
 
 bool setModelAnimation(uint32_t modelID, const std::string& animationName, bool isLooped = true)
-================================================================================================
+-------------------------------------------------------------------------------------------------
 
 Applies an "Asset" animation to a model. Returns false if model is not found.
 
@@ -291,7 +264,7 @@ Parameters:
 .. _LimonAPI-setModelAnimationWithBlend:
 
 bool setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, uint64_t blendTime = 100)
-=================================================================================================================================
+-----------------------------------------------------------------------------------------------------------------------------------
 
 Applies an "Asset" animation to a model, blending it (using linear interpolation) with the previous animation. Returns false if model is not found.
 
@@ -305,20 +278,19 @@ Parameters:
 .. _LimonAPI-setModelAnimationSpeed:
 
 bool setModelAnimationSpeed(uint32_t modelID, float speed)
-==========================================================
+----------------------------------------------------------
 
-Changes animation speed by given factor. speed=2.0 will double the animation speed. Speed values < 0.001f will be rejected and return false. If model is not found it will return false
+Changes animation speed by given factor. speed=2.0 will double the animation speed. Speed values < 0.001f will be rejected and return false. If model is not found it will return false.
 
 Parameters:
 
 #. uint32_t modelID: handle ID of the model to animate
 #. float speed: Animation time multiplier
 
-
 .. _LimonAPI-getModelChildren:
 
 std::vector<uint32_t> getModelChildren(uint32_t modelID)
-========================================================
+---------------------------------------------------------
 
 Returns a vector of IDs with all children of model. Returns empty list for Model not found, as well as no children found.
 
@@ -326,10 +298,13 @@ Parameters:
 
 #. uint32_t modelID: handle ID of the model to check for children
 
+GUI Methods
+===========
+
 .. _LimonAPI-addGuiText:
 
 uint32_t addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)
-============================================================================================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Adds GUI Text to world. Returns created GUITexts handle ID.
 
@@ -346,7 +321,7 @@ Parameters:
 .. _LimonAPI-addGuiImage:
 
 uint32_t addGuiImage(const std::string &imageFilePath, const std::string &name, const glm::vec2 &position, const glm::vec3 &scale, float rotation)
-==================================================================================================================================================
+--------------------------------------------------------------------------------------------------------------------------------------------------
 
 Adds GUI Image to world. Returns created GUIImage handle ID.
 
@@ -361,7 +336,7 @@ Parameters:
 .. _LimonAPI-updateGuiText:
 
 bool updateGuiText(uint32_t guiTextID, const std::string &newText)
-==================================================================
+------------------------------------------------------------------
 
 Updates rendered text of the GUIText provided by the handle ID. Returns true if successful, false if handle ID invalid.
 
@@ -373,7 +348,7 @@ Parameters:
 .. _LimonAPI-removeGuiElement:
 
 bool removeGuiElement(uint32_t guiElementID)
-============================================
+--------------------------------------------
 
 Removes the GUI element indicated by the handle ID. Returns true for success, false for invalid handle ID.
 
@@ -384,7 +359,7 @@ Parameters:
 .. _LimonAPI-getGuiElementPosition:
 
 LimonTypes::Vec4 getGuiElementPosition(uint32_t guiElementID)
-=============================================================
+--------------------------------------------------------------
 
 Returns the screen position of the GUI element as Vec4 (x, y, 0, 1). Coordinates are in the same screen-space range used by ``addGuiText`` and ``addGuiImage``. Returns zero Vec4 if the element is not found.
 
@@ -395,7 +370,7 @@ Parameters:
 .. _LimonAPI-setGuiElementPosition:
 
 bool setGuiElementPosition(uint32_t guiElementID, const LimonTypes::Vec4& position)
-====================================================================================
+------------------------------------------------------------------------------------
 
 Sets the screen position of a GUI element. The x and y components are used; z and w are ignored. Returns false if the element is not found.
 
@@ -407,7 +382,7 @@ Parameters:
 .. _LimonAPI-setGuiElementVisible:
 
 bool setGuiElementVisible(uint32_t guiElementID, bool visible)
-==============================================================
+--------------------------------------------------------------
 
 Shows or hides a GUI element without removing it. Hidden elements are not rendered but remain in the world and can be made visible again. Returns false if the element is not found.
 
@@ -416,10 +391,13 @@ Parameters:
 #. uint32_t guiElementID: GUI element handle ID
 #. bool visible: true to show, false to hide
 
+Object Manipulation
+===================
+
 .. _LimonAPI-addObject:
 
 uint32_t addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)
-=======================================================================================================================================================================
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Adds Model to world. Returns created Model handle ID.
 
@@ -432,11 +410,10 @@ Parameters:
 #. const glm::vec3 &scale: scale of the object.
 #. const glm::quat &orientation: Rotation of the model.
 
-
 .. _LimonAPI-attachObjectToObject:
 
 bool attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)
-=========================================================================
+-------------------------------------------------------------------------
 
 Attaches object indicated by the handle ID, to another object indicated by second parameter. Returns true for success, false for invalid Handle ID for either parameter. Attachment means if parent object move, child will move too. Example usage: bullet hole decals to dynamic objects. The object should have a transformation relative to the object it will be attached.
 
@@ -448,7 +425,7 @@ Parameters:
 .. _LimonAPI-setObjectTemporary:
 
 bool setObjectTemporary(uint32_t objectID, bool temporary)
-==========================================================
+----------------------------------------------------------
 
 Changes objects temporary flag. If an object is temporary, it won't be saved with map save. There is no other difference. Returns false if object can't be found. Returns true if successful.
 
@@ -460,7 +437,7 @@ Parameters:
 .. _LimonAPI-getObjectTransformation:
 
 std::vector<LimonTypes::GenericParameter> getObjectTransformation(uint32_t objectID)
-=====================================================================================
+-------------------------------------------------------------------------------------
 
 returns objects transformation information. If the object ID is valid, the returned vector will contain 3 vec4 parameters, translate, scale, orientation in respective order. For translate and scale, w component is not used. Orientation is in quaternion form. Returns empty vector if object not found.
 
@@ -474,7 +451,7 @@ Parameters:
 .. _LimonAPI-getObjectTransformationMatrix:
 
 std::vector<LimonTypes::GenericParameter> getObjectTransformationMatrix(uint32_t objectID)
-===========================================================================================
+-------------------------------------------------------------------------------------------
 
 returns objects transformation matrix. If object has custom matrix generation (Physical object can define offsets), transformation might not be enough to build the matrix. This method provides objects matrix as Limon Engine has it. Returns empty vector if object not found.
 
@@ -485,7 +462,7 @@ Parameters:
 .. _LimonAPI-setObjectTranslate:
 
 bool setObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)
-==========================================================================
+--------------------------------------------------------------------------
 
 Sets objects world position to 2. parameter. Returns false if object is not found.
 
@@ -500,7 +477,7 @@ Parameters:
 .. _LimonAPI-setObjectScale:
 
 bool setObjectScale(uint32_t objectID, const LimonAPI::Vec4& scale)
-===================================================================
+-------------------------------------------------------------------
 
 Sets objects scale to 2. parameter. Returns false if object is not found.
 
@@ -515,7 +492,7 @@ Parameters:
 .. _LimonAPI-setObjectOrientation:
 
 bool setObjectOrientation(uint32_t objectID, const LimonAPI::Vec4& orientation)
-===============================================================================
+-------------------------------------------------------------------------------
 
 Sets object world orientation to 2. parameter, aka rotates it. Returns false if object is not found.
 
@@ -527,7 +504,7 @@ Parameters:
 .. _LimonAPI-addObjectTranslate:
 
 bool addObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)
-==========================================================================
+--------------------------------------------------------------------------
 
 Adds given vector to objects current world position, effectively moving it. Returns false if object is not found.
 
@@ -542,7 +519,7 @@ Parameters:
 .. _LimonAPI-addObjectScale:
 
 bool addObjectScale(uint32_t objectID, const LimonAPI::Vec4& scale)
-===================================================================
+-------------------------------------------------------------------
 
 Scales the object, in respect to its current scale. If object is scaled to double of its original size before this call, and this call scales it to half, object will be at its original size afterwards. Returns false if object is not found.
 
@@ -557,7 +534,7 @@ Parameters:
 .. _LimonAPI-addObjectOrientation:
 
 bool addObjectOrientation(uint32_t objectID, const LimonAPI::Vec4& orientation)
-===============================================================================
+-------------------------------------------------------------------------------
 
 Rotates the object from current orientation. Returns false if object ID not found.
 
@@ -569,7 +546,7 @@ Parameters:
 .. _LimonAPI-removeObject:
 
 bool removeObject(uint32_t objectID, const bool &removeChildren = true)
-=======================================================================
+-----------------------------------------------------------------------
 
 Removes object indicated by the handle ID passed. Returns true for success, false for invalid Handle ID.
 
@@ -578,11 +555,10 @@ Parameters:
 #. uint32_t objectID: handle id of the object to remove.
 #. const bool &removeChildren: if true, child objects are also removed. Defaults to true.
 
-
 .. _LimonAPI-removeTriggerObject:
 
 bool removeTriggerObject(uint32_t TriggerObjectID)
-==================================================
+--------------------------------------------------
 
 Removes trigger volume indicated by the handle ID passed. Returns true for success, false if trigger handle ID invalid.
 
@@ -593,7 +569,7 @@ Parameters:
 .. _LimonAPI-getObjectLinearVelocity:
 
 LimonTypes::Vec4 getObjectLinearVelocity(uint32_t objectID)
-============================================================
+------------------------------------------------------------
 
 Returns the linear velocity of the object's rigid body as a Vec4 (w=0). Returns a zero Vec4 if the object is not found or has no rigid body.
 
@@ -604,7 +580,7 @@ Parameters:
 .. _LimonAPI-setObjectLinearVelocity:
 
 bool setObjectLinearVelocity(uint32_t objectID, const LimonTypes::Vec4& velocity)
-==================================================================================
+----------------------------------------------------------------------------------
 
 Sets the linear velocity of the object's rigid body. Wakes the body if sleeping. Returns false if the object is not found or has no rigid body.
 
@@ -616,7 +592,7 @@ Parameters:
 .. _LimonAPI-getObjectMass:
 
 float getObjectMass(uint32_t objectID)
-=======================================
+--------------------------------------
 
 Returns the mass of the object in kilograms. Returns 0.0 for static objects or if the object is not found.
 
@@ -627,7 +603,7 @@ Parameters:
 .. _LimonAPI-disconnectObjectFromPhysics:
 
 bool disconnectObjectFromPhysics(uint32_t modelID)
-==================================================
+--------------------------------------------------
 
 Disconnects the model from physics, but it will be rendered as usual. Including custom and asset builtin animations. Returns true for success, false for fail. Fail can be either Handle ID invalid or the object is not a model, and can't be disconnected.
 
@@ -635,11 +611,10 @@ Parameters:
 
 #. uint32_t modelID: handle id of the model to disconnect.
 
-
 .. _LimonAPI-reconnectObjectToPhysics:
 
 bool reconnectObjectToPhysics(uint32_t modelID)
-===============================================
+-----------------------------------------------
 
 Connects the model from physics. Returns true for success, false for fail. Fail can be either Handle ID invalid or the object is not a model, and can't be connected. Does nothing if already connected, returns true.
 
@@ -650,7 +625,7 @@ Parameters:
 .. _LimonAPI-applyForce:
 
 bool applyForce(uint32_t modelID, const LimonAPI::Vec4 &forcePosition, const LimonAPI::Vec4 &forceAmount)
-=========================================================================================================
+---------------------------------------------------------------------------------------------------------
 
 Applies force to object using physics engine. This method have effect on only dynamic objects. Returns false if object is not found.
 
@@ -663,7 +638,7 @@ Parameters:
 .. _LimonAPI-applyForceToPlayer:
 
 bool applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)
-==========================================================
+----------------------------------------------------------
 
 Applies force to player using physics engine. Returns false if physical player is not used in this world(map).
 
@@ -671,10 +646,77 @@ Parameters:
 
 #. const LimonAPI::Vec4 &forceAmount: Force vector. Only 3 components of this method will be used, w component will be ignored.
 
+.. _LimonAPI-isInsideTrigger:
+
+bool isInsideTrigger(uint32_t triggerID)
+----------------------------------------
+
+Returns whether a player is currently inside the trigger volume.
+
+Parameters:
+
+#. uint32_t triggerID: The handleID of the trigger object
+
+Returns true if the player is inside the volume, false if not or if the trigger ID is not found.
+
+.. _LimonAPI-getResultOfTrigger:
+
+std::vector<LimonTypes::GenericParameter> getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
+--------------------------------------------------------------------------------------------------------------
+
+Returns the result of the trigger object. For details, check :ref:`trigger object editor<Trigger Object Editor>`
+
+Parameters:
+
+#. uint32_t TriggerObjectID: The handleID of trigger object
+#. uint32_t TriggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
+
+.. _LimonAPI-getObjectByName:
+
+uint32_t getObjectByName(const std::string& name)
+-------------------------------------------------
+
+Searches all models, GUI elements, and trigger objects by name and returns the world object ID of the first match.
+
+Parameters:
+
+#. const std::string& name: The name to search for. For models this is ``modelName_ID`` (as shown in the editor). For triggers it is the trigger name.
+
+Returns the object ID if found, 0 if not found.
+
+.. _LimonAPI-getObjectParent:
+
+uint32_t getObjectParent(uint32_t objectID)
+-------------------------------------------
+
+Returns the world object ID of the parent of the given object.
+
+Parameters:
+
+#. uint32_t objectID: The handleID of the object whose parent is requested
+
+Returns the parent object ID, or 0 if the object has no parent or is not found.
+
+.. _LimonAPI-isObjectPhysicsConnected:
+
+bool isObjectPhysicsConnected(uint32_t objectID)
+------------------------------------------------
+
+Returns whether the object is currently active in the physics simulation. Objects can be disconnected from physics via ``disconnectObjectFromPhysics`` and reconnected via ``reconnectObjectToPhysics``.
+
+Parameters:
+
+#. uint32_t objectID: The handleID of the object
+
+Returns true if physics-connected, false if disconnected or not found.
+
+Sound
+=====
+
 .. _LimonAPI-attachSoundToObjectAndPlay:
 
 bool attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)
-=========================================================================================================
+---------------------------------------------------------------------------------------------------------
 
 Creates a sound, attaches it to an object and plays it. Attaching means the sound source position and velocity follow the object. Returns false if the object is not found.
 
@@ -687,7 +729,7 @@ Parameters:
 .. _LimonAPI-detachSoundFromObject:
 
 bool detachSoundFromObject(uint32_t objectWorldID)
-==================================================
+--------------------------------------------------
 
 Removes the sound already attached from the object, and stops the sound. Returns false if the object is not found.
 
@@ -698,7 +740,7 @@ Parameter:
 .. _LimonAPI-playSound:
 
 uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative, bool looped)
-==============================================================================================================
+---------------------------------------------------------------------------------------------------------------
 
 Creates and plays a sound. Returns uin32_t playing sound ID.
 
@@ -712,7 +754,7 @@ Parameters:
 .. _LimonAPI-stopSound:
 
 bool stopSound(uint32_t soundID)
-================================
+---------------------------------
 
 Stops a playing sound. Returns false if the sound ID is not found.
 
@@ -723,7 +765,7 @@ Parameters:
 .. _LimonAPI-setSoundVolume:
 
 bool setSoundVolume(uint32_t soundID, float volume)
-===================================================
+---------------------------------------------------
 
 Sets the volume (gain) of a sound. Returns false if the sound ID is not found or the sound has not started playing yet.
 
@@ -735,7 +777,7 @@ Parameters:
 .. _LimonAPI-isSoundPlaying:
 
 bool isSoundPlaying(uint32_t soundID)
-=====================================
+--------------------------------------
 
 Returns true if the sound is currently playing or finishing a non-looped play-through. Returns false if not found.
 
@@ -743,10 +785,13 @@ Parameters:
 
 #. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
 
+Player
+======
+
 .. _LimonAPI-getPlayerPosition:
 
 LimonTypes::Vec4 getPlayerPosition()
-=====================================
+--------------------------------------
 
 Returns the player's current world position as a Vec4 (w=1).
 
@@ -757,7 +802,7 @@ none
 .. _LimonAPI-getPlayerLookDirection:
 
 LimonTypes::Vec4 getPlayerLookDirection()
-==========================================
+------------------------------------------
 
 Returns the player's normalized look direction as a Vec4 (w=0).
 
@@ -768,9 +813,9 @@ none
 .. _LimonAPI-getCameraPosition:
 
 LimonTypes::Vec4 getCameraPosition()
-=====================================
+--------------------------------------
 
-Returns the camera's world position as a Vec4 (w=1). This comactive camera attachment — if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerPosition<LimonAPI-getPlayerPosition>`.
+Returns the camera's world position as a Vec4 (w=1). This comes from the active camera attachment — if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerPosition<LimonAPI-getPlayerPosition>`.
 
 Parameters:
 
@@ -779,7 +824,7 @@ none
 .. _LimonAPI-getCameraLookDirection:
 
 LimonTypes::Vec4 getCameraLookDirection()
-==========================================
+------------------------------------------
 
 Returns the camera's normalized look direction as a Vec4 (w=0). This comes from the active camera attachment — if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
 
@@ -790,7 +835,7 @@ none
 .. _LimonAPI-getPlayerAttachedModel:
 
 uint32_t getPlayerAttachedModel()
-=================================
+----------------------------------
 
 Returns the model ID of player attachment. return 0 if player has no attachment.
 
@@ -804,7 +849,7 @@ none
 .. _LimonAPI-getPlayerAttachedModelOffset:
 
 LimonAPI::Vec4 getPlayerAttachedModelOffset()
-=============================================
+----------------------------------------------
 
 Returns offset of the model attached to player. returns Vec4(0,0,0,0) if player has no attachment.
 
@@ -815,7 +860,7 @@ none
 .. _LimonAPI-setPlayerAttachedModelOffset:
 
 bool setPlayerAttachedModelOffset(LimonAPI::Vec4 newOffset)
-===========================================================
+------------------------------------------------------------
 
 Sets offset to player attachment. Returns false if player has no attachment.
 
@@ -826,7 +871,7 @@ Parameters:
 .. _LimonAPI-interactWithPlayer:
 
 void interactWithPlayer(std::vector<LimonTypes::GenericParameter> &interactionInformation)
-===========================================================================================
+-------------------------------------------------------------------------------------------
 
 Sends the interaction information to player Extension. If no extension is loaded, it will not have any effect.
 
@@ -837,7 +882,7 @@ Parameters:
 .. _LimonAPI-killPlayer:
 
 void killPlayer()
-=================
+------------------
 
 Kills the player.
 
@@ -848,7 +893,7 @@ none
 .. _LimonAPI-interactWithAI:
 
 bool interactWithAI(uint32_t AIID, std::vector<LimonTypes::GenericParameter> &interactionInformation)
-======================================================================================================
+------------------------------------------------------------------------------------------------------
 
 Sends the parameters to AI as new interaction. Since AI is an extension point, the parameters required are not defined by Limon engine. Returns false if no AI actor with given ID found.
 
@@ -857,10 +902,13 @@ Parameters:
 #. uint32_t AIID: ID of AI actor to send the data
 #. std::vector<LimonTypes::GenericParameter> &interactionInformation: Parameters to pass.
 
+Particle Systems
+================
+
 .. _LimonAPI-addParticleEmitter:
 
 uint32_t addParticleEmitter(const std::string &name, const std::string &textureFile, const LimonTypes::Vec4 &startPosition, const LimonTypes::Vec4 &maxStartDistances, const LimonTypes::Vec2 &size, uint32_t count, uint32_t lifeTime, float particlePerMs, bool continuouslyEmit)
-=================================================================================================================================================================================================================================================================================
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Creates a new particle emitter in the world and returns its handle ID.
 
@@ -879,7 +927,7 @@ Parameters:
 .. _LimonAPI-removeParticleEmitter:
 
 bool removeParticleEmitter(uint32_t emitterID)
-==============================================
+----------------------------------------------
 
 Removes the particle emitter indicated by the handle ID. Returns true on success, false if the ID is not found.
 
@@ -890,7 +938,7 @@ Parameters:
 .. _LimonAPI-enableParticleEmitter:
 
 bool enableParticleEmitter(uint32_t particleEmitterId)
-======================================================
+------------------------------------------------------
 
 Resumes a previously disabled particle emitter. Returns true on success, false if the ID is not found.
 
@@ -901,7 +949,7 @@ Parameters:
 .. _LimonAPI-disableParticleEmitter:
 
 bool disableParticleEmitter(uint32_t particleEmitterId)
-=======================================================
+-------------------------------------------------------
 
 Pauses a particle emitter so it stops spawning new particles. Existing live particles continue until their lifetime expires. Returns true on success, false if the ID is not found.
 
@@ -912,7 +960,7 @@ Parameters:
 .. _LimonAPI-setEmitterParticleSpeed:
 
 bool setEmitterParticleSpeed(uint32_t emitterID, const LimonTypes::Vec4 &speedMultiplier, const LimonTypes::Vec4 &speedOffset)
-==============================================================================================================================
+------------------------------------------------------------------------------------------------------------------------------
 
 Sets the speed parameters for particles spawned by the emitter. ``speedMultiplier`` scales the base velocity and ``speedOffset`` adds a constant velocity component. Returns false if the emitter ID is not found.
 
@@ -925,7 +973,7 @@ Parameters:
 .. _LimonAPI-setEmitterParticleGravity:
 
 bool setEmitterParticleGravity(uint32_t emitterID, const LimonTypes::Vec4 &gravity)
-====================================================================================
+------------------------------------------------------------------------------------
 
 Sets the gravity vector applied to particles spawned by the emitter each tick. Returns false if the emitter ID is not found.
 
@@ -934,10 +982,13 @@ Parameters:
 #. uint32_t emitterID: Handle ID of the emitter.
 #. const LimonTypes::Vec4 &gravity: Per-axis acceleration applied each frame. W component ignored.
 
+Lighting
+========
+
 .. _LimonAPI-addLight:
 
 uint32_t addLight(uint32_t lightType, const LimonAPI::Vec4& position, const LimonAPI::Vec4& color)
-===================================================================================================
+---------------------------------------------------------------------------------------------------
 
 Creates and adds a new light to the world. Returns the new light's handle ID, or 0 on failure.
 
@@ -955,7 +1006,7 @@ Parameters:
 .. _LimonAPI-removeLight:
 
 bool removeLight(uint32_t lightID)
-==================================
+----------------------------------
 
 Removes the light indicated by lightID. Properly shuts down visibility threads associated with the light's shadow cameras before deletion. Returns true on success, false if no light with the given ID is found.
 
@@ -966,7 +1017,7 @@ Parameters:
 .. _LimonAPI-addLightTranslate:
 
 bool addLightTranslate(uint32_t lightID, const LimonAPI::Vec4& translate)
-=========================================================================
+-------------------------------------------------------------------------
 
 Adds given translate to current position of the light indicated by the lightID. Returns false if no light with given ID found.
 
@@ -978,7 +1029,7 @@ Parameters:
 .. _LimonAPI-setLightColor:
 
 bool setLightColor(uint32_t lightID, const LimonAPI::Vec4& color)
-=================================================================
+-----------------------------------------------------------------
 
 Sets the color of the light, indicated by lightID parameter. Returns false if no light with given ID found.
 
@@ -990,7 +1041,7 @@ Parameters:
 .. _LimonAPI-getLightPosition:
 
 LimonTypes::Vec4 getLightPosition(uint32_t lightID)
-====================================================
+----------------------------------------------------
 
 Returns the world-space position of the light as Vec4 with w=1. Returns zero Vec4 if no light with the given ID is found.
 
@@ -1001,7 +1052,7 @@ Parameters:
 .. _LimonAPI-getLightColor:
 
 LimonTypes::Vec4 getLightColor(uint32_t lightID)
-================================================
+-------------------------------------------------
 
 Returns the color of the light as Vec4 with w=1. Returns zero Vec4 if no light with the given ID is found.
 
@@ -1012,7 +1063,7 @@ Parameters:
 .. _LimonAPI-setLightTranslate:
 
 bool setLightTranslate(uint32_t lightID, const LimonTypes::Vec4& position)
-===========================================================================
+--------------------------------------------------------------------------
 
 Sets the absolute world-space position of a light. Unlike ``addLightTranslate``, this replaces the current position rather than adding to it. Returns false if no light with the given ID is found.
 
@@ -1021,10 +1072,13 @@ Parameters:
 #. uint32_t lightID: Handle ID of the light
 #. const LimonTypes::Vec4& position: Target world-space position. W component will be ignored.
 
+World Management
+================
+
 .. _LimonAPI-loadAndSwitchWorld:
 
 bool loadAndSwitchWorld(const std::string& worldFileName)
-=========================================================
+---------------------------------------------------------
 
 Loads a world file, then switches the current world to the newly loaded one. If the world file was already loaded, removes the old one, effectively resetting the world. Returns false if the world file couldn't be loaded, or it is the current world. Since caller is part of current world, removing it is not possible.
 
@@ -1035,7 +1089,7 @@ Parameters:
 .. _LimonAPI-returnToWorld:
 
 bool returnToWorld(const std::string& worldFileName)
-====================================================
+----------------------------------------------------
 
 Checks if the world file is loaded. If it is not, loads the world. Then changes the current world to requested one. Returns false if the world file couldn't be loaded.
 
@@ -1046,7 +1100,7 @@ Parameters:
 .. _LimonAPI-loadAndRemove:
 
 bool loadAndRemove(const std::string& worldFileName)
-====================================================
+----------------------------------------------------
 
 Loads the world requested, and removes the current world. Returns true if load successful, false if not. If not successful, world doesn't change.
 
@@ -1062,7 +1116,7 @@ Parameters:
 .. _LimonAPI-returnPreviousWorld:
 
 void returnPreviousWorld()
-==========================
+--------------------------
 
 Returns to the world that was running before current. If no world is found, it will be a noop.
 
@@ -1073,79 +1127,38 @@ none
 .. _LimonAPI-quitGame:
 
 void quitGame()
-===============
+---------------
 
 Clears the open devices and quits the game, shutting down the engine process.
 
-.. _LimonAPI-getResultOfTrigger:
+.. _LimonAPI-changeRenderPipeline:
 
-std::vector<LimonTypes::GenericParameter> getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
-=============================================================================================================
+bool changeRenderPipeline(const std::string& pipelineFileName)
+--------------------------------------------------------------
 
-Returns the result of the trigger object. For details, check :ref:`trigger object editor<Trigger Object Editor>`
-
-Parameters:
-
-#. uint32_t TriggerObjectID: The handleID of trigger object
-#. uint32_t TriggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
-
-
-.. _LimonAPI-isInsideTrigger:
-
-bool isInsideTrigger(uint32_t triggerID)
-========================================
-
-Returns whether a player is currently inside the trigger volume.
+Changes the current rendering pipeline to the one specified by the given file.
 
 Parameters:
 
-#. uint32_t triggerID: The handleID of the trigger object
+#. const std::string& pipelineFileName: The filename of the pipeline configuration to load
 
-Returns true if the player is inside the volume, false if not or if the trigger ID is not found.
+Returns:
+   bool: True if the pipeline was changed successfully, false otherwise
 
-.. _LimonAPI-getObjectByName:
+.. _LimonAPI-getOptions:
 
-uint32_t getObjectByName(const std::string& name)
-==================================================
+const OptionsUtil::Options *getOptions()
+----------------------------------------
 
-Searches all models, GUI elements, and trigger objects by name and returns the world object ID of the first match.
+Returns a pointer to the current options.
 
-Parameters:
-
-#. const std::string& name: The name to search for. For models this is ``modelName_ID`` (as shown in the editor). For triggers it is the trigger name.
-
-Returns the object ID if found, 0 if not found.
-
-.. _LimonAPI-getObjectParent:
-
-uint32_t getObjectParent(uint32_t objectID)
-============================================
-
-Returns the world object ID of the parent of the given object.
-
-Parameters:
-
-#. uint32_t objectID: The handleID of the object whose parent is requested
-
-Returns the parent object ID, or 0 if the object has no parent or is not found.
-
-.. _LimonAPI-isObjectPhysicsConnected:
-
-bool isObjectPhysicsConnected(uint32_t objectID)
-================================================
-
-Returns whether the object is currently active in the physics simulation. Objects can be disconnected from physics via ``disconnectObjectFromPhysics`` and reconnected via ``reconnectObjectToPhysics``.
-
-Parameters:
-
-#. uint32_t objectID: The handleID of the object
-
-Returns true if physics-connected, false if disconnected or not found.
+Variables
+=========
 
 .. _LimonAPI-getVariable:
 
 LimonTypes::GenericParameter& getVariable(const std::string& variableName)
-==========================================================================
+--------------------------------------------------------------------------
 
 Returns variable from global variable store. If the variable is never set, it will be 0 initialized. Returned reference can be updated, doing so will be setting the parameter.
 
@@ -1161,7 +1174,7 @@ Parameters:
 .. _LimonAPI-buildMultiSelect:
 
 std::vector<LimonTypes::GenericParameter> buildMultiSelect(const std::string& description, const std::vector<std::string>& options, size_t selectedIndex) *(static inline)*
-===========================================================================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Builds the parameter block that the editor expects for a ``MULTI_SELECT`` parameter. Returns a vector of ``GenericParameter`` objects: the first element holds the currently selected string; subsequent elements are one entry per option.
 
@@ -1179,10 +1192,13 @@ Parameters:
 #. const std::vector<std::string>& options: List of option strings.
 #. size_t selectedIndex: Index into ``options`` of the currently selected item. If out of range, the selection string is left empty.
 
+Ray Casting
+===========
+
 .. _LimonAPI-rayCastToCursor:
 
 std::vector<LimonTypes::GenericParameter> rayCastToCursor()
-============================================================
+------------------------------------------------------------
 
 Returns information about what is under player cursor (crosshair). If nothing is found, empty vector is returned.
 if something is hit, return vector will have the following information:
@@ -1196,10 +1212,32 @@ Parameters:
 
 none
 
+.. _LimonAPI-rayCastFirstHit:
+
+std::vector<LimonTypes::GenericParameter> rayCastFirstHit(const LimonTypes::Vec4& start, const LimonTypes::Vec4& direction)
+---------------------------------------------------------------------------------------------------------------------------
+
+Casts a ray from the given start position in the given direction and returns information about the first physics object hit. Returns an empty vector if nothing is hit.
+
+If something is hit, the return vector contains the same fields as :ref:`rayCastToCursor <LimonAPI-rayCastToCursor>`:
+
+#. ObjectID of the hit object
+#. hit coordinates
+#. hit normal
+#. if the object has AI, its AI id. Otherwise this parameter is absent.
+
+Parameters:
+
+#. const LimonTypes::Vec4& start: World-space ray origin. The w component is ignored.
+#. const LimonTypes::Vec4& direction: Ray direction (need not be normalized). The w component is ignored.
+
+Timed Events
+============
+
 .. _LimonAPI-addTimedEvent:
 
 long addTimedEvent(uint64_t waitTime, bool useWallTime, std::function<void(const std::vector<LimonTypes::GenericParameter>&)> methodToCall, std::vector<LimonTypes::GenericParameter> parameters)
-==================================================================================================================================================================================================
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Runs the given method, with passed parameters, after a given amount of time. Returns a handle ID that can be passed to :ref:`cancelTimedEvent <LimonAPI-cancelTimedEvent>` to cancel the event before it fires.
 
@@ -1222,7 +1260,7 @@ Returns:
 .. _LimonAPI-cancelTimedEvent:
 
 bool cancelTimedEvent(long handleId)
-=====================================
+-------------------------------------
 
 Cancels a previously scheduled timed event before it fires. Returns true if the event was found and cancelled, false if no event with the given handle ID exists.
 
@@ -1230,29 +1268,27 @@ Parameters:
 
 #. long handleId: The handle ID returned by :ref:`addTimedEvent <LimonAPI-addTimedEvent>`.
 
-.. _LimonAPI-rayCastFirstHit:
+Input
+=====
 
-std::vector<LimonTypes::GenericParameter> rayCastFirstHit(const LimonTypes::Vec4& start, const LimonTypes::Vec4& direction)
-===========================================================================================================================
+.. _LimonAPI-simulateInput:
 
-Casts a ray from the given start position in the given direction and returns information about the first physics object hit. Returns an empty vector if nothing is hit.
+void simulateInput(const InputStates& input)
+--------------------------------------------
 
-If something is hit, the return vector contains the same fields as :ref:`rayCastToCursor <LimonAPI-rayCastToCursor>`:
-
-#. ObjectID of the hit object
-#. hit coordinates
-#. hit normal
-#. if the object has AI, its AI id. Otherwise this parameter is absent.
+Simulates input events for testing or automation purposes.
 
 Parameters:
 
-#. const LimonTypes::Vec4& start: World-space ray origin. The w component is ignored.
-#. const LimonTypes::Vec4& direction: Ray direction (need not be normalized). The w component is ignored.
+#. const InputStates& input: The input state to simulate
+
+Profiling
+=========
 
 .. _LimonAPI-profileScope:
 
 ProfileScope profileScope(const std::string& name)
-===================================================
+---------------------------------------------------
 
 Opens a named Tracy profiler zone and returns a ``ProfileScope`` RAII guard. The zone is closed automatically when the returned object goes out of scope.
 
@@ -1267,10 +1303,13 @@ Parameters:
 
 #. const std::string& name: Name shown in the Tracy profiler for this zone.
 
+Logging
+=======
+
 .. _LimonAPI-log:
 
 void log(Logger::Subsystem subsystem, Logger::Level level, const std::string& text)
-====================================================================================
+------------------------------------------------------------------------------------
 
 Writes a message to the engine's log system. The message will appear in the in-game log overlay (if enabled) and in the engine's log output.
 
@@ -1280,10 +1319,13 @@ Parameters:
 #. Logger::Level level: Severity of the message. Available values: ``log_level_TRACE``, ``log_level_DEBUG``, ``log_level_INFO``, ``log_level_WARN``, ``log_level_ERROR``.
 #. const std::string& text: The message text.
 
+Debug Line Drawing
+==================
+
 .. _LimonAPI-drawDebugLine:
 
 uint32_t drawDebugLine(const LimonTypes::Vec4& from, const LimonTypes::Vec4& to, const LimonTypes::Vec4& fromColor, const LimonTypes::Vec4& toColor, bool requireCameraTransform)
-==================================================================================================================================================================================
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Creates a new debug line buffer containing one line segment and returns its buffer ID. The line persists across frames until the buffer is explicitly removed with :ref:`clearDebugLines <LimonAPI-clearDebugLines>`. Additional segments can be appended to the same buffer via :ref:`addToDebugLine <LimonAPI-addToDebugLine>`.
 
@@ -1303,7 +1345,7 @@ Returns:
 .. _LimonAPI-addToDebugLine:
 
 bool addToDebugLine(uint32_t bufferIndex, const LimonTypes::Vec4& from, const LimonTypes::Vec4& to, const LimonTypes::Vec4& fromColor, const LimonTypes::Vec4& toColor, bool requireCameraTransform)
-=====================================================================================================================================================================================================
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Appends a line segment to an existing debug line buffer. All segments in a buffer are rendered and cleared together.
 
@@ -1322,7 +1364,7 @@ Returns:
 .. _LimonAPI-clearDebugLines:
 
 bool clearDebugLines(uint32_t bufferIndex)
-==========================================
+------------------------------------------
 
 Removes a debug line buffer, hiding all line segments it contained.
 
