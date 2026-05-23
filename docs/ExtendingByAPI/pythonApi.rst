@@ -742,6 +742,41 @@ get_model_animation_finished
             bool: True if animation has finished
         """
 
+get_model_animation_progress
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_model_animation_progress(model_id: int) -> float:
+        """
+        Returns the normalized progress [0.0, 1.0] of the custom animation currently
+        running on the model (started via animate_model). For looped animations the
+        value wraps back to 0.0 at the end of each cycle.
+
+        Args:
+            model_id: ID of the model
+
+        Returns:
+            float: Progress in [0.0, 1.0], or 0.0 if no active custom animation
+        """
+
+list_model_animations
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def list_model_animations(model_id: int) -> list:
+        """
+        Returns the names of all animations embedded in the model's asset file.
+        These names can be passed to set_model_animation.
+
+        Args:
+            model_id: ID of the model
+
+        Returns:
+            list[str]: Animation names, or an empty list if the model is not found
+        """
+
 animate_model
 ^^^^^^^^^^^^^
 

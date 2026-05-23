@@ -11,6 +11,10 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`getModelAnimationFinished(uint32_t modelID)<LimonAPI-getModelAnimationFinished>`                                                                                                                                      |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``float``                                     | :ref:`getModelAnimationProgress(uint32_t modelID)<LimonAPI-getModelAnimationProgress>`                                                                                                                                      |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``std::vector\<std::string\>``                | :ref:`listModelAnimations(uint32_t modelID)<LimonAPI-listModelAnimations>`                                                                                                                                                  |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setModelAnimation(uint32_t modelID, const std::string& animationName, bool isLooped = true)<LimonAPI-setModelAnimation>`                                                                                              |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setModelAnimationWithBlend(uint32_t modelID, const std::string& animationName, bool isLooped = true, uint64_t blendTime = 100)<LimonAPI-setModelAnimationWithBlend>`                                                  |
@@ -242,6 +246,28 @@ Returns true if model finished playing animation. For looped animations always r
 Parameters:
 
 #. uint32_t modelID: handle ID of the model to check for animation state
+
+.. _LimonAPI-getModelAnimationProgress:
+
+float getModelAnimationProgress(uint32_t modelID)
+=================================================
+
+Returns the normalized progress [0.0, 1.0] of the custom animation currently running on the model (started via ``animateModel``). For looped animations the value wraps back to 0.0 at the end of each cycle. Returns 0.0 if the model has no active custom animation or is not found.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model
+
+.. _LimonAPI-listModelAnimations:
+
+std::vector<std::string> listModelAnimations(uint32_t modelID)
+==============================================================
+
+Returns the names of all animations embedded in the model's asset file. These names can be passed to ``setModelAnimation``. Returns an empty vector if the model is not found.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model
 
 .. _LimonAPI-setModelAnimation:
 
