@@ -119,6 +119,12 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setLightColor(uint32_t lightID, const LimonAPI::Vec4& color)<LimonAPI-setLightColor>`                                                                                                                                 |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getLightPosition(uint32_t lightID)<LimonAPI-getLightPosition>`                                                                                                                                                        |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getLightColor(uint32_t lightID)<LimonAPI-getLightColor>`                                                                                                                                                              |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setLightTranslate(uint32_t lightID, const LimonTypes::Vec4& position)<LimonAPI-setLightTranslate>`                                                                                                                   |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`loadAndSwitchWorld(const std::string& worldFileName)<LimonAPI-loadAndSwitchWorld>`                                                                                                                                    |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`returnToWorld(const std::string& worldFileName)<LimonAPI-returnToWorld>`                                                                                                                                              |
@@ -132,6 +138,12 @@ Limon Engine API Reference
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                                    |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`isInsideTrigger(uint32_t triggerID)<LimonAPI-isInsideTrigger>`                                                                                                                                                        |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`getObjectByName(const std::string& name)<LimonAPI-getObjectByName>`                                                                                                                                                   |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`getObjectParent(uint32_t objectID)<LimonAPI-getObjectParent>`                                                                                                                                                         |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`isObjectPhysicsConnected(uint32_t objectID)<LimonAPI-isObjectPhysicsConnected>`                                                                                                                                       |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``LimonTypes::GenericParameter&``             | :ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                                   |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -908,6 +920,40 @@ Parameters:
 #. uint32_t lightID: ID of light to change color
 #. const LimonAPI::Vec4& color: RGB color to set. W component will be ignored.
 
+.. _LimonAPI-getLightPosition:
+
+LimonTypes::Vec4 getLightPosition(uint32_t lightID)
+====================================================
+
+Returns the world-space position of the light as Vec4 with w=1. Returns zero Vec4 if no light with the given ID is found.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+
+.. _LimonAPI-getLightColor:
+
+LimonTypes::Vec4 getLightColor(uint32_t lightID)
+================================================
+
+Returns the color of the light as Vec4 with w=1. Returns zero Vec4 if no light with the given ID is found.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+
+.. _LimonAPI-setLightTranslate:
+
+bool setLightTranslate(uint32_t lightID, const LimonTypes::Vec4& position)
+===========================================================================
+
+Sets the absolute world-space position of a light. Unlike ``addLightTranslate``, this replaces the current position rather than adding to it. Returns false if no light with the given ID is found.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+#. const LimonTypes::Vec4& position: Target world-space position. W component will be ignored.
+
 .. _LimonAPI-loadAndSwitchWorld:
 
 bool loadAndSwitchWorld(const std::string& worldFileName)
@@ -989,6 +1035,45 @@ Parameters:
 #. uint32_t triggerID: The handleID of the trigger object
 
 Returns true if the player is inside the volume, false if not or if the trigger ID is not found.
+
+.. _LimonAPI-getObjectByName:
+
+uint32_t getObjectByName(const std::string& name)
+==================================================
+
+Searches all models, GUI elements, and trigger objects by name and returns the world object ID of the first match.
+
+Parameters:
+
+#. const std::string& name: The name to search for. For models this is ``modelName_ID`` (as shown in the editor). For triggers it is the trigger name.
+
+Returns the object ID if found, 0 if not found.
+
+.. _LimonAPI-getObjectParent:
+
+uint32_t getObjectParent(uint32_t objectID)
+============================================
+
+Returns the world object ID of the parent of the given object.
+
+Parameters:
+
+#. uint32_t objectID: The handleID of the object whose parent is requested
+
+Returns the parent object ID, or 0 if the object has no parent or is not found.
+
+.. _LimonAPI-isObjectPhysicsConnected:
+
+bool isObjectPhysicsConnected(uint32_t objectID)
+================================================
+
+Returns whether the object is currently active in the physics simulation. Objects can be disconnected from physics via ``disconnectObjectFromPhysics`` and reconnected via ``reconnectObjectToPhysics``.
+
+Parameters:
+
+#. uint32_t objectID: The handleID of the object
+
+Returns true if physics-connected, false if disconnected or not found.
 
 .. _LimonAPI-getVariable:
 

@@ -335,6 +335,54 @@ is_inside_trigger
             bool: True if the player is inside the volume, False if not or trigger not found
         """
 
+get_object_by_name
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_by_name(name: str) -> int:
+        """
+        Find an object by name. Searches models, GUI elements, and triggers.
+
+        Args:
+            name: The object name (for models: ``modelName_ID`` as shown in the editor)
+
+        Returns:
+            int: World object ID if found, 0 if not found
+        """
+
+get_object_parent
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_parent(object_id: int) -> int:
+        """
+        Returns the parent object ID of the given object.
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            int: Parent object ID, or 0 if no parent or object not found
+        """
+
+is_object_physics_connected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def is_object_physics_connected(object_id: int) -> bool:
+        """
+        Returns True if the object is active in the physics simulation.
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            bool: True if physics-connected, False if disconnected or not found
+        """
+
 get_object_linear_velocity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -973,6 +1021,65 @@ Lighting
 
     # Set a light's color (RGB components in [0, 1])
     set_light_color(light_id: int, color: Vec4) -> bool
+
+    # Get the world-space position of a light. Returns zero Vec4 if not found
+    get_light_position(light_id: int) -> Vec4
+
+    # Get the color of a light. Returns zero Vec4 if not found
+    get_light_color(light_id: int) -> Vec4
+
+    # Set a light's absolute position. Returns False if not found
+    set_light_translate(light_id: int, position: Vec4) -> bool
+
+get_light_position
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_light_position(light_id: int) -> Vec4:
+        """
+        Returns the world-space position of a light as Vec4 (w=1).
+
+        Args:
+            light_id: Handle ID of the light
+
+        Returns:
+            Vec4: World-space position with w=1, or zero Vec4 if not found
+        """
+
+get_light_color
+^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_light_color(light_id: int) -> Vec4:
+        """
+        Returns the color of a light as Vec4 (w=1).
+
+        Args:
+            light_id: Handle ID of the light
+
+        Returns:
+            Vec4: RGB color with w=1, or zero Vec4 if not found
+        """
+
+set_light_translate
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_light_translate(light_id: int, position: Vec4) -> bool:
+        """
+        Set the absolute world-space position of a light. Unlike add_light_translate,
+        this replaces the current position rather than adding to it.
+
+        Args:
+            light_id: Handle ID of the light
+            position: Target world-space position (w component ignored)
+
+        Returns:
+            bool: True if the light was found and updated
+        """
 
 World Management
 ~~~~~~~~~~~~~~~~
