@@ -319,12 +319,12 @@ remove_trigger_object
             bool: True if the object was found and removed
         """
 
-is_trigger_active
+is_inside_trigger
 ^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-    def is_trigger_active(trigger_id: int) -> bool:
+    def is_inside_trigger(trigger_id: int) -> bool:
         """
         Returns True if a player is currently inside the trigger volume.
 
@@ -1078,10 +1078,12 @@ Player Related
     # Returns the player's normalized look direction as Vec4 (w=0)
     get_player_look_direction() -> Vec4
 
-    # Returns the camera's world position as Vec4 (same as player position, w=1)
+    # Returns the camera's world position as Vec4 (w=1). May differ from player position
+    # if a PlayerExtension overrides the camera attachment.
     get_camera_position() -> Vec4
 
-    # Returns the camera's normalized look direction as Vec4 (same as player look, w=0)
+    # Returns the camera's normalized look direction as Vec4 (w=0). May differ from player
+    # look direction if a PlayerExtension overrides the camera attachment.
     get_camera_look_direction() -> Vec4
 
 Variable Management

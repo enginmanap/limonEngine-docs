@@ -131,7 +131,7 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                                    |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`isTriggerActive(uint32_t triggerID)<LimonAPI-isTriggerActive>`                                                                                                                                                        |
+| ``bool``                                      | :ref:`isInsideTrigger(uint32_t triggerID)<LimonAPI-isInsideTrigger>`                                                                                                                                                        |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``LimonTypes::GenericParameter&``             | :ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                                   |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -691,7 +691,7 @@ none
 LimonTypes::Vec4 getCameraPosition()
 =====================================
 
-Returns the camera's world position as a Vec4 (w=1). In the current design the camera is always at the player position.
+Returns the camera's world position as a Vec4 (w=1). This comactive camera attachment — if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerPosition<LimonAPI-getPlayerPosition>`.
 
 Parameters:
 
@@ -702,7 +702,7 @@ none
 LimonTypes::Vec4 getCameraLookDirection()
 ==========================================
 
-Returns the camera's normalized look direction as a Vec4 (w=0). In the current design this is identical to :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
+Returns the camera's normalized look direction as a Vec4 (w=0). This comes from the active camera attachment — if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
 
 Parameters:
 
@@ -977,9 +977,9 @@ Parameters:
 #. uint32_t TriggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
 
 
-.. _LimonAPI-isTriggerActive:
+.. _LimonAPI-isInsideTrigger:
 
-bool isTriggerActive(uint32_t triggerID)
+bool isInsideTrigger(uint32_t triggerID)
 ========================================
 
 Returns whether a player is currently inside the trigger volume.
