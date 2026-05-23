@@ -1,5 +1,5 @@
 Extending Engine Capabilities
-============
+=============================
 
 .. toctree::
    :maxdepth: 1

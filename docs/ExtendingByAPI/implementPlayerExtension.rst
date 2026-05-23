@@ -9,17 +9,19 @@ Player extensions are main ways of handling input in Limon Engine. Input from pl
 PlayerExtensionInterface Class
 ______________________________
 
-+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-|                                                   |:ref:`PlayerExtensionInterface(LimonAPI \*limonAPI)<PlayerExtensionInterface-PlayerExtensionInterface>`             |
-+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| void                                              |:ref:`processInput(const InputStates &inputState, const PlayerInformation &playerInformation, long time)<PlayerExtensionInterface-processInput>` |
-+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| void                                              |:ref:`interact(std::vector\<LimonTypes::GenericParameter\> &parameters)<PlayerExtensionInterface-interact>`         |
-+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| std::string                                       |:ref:`getName() const<PlayerExtensionInterface-getName>`                                                            |
-+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-| CameraAttachment\*                                |:ref:`getCustomCameraAttachment()<PlayerExtensionInterface-getCustomCameraAttachment>`                               |
-+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+.. list-table::
+   :widths: 20 80
+
+   * -
+     - :ref:`PlayerExtensionInterface(LimonAPI *limonAPI)<PlayerExtensionInterface-PlayerExtensionInterface>`
+   * - ``void``
+     - :ref:`processInput(const InputStates &inputState, const PlayerInformation &playerInformation, long time)<PlayerExtensionInterface-processInput>`
+   * - ``void``
+     - :ref:`interact(std::vector\<LimonTypes::GenericParameter\> &parameters)<PlayerExtensionInterface-interact>`
+   * - ``std::string``
+     - :ref:`getName() const<PlayerExtensionInterface-getName>`
+   * - ``CameraAttachment*``
+     - :ref:`getCustomCameraAttachment()<PlayerExtensionInterface-getCustomCameraAttachment>`
 
 .. _PlayerExtensionInterface-PlayerExtensionInterface:
 
@@ -97,7 +99,7 @@ InputStates is a thin wrapper around SDL2 input events. It has 4 main methods th
 
 Full list of supported keys can be checked from src/InputStates.h
 
-.. _ActorInterface-enableDynamicDiscovery:
+.. _PlayerExtensionInterface-enableDynamicDiscovery:
 
 How to enable Dynamic Library discovery
 _______________________________________

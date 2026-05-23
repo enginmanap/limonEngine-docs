@@ -16,19 +16,21 @@ ActorInterface class has two helper structs used to pass information between eng
 .. warning::
     Information requests are prepared by separate threads, and no guarantees made for when they will return. Check routeReady flag on ActorInformation before using the route.
 
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
-|                                                   |:ref:`ActorInterface(uint32_t id, LimonAPI \*limonAPI)<ActorInterface-ActorInterface>`                     |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
-|std::vector<LimonTypes::GenericParameter>            |:ref:`getParameters()<ActorInterface-getParameters>`                                                       |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
-|void                                               |:ref:`setParameters(std::vector\<LimonTypes::GenericParameter\>parameters)<ActorInterface-setParameters>`    |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
-|void                                               |:ref:`play(long time, ActorInformation& information)<ActorInterface-play>`                                 |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
-|bool                                               |:ref:`interaction(std::vector\<LimonTypes::GenericParameter\>parameters)<ActorInterface-interaction>`        |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
-|std::string                                        |:ref:`getName() const<ActorInterface-getName>`                                                             |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
+.. list-table::
+   :widths: 35 65
+
+   * -
+     - :ref:`ActorInterface(uint32_t id, LimonAPI *limonAPI)<ActorInterface-ActorInterface>`
+   * - ``std::vector<LimonTypes::GenericParameter>``
+     - :ref:`getParameters()<ActorInterface-getParameters>`
+   * - ``void``
+     - :ref:`setParameters(std::vector\<LimonTypes::GenericParameter\>parameters)<ActorInterface-setParameters>`
+   * - ``void``
+     - :ref:`play(long time, ActorInformation& information)<ActorInterface-play>`
+   * - ``bool``
+     - :ref:`interaction(std::vector\<LimonTypes::GenericParameter\>parameters)<ActorInterface-interaction>`
+   * - ``std::string``
+     - :ref:`getName() const<ActorInterface-getName>`
 
 .. _ActorInterface-ActorInterface:
 
@@ -42,14 +44,14 @@ The constructor of the interface.
 .. _ActorInterface-getParameters:
 
 std::vector<LimonTypes::GenericParameter> getParameters()
-=======================================================
+=========================================================
 
 Returns a vector of ``LimonTypes::GenericParameter``. These parameters are going to be set by map designer using the editor. These parameters should be filled with their current values, because Load/Save logic uses these parameters to persist AI information.
 
 .. _ActorInterface-setParameters:
 
 void setParameters(std::vector<LimonTypes::GenericParameter> parameters)
-======================================================================
+========================================================================
 
 The parameters set by map designer will be passed to this method. It might be just set, or they might be loading as part of map load.
 
@@ -63,14 +65,14 @@ Called on each frame, with current information about player and world, in form o
 .. _ActorInterface-interaction:
 
 bool interaction(std::vector<LimonTypes::GenericParameter> &interactionInformation)
-=================================================================================
+===================================================================================
 
 called by other entities, like Actors or Player. Used to pass information like hits, or alarming etc.
 
 .. _ActorInterface-getName:
 
 std::string getName() const
-===============
+===========================
 
 Returns the name of the Actor.
 

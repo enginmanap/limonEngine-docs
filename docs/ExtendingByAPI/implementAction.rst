@@ -13,17 +13,19 @@ Actions never get persisted, but parameters to pass to actions are persisted wit
 TriggerInterface Class
 ______________________
 
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------+
-|                                                   |:ref:`TriggerInterface(LimonAPI \*limonAPI)<TriggerInterface-TriggerInterface>`                |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------+
-|std::vector<LimonTypes::GenericParameter>            |:ref:`getParameters()<TriggerInterface-getParameters>`                                         |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------+
-|bool                                               |:ref:`run(std::vector\<LimonTypes::GenericParameter\>parameters)<TriggerInterface-run>`          |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------+
-|std::vector<LimonTypes::GenericParameter>            |:ref:`getResults()<TriggerInterface-getResults>`                                               |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------+
-|std::string                                        |:ref:`getName() const<TriggerInterface-getName>`                                               |
-+---------------------------------------------------+-----------------------------------------------------------------------------------------------+
+.. list-table::
+   :widths: 35 65
+
+   * -
+     - :ref:`TriggerInterface(LimonAPI *limonAPI)<TriggerInterface-TriggerInterface>`
+   * - ``std::vector<LimonTypes::GenericParameter>``
+     - :ref:`getParameters()<TriggerInterface-getParameters>`
+   * - ``bool``
+     - :ref:`run(std::vector\<LimonTypes::GenericParameter\>parameters)<TriggerInterface-run>`
+   * - ``std::vector<LimonTypes::GenericParameter>``
+     - :ref:`getResults()<TriggerInterface-getResults>`
+   * - ``std::string``
+     - :ref:`getName() const<TriggerInterface-getName>`
 
 .. _TriggerInterface-TriggerInterface:
 
@@ -44,7 +46,7 @@ Returns a vector of ``LimonTypes::GenericParameter``. These parameters are going
 .. _TriggerInterface-run:
 
 run(std::vector<LimonTypes::GenericParameter>parameters)
-======================================================
+========================================================
 
 The parameters with their set values will be provided. The logic of the action should be this method. Return true if run succesfully. Return false if the run failed for some reason.
 

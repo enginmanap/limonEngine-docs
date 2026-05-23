@@ -485,7 +485,7 @@ get_object_mass
         """
 
 disconnect_object_from_physics
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -501,7 +501,7 @@ disconnect_object_from_physics
         """
 
 reconnect_object_to_physics
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -1159,7 +1159,7 @@ Ray Casting
 ~~~~~~~~~~~
 
 ray_cast_to_cursor
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -1595,7 +1595,7 @@ set_player_attached_model_offset
         """
 
 Variable Management
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 .. note::
 
