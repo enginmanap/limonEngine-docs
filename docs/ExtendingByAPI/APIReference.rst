@@ -31,6 +31,12 @@ Limon Engine API Reference
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`removeGuiElement(uint32_t guiElementID)<LimonAPI-removeGuiElement>`                                                                                                                                                   |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getGuiElementPosition(uint32_t guiElementID)<LimonAPI-getGuiElementPosition>`                                                                                                                                         |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setGuiElementPosition(uint32_t guiElementID, const LimonTypes::Vec4& position)<LimonAPI-setGuiElementPosition>`                                                                                                       |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setGuiElementVisible(uint32_t guiElementID, bool visible)<LimonAPI-setGuiElementVisible>`                                                                                                                             |
++-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)<LimonAPI-addObject>`                                   |
 +-----------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObject>`                                                                                                                  |
@@ -374,6 +380,41 @@ Removes the GUI element indicated by the handle ID. Returns true for success, fa
 Parameters:
 
 #. uint32_t guiElementID: GUI element handle ID
+
+.. _LimonAPI-getGuiElementPosition:
+
+LimonTypes::Vec4 getGuiElementPosition(uint32_t guiElementID)
+=============================================================
+
+Returns the screen position of the GUI element as Vec4 (x, y, 0, 1). Coordinates are in the same screen-space range used by ``addGuiText`` and ``addGuiImage``. Returns zero Vec4 if the element is not found.
+
+Parameters:
+
+#. uint32_t guiElementID: GUI element handle ID
+
+.. _LimonAPI-setGuiElementPosition:
+
+bool setGuiElementPosition(uint32_t guiElementID, const LimonTypes::Vec4& position)
+====================================================================================
+
+Sets the screen position of a GUI element. The x and y components are used; z and w are ignored. Returns false if the element is not found.
+
+Parameters:
+
+#. uint32_t guiElementID: GUI element handle ID
+#. const LimonTypes::Vec4& position: Target position. x and y are screen-space coordinates.
+
+.. _LimonAPI-setGuiElementVisible:
+
+bool setGuiElementVisible(uint32_t guiElementID, bool visible)
+==============================================================
+
+Shows or hides a GUI element without removing it. Hidden elements are not rendered but remain in the world and can be made visible again. Returns false if the element is not found.
+
+Parameters:
+
+#. uint32_t guiElementID: GUI element handle ID
+#. bool visible: true to show, false to hide
 
 .. _LimonAPI-addObject:
 

@@ -266,6 +266,57 @@ remove_gui_element
             bool: True if the element was found and removed, False if ID is invalid
         """
 
+get_gui_element_position
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_gui_element_position(gui_element_id: int) -> Vec4:
+        """
+        Returns the screen position of a GUI element as Vec4 (x, y, 0, 1).
+
+        Args:
+            gui_element_id: ID of the GUI element
+
+        Returns:
+            Vec4: Screen position with w=1, or zero Vec4 if not found
+        """
+
+set_gui_element_position
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_gui_element_position(gui_element_id: int, position: Vec4) -> bool:
+        """
+        Set the screen position of a GUI element. x and y are used; z and w are ignored.
+
+        Args:
+            gui_element_id: ID of the GUI element
+            position: Target screen-space position
+
+        Returns:
+            bool: True if the element was found and updated
+        """
+
+set_gui_element_visible
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_gui_element_visible(gui_element_id: int, visible: bool) -> bool:
+        """
+        Show or hide a GUI element. Hidden elements are not rendered but remain
+        in the world and can be made visible again.
+
+        Args:
+            gui_element_id: ID of the GUI element
+            visible: True to show, False to hide
+
+        Returns:
+            bool: True if the element was found and updated
+        """
+
 Object Manipulation
 ~~~~~~~~~~~~~~~~~~~
 
