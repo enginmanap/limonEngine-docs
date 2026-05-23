@@ -847,6 +847,11 @@ animate_model
             int: Animation status ID, or 0 on failure
         """
 
+add_object
+^^^^^^^^^^
+
+.. code-block:: python
+
     def add_object(model_file_path: str, model_weight: float = 1.0, physical: bool = True,
                    position: tuple = (0, 0, 0), scale: tuple = (1, 1, 1),
                    orientation: tuple = (1.0, 0.0, 0.0, 0.0)) -> int:
@@ -865,6 +870,11 @@ animate_model
             int: ID of the created object, or 0 on failure
         """
 
+remove_object
+^^^^^^^^^^^^^
+
+.. code-block:: python
+
     def remove_object(object_id: int, remove_children: bool = True) -> bool:
         """
         Remove an object from the scene.
@@ -877,41 +887,10 @@ animate_model
             bool: True if the object was found and removed
         """
 
-    def get_player_position() -> tuple:
-        """
-        Get the player's camera position and orientation vectors.
+get_result_of_trigger
+^^^^^^^^^^^^^^^^^^^^^
 
-        Returns:
-            tuple: (position, center, up, right) each as a dict with x, y, z keys.
-                   ``center`` is the camera look-at point, not a direction vector.
-        """
-
-    def get_player_attached_model() -> int:
-        """
-        Get the ID of the model currently attached to the player.
-
-        Returns:
-            int: Model ID, or 0 if no model is attached
-        """
-
-    def get_player_attached_model_offset() -> Vec4:
-        """
-        Get the position offset of the model attached to the player.
-
-        Returns:
-            Vec4: Offset vector
-        """
-
-    def set_player_attached_model_offset(new_offset: Vec4) -> bool:
-        """
-        Set the position offset of the model attached to the player.
-
-        Args:
-            new_offset: New offset as Vec4
-
-        Returns:
-            bool: True if the offset was applied
-        """
+.. code-block:: python
 
     def get_result_of_trigger(trigger_object_id: int, trigger_code_id: int) -> list:
         """
@@ -925,36 +904,61 @@ animate_model
             list: List of GenericParameter objects with the trigger's results
         """
 
-    def get_options() -> any:
-        """
-        Get the engine options object.
-
-        Returns:
-            Options object with current engine configuration
-        """
-
 Sound
 ~~~~~
 
+attach_sound_to_object_and_play
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Attach and play a sound on an object. Loops by default.
-    attach_sound_to_object_and_play(object_id: int, sound_path: str, looped: bool = True) -> bool
+    def attach_sound_to_object_and_play(object_id: int, sound_path: str, looped: bool = True) -> bool:
+        """
+        Attach a sound to an object and begin playing it.
 
-    # Detach sound from an object
-    detach_sound_from_object(object_id: int) -> bool
+        Args:
+            object_id: ID of the object to attach the sound to
+            sound_path: Path to the sound file
+            looped: Whether the sound should loop. Defaults to True.
 
-    # Play a non-attached sound at a world position. Returns a sound ID.
-    play_sound(sound_path: str, position: Vec4, position_relative: bool = False, looped: bool = False) -> int
+        Returns:
+            bool: True if the sound was attached and started
+        """
 
-    # Stop a playing sound by its ID
-    stop_sound(sound_id: int) -> bool
+detach_sound_from_object
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # Set the volume (gain) of a sound. Returns False if not found or not yet started
-    set_sound_volume(sound_id: int, volume: float) -> bool
+.. code-block:: python
 
-    # Returns True if the sound is currently playing
-    is_sound_playing(sound_id: int) -> bool
+    def detach_sound_from_object(object_id: int) -> bool:
+        """
+        Detach a sound from an object and stop playing it.
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            bool: True if a sound was found and detached
+        """
+
+play_sound
+^^^^^^^^^^
+
+.. code-block:: python
+
+    def play_sound(sound_path: str, position: Vec4, position_relative: bool = False, looped: bool = False) -> int:
+        """
+        Play a non-attached sound at a world position.
+
+        Args:
+            sound_path: Path to the sound file
+            position: World-space position to play the sound at
+            position_relative: If True, position is relative to the listener
+            looped: Whether the sound should loop
+
+        Returns:
+            int: Sound ID for use with stop_sound and set_sound_volume, or 0 on failure
+        """
 
 stop_sound
 ^^^^^^^^^^
@@ -1008,46 +1012,148 @@ is_sound_playing
 AI Interaction
 ~~~~~~~~~~~~~~
 
+interact_with_ai
+^^^^^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Interact with an AI; returns False if no actor with that ID exists
-    interact_with_ai(ai_id: int, interaction_information: list) -> bool
+    def interact_with_ai(ai_id: int, interaction_information: list) -> bool:
+        """
+        Send interaction data to an AI actor.
 
-    # Send interaction data to the active player extension
-    interact_with_player(interaction_information: list) -> None
+        Args:
+            ai_id: ID of the AI actor
+            interaction_information: List of GenericParameter objects with interaction data
+
+        Returns:
+            bool: True if the actor was found and interaction delivered
+        """
+
+interact_with_player
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def interact_with_player(interaction_information: list) -> None:
+        """
+        Send interaction data to the active player extension.
+
+        Args:
+            interaction_information: List of GenericParameter objects with interaction data
+        """
 
 Particle Systems
 ~~~~~~~~~~~~~~~~
 
+disable_particle_emitter
+^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Disable a particle emitter
-    disable_particle_emitter(emitter_id: int) -> bool
+    def disable_particle_emitter(emitter_id: int) -> bool:
+        """
+        Disable a particle emitter, stopping new particle emission.
 
-    # Enable a particle emitter
-    enable_particle_emitter(emitter_id: int) -> bool
+        Args:
+            emitter_id: ID of the particle emitter
 
-    # Add a new particle emitter
-    add_particle_emitter(
-        name: str,
-        texture_file: str,
-        start_position: Vec4,
-        max_start_distances: Vec4,
-        size: float,
-        count: int,
-        life_time: float,
-        particles_per_ms: float,
-        continuously_emit: bool
-    ) -> int  # Returns emitter ID, or 0 on failure
+        Returns:
+            bool: True if the emitter was found and disabled
+        """
 
-    # Remove a particle emitter
-    remove_particle_emitter(emitter_id: int) -> bool
+enable_particle_emitter
+^^^^^^^^^^^^^^^^^^^^^^^
 
-    # Set particle speed for an emitter (Vec4 for per-axis control)
-    set_emitter_particle_speed(emitter_id: int, speed_multiplier: Vec4, speed_offset: Vec4) -> bool
+.. code-block:: python
 
-    # Set particle gravity for an emitter (Vec4 for per-axis control)
-    set_emitter_particle_gravity(emitter_id: int, gravity: Vec4) -> bool
+    def enable_particle_emitter(emitter_id: int) -> bool:
+        """
+        Enable a particle emitter, resuming particle emission.
+
+        Args:
+            emitter_id: ID of the particle emitter
+
+        Returns:
+            bool: True if the emitter was found and enabled
+        """
+
+add_particle_emitter
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_particle_emitter(name: str, texture_file: str, start_position: Vec4,
+                             max_start_distances: Vec4, size: float, count: int,
+                             life_time: float, particles_per_ms: float,
+                             continuously_emit: bool) -> int:
+        """
+        Add a new particle emitter to the scene.
+
+        Args:
+            name: Name of the emitter
+            texture_file: Path to the particle texture file
+            start_position: World-space origin of the emitter
+            max_start_distances: Maximum random spawn offsets per axis (Vec4)
+            size: Size of each particle
+            count: Maximum number of live particles
+            life_time: Lifetime of each particle in seconds
+            particles_per_ms: Emission rate in particles per millisecond
+            continuously_emit: If True, emitter loops indefinitely
+
+        Returns:
+            int: Emitter ID, or 0 on failure
+        """
+
+remove_particle_emitter
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def remove_particle_emitter(emitter_id: int) -> bool:
+        """
+        Remove a particle emitter from the scene.
+
+        Args:
+            emitter_id: ID of the particle emitter
+
+        Returns:
+            bool: True if the emitter was found and removed
+        """
+
+set_emitter_particle_speed
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_emitter_particle_speed(emitter_id: int, speed_multiplier: Vec4, speed_offset: Vec4) -> bool:
+        """
+        Set the speed parameters for particles emitted by an emitter.
+
+        Args:
+            emitter_id: ID of the particle emitter
+            speed_multiplier: Per-axis speed multiplier (Vec4)
+            speed_offset: Per-axis constant speed offset (Vec4)
+
+        Returns:
+            bool: True if the emitter was found and updated
+        """
+
+set_emitter_particle_gravity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_emitter_particle_gravity(emitter_id: int, gravity: Vec4) -> bool:
+        """
+        Set the per-axis gravity applied to particles from an emitter.
+
+        Args:
+            emitter_id: ID of the particle emitter
+            gravity: Per-axis gravity vector (Vec4)
+
+        Returns:
+            bool: True if the emitter was found and updated
+        """
 
 Ray Casting
 ~~~~~~~~~~~
@@ -1094,28 +1200,73 @@ ray_cast_first_hit
 Lighting
 ~~~~~~~~
 
+add_light
+^^^^^^^^^
+
 .. code-block:: python
 
-    # Add a new light. light_type: 1=directional, 2=point. Returns light ID, or 0 on failure.
-    add_light(light_type: int, position: Vec4, color: Vec4) -> int
+    def add_light(light_type: int, position: Vec4, color: Vec4) -> int:
+        """
+        Add a new light to the scene.
 
-    # Remove a light by ID
-    remove_light(light_id: int) -> bool
+        Args:
+            light_type: Light type — 1 for directional, 2 for point
+            position: World-space position of the light
+            color: RGB color of the light (Vec4; w is ignored)
 
-    # Translate a light (adds to current position)
-    add_light_translate(light_id: int, translation: Vec4) -> bool
+        Returns:
+            int: Light ID, or 0 on failure
+        """
 
-    # Set a light's color (RGB components in [0, 1])
-    set_light_color(light_id: int, color: Vec4) -> bool
+remove_light
+^^^^^^^^^^^^
 
-    # Get the world-space position of a light. Returns zero Vec4 if not found
-    get_light_position(light_id: int) -> Vec4
+.. code-block:: python
 
-    # Get the color of a light. Returns zero Vec4 if not found
-    get_light_color(light_id: int) -> Vec4
+    def remove_light(light_id: int) -> bool:
+        """
+        Remove a light from the scene.
 
-    # Set a light's absolute position. Returns False if not found
-    set_light_translate(light_id: int, position: Vec4) -> bool
+        Args:
+            light_id: Handle ID of the light
+
+        Returns:
+            bool: True if the light was found and removed
+        """
+
+add_light_translate
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_light_translate(light_id: int, translation: Vec4) -> bool:
+        """
+        Translate a light by adding to its current position.
+
+        Args:
+            light_id: Handle ID of the light
+            translation: Translation to add (w component ignored)
+
+        Returns:
+            bool: True if the light was found and moved
+        """
+
+set_light_color
+^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_light_color(light_id: int, color: Vec4) -> bool:
+        """
+        Set a light's color.
+
+        Args:
+            light_id: Handle ID of the light
+            color: RGB color with components in [0, 1] (w component ignored)
+
+        Returns:
+            bool: True if the light was found and updated
+        """
 
 get_light_position
 ^^^^^^^^^^^^^^^^^^
@@ -1170,26 +1321,103 @@ set_light_translate
 World Management
 ~~~~~~~~~~~~~~~~
 
+load_and_switch_world
+^^^^^^^^^^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Load a world and switch to it. If already loaded, resets it. Returns False if load fails
-    # or if caller is part of the current world (can't remove it from itself).
-    load_and_switch_world(world_file_name: str) -> bool
+    def load_and_switch_world(world_file_name: str) -> bool:
+        """
+        Load a world and switch to it. If already loaded, resets it.
 
-    # Load world if not already loaded, then switch to it. Returns False if load fails.
-    return_to_world(world_file_name: str) -> bool
+        Args:
+            world_file_name: File name of the world to load
 
-    # Load a new world and remove the current one. Returns False if load fails.
-    load_and_remove(world_file_name: str) -> bool
+        Returns:
+            bool: False if load fails or if the caller is part of the current world
+                  (a world cannot remove itself)
+        """
 
-    # Return to the previously loaded world (no-op if no previous world exists).
-    return_previous_world() -> None
+return_to_world
+^^^^^^^^^^^^^^^
 
-    # Quit the game
-    quit_game() -> None
+.. code-block:: python
 
-    # Change the render pipeline
-    change_render_pipeline(pipeline_file_name: str) -> bool
+    def return_to_world(world_file_name: str) -> bool:
+        """
+        Load a world if not already loaded, then switch to it.
+
+        Args:
+            world_file_name: File name of the world to switch to
+
+        Returns:
+            bool: False if load fails
+        """
+
+load_and_remove
+^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def load_and_remove(world_file_name: str) -> bool:
+        """
+        Load a new world and remove the current one.
+
+        Args:
+            world_file_name: File name of the world to load
+
+        Returns:
+            bool: False if load fails
+        """
+
+return_previous_world
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def return_previous_world() -> None:
+        """
+        Return to the previously loaded world. No-op if no previous world exists.
+        """
+
+quit_game
+^^^^^^^^^
+
+.. code-block:: python
+
+    def quit_game() -> None:
+        """
+        Quit the game.
+        """
+
+change_render_pipeline
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def change_render_pipeline(pipeline_file_name: str) -> bool:
+        """
+        Change the active render pipeline.
+
+        Args:
+            pipeline_file_name: File name of the pipeline to load
+
+        Returns:
+            bool: False if the pipeline file could not be loaded
+        """
+
+get_options
+^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_options() -> any:
+        """
+        Get the engine options object.
+
+        Returns:
+            Options object with current engine configuration
+        """
 
 Timed Events
 ~~~~~~~~~~~~
@@ -1260,24 +1488,111 @@ profile_scope
 Player Related
 ~~~~~~~~~~~~~~
 
+kill_player
+^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Kill the player
-    kill_player() -> None
+    def kill_player() -> None:
+        """
+        Kill the player.
+        """
 
-    # Returns the player's world position as Vec4 (w=1)
-    get_player_position() -> Vec4
+get_player_position
+^^^^^^^^^^^^^^^^^^^
 
-    # Returns the player's normalized look direction as Vec4 (w=0)
-    get_player_look_direction() -> Vec4
+.. code-block:: python
 
-    # Returns the camera's world position as Vec4 (w=1). May differ from player position
-    # if a PlayerExtension overrides the camera attachment.
-    get_camera_position() -> Vec4
+    def get_player_position() -> Vec4:
+        """
+        Returns the player's world position as Vec4 (w=1).
 
-    # Returns the camera's normalized look direction as Vec4 (w=0). May differ from player
-    # look direction if a PlayerExtension overrides the camera attachment.
-    get_camera_look_direction() -> Vec4
+        Returns:
+            Vec4: Player world position with w=1
+        """
+
+get_player_look_direction
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_player_look_direction() -> Vec4:
+        """
+        Returns the player's normalized look direction as Vec4 (w=0).
+
+        Returns:
+            Vec4: Normalized look direction with w=0
+        """
+
+get_camera_position
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_camera_position() -> Vec4:
+        """
+        Returns the camera's world position as Vec4 (w=1). May differ from player position
+        if a PlayerExtension overrides the camera attachment.
+
+        Returns:
+            Vec4: Camera world position with w=1
+        """
+
+get_camera_look_direction
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_camera_look_direction() -> Vec4:
+        """
+        Returns the camera's normalized look direction as Vec4 (w=0). May differ from player
+        look direction if a PlayerExtension overrides the camera attachment.
+
+        Returns:
+            Vec4: Normalized camera look direction with w=0
+        """
+
+get_player_attached_model
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_player_attached_model() -> int:
+        """
+        Get the ID of the model currently attached to the player.
+
+        Returns:
+            int: Model ID, or 0 if no model is attached
+        """
+
+get_player_attached_model_offset
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_player_attached_model_offset() -> Vec4:
+        """
+        Get the position offset of the model attached to the player.
+
+        Returns:
+            Vec4: Offset vector
+        """
+
+set_player_attached_model_offset
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_player_attached_model_offset(new_offset: Vec4) -> bool:
+        """
+        Set the position offset of the model attached to the player.
+
+        Args:
+            new_offset: New offset as Vec4
+
+        Returns:
+            bool: True if the offset was applied
+        """
 
 Variable Management
 ~~~~~~~~~~~~~~~~~~
@@ -1293,10 +1608,21 @@ Variable Management
     Any parameter passed to the editor must have ``is_set = True``.
     The editor will refuse to save a trigger if any parameter is not set.
 
+get_variable
+^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Get (or create) a script variable by name. Returns a reference — mutate it in place.
-    get_variable(variable_name: str) -> GenericParameter
+    def get_variable(variable_name: str) -> GenericParameter:
+        """
+        Get (or create) a script variable by name. Returns a reference — mutate it in place.
+
+        Args:
+            variable_name: Name of the variable
+
+        Returns:
+            GenericParameter: Reference to the variable's GenericParameter
+        """
 
 Logging
 ~~~~~~~
@@ -1401,28 +1727,99 @@ Input System
 Input Methods
 ~~~~~~~~~~~~~
 
+simulate_input
+^^^^^^^^^^^^^^
+
 .. code-block:: python
 
-    # Simulate input events
-    simulate_input(input_states: InputStates) -> None
+    def simulate_input(input_states: InputStates) -> None:
+        """
+        Simulate input events.
 
-    # Get mouse change information
-    changed, x_pos, y_pos, x_change, y_change = input_states.get_mouse_change()  # Returns tuple
+        Args:
+            input_states: InputStates object with the events to inject
+        """
 
-    # Set mouse change
-    input_states.set_mouse_change(x_pos: float, y_pos: float, x_change: float, y_change: float) -> None
+get_mouse_change
+^^^^^^^^^^^^^^^^
 
-    # Get text input
-    text = input_states.get_text() -> str
+.. code-block:: python
 
-    # Set text input
-    input_states.set_text(text: str) -> None
+    def get_mouse_change() -> tuple:
+        """
+        Get mouse change information.
 
-    # Reset all input events
-    input_states.reset_all_events() -> None
+        Returns:
+            tuple: (changed, x_pos, y_pos, x_change, y_change)
+        """
 
-    # Get input events for a specific input
-    events = input_states.get_input_events(input_code: int) -> bool
+set_mouse_change
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_mouse_change(x_pos: float, y_pos: float, x_change: float, y_change: float) -> None:
+        """
+        Set mouse change on an InputStates object.
+
+        Args:
+            x_pos: Absolute X position
+            y_pos: Absolute Y position
+            x_change: Delta X since last frame
+            y_change: Delta Y since last frame
+        """
+
+get_text
+^^^^^^^^
+
+.. code-block:: python
+
+    def get_text() -> str:
+        """
+        Get the current text input from an InputStates object.
+
+        Returns:
+            str: Current text input string
+        """
+
+set_text
+^^^^^^^^
+
+.. code-block:: python
+
+    def set_text(text: str) -> None:
+        """
+        Set text input on an InputStates object.
+
+        Args:
+            text: Text to inject
+        """
+
+reset_all_events
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def reset_all_events() -> None:
+        """
+        Reset all input events on an InputStates object.
+        """
+
+get_input_events
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_input_events(input_code: int) -> bool:
+        """
+        Get input events for a specific input code.
+
+        Args:
+            input_code: Input code to query (see Inputs class)
+
+        Returns:
+            bool: True if the input is currently active
+        """
 
 Input States
 ~~~~~~~~~~~~
