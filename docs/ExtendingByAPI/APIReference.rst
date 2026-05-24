@@ -61,7 +61,7 @@ Limon Engine API Reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`removeObject(uint32_t objectID, const bool &removeChildren = true)<LimonAPI-removeObject>`                                                                                                                                                                                                               |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`removeTriggerObject(uint32_t TriggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                                                                                                             |
+| ``bool``                                      | :ref:`removeTriggerObject(uint32_t triggerObjectID)<LimonAPI-removeTriggerObject>`                                                                                                                                                                                                                             |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``LimonTypes::Vec4``                          | :ref:`getObjectLinearVelocity(uint32_t objectID)<LimonAPI-getObjectLinearVelocity>`                                                                                                                                                                                                                            |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -145,7 +145,7 @@ Limon Engine API Reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``void``                                      | :ref:`quitGame()<LimonAPI-quitGame>`                                                                                                                                                                                                                                                                           |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                                                                                                                       |
+| ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getResultOfTrigger(uint32_t triggerObjectID, uint32_t triggerCodeID)<LimonAPI-getResultOfTrigger>`                                                                                                                                                                                                       |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`isInsideTrigger(uint32_t triggerID)<LimonAPI-isInsideTrigger>`                                                                                                                                                                                                                                           |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -557,14 +557,14 @@ Parameters:
 
 .. _LimonAPI-removeTriggerObject:
 
-bool removeTriggerObject(uint32_t TriggerObjectID)
+bool removeTriggerObject(uint32_t triggerObjectID)
 --------------------------------------------------
 
 Removes trigger volume indicated by the handle ID passed. Returns true for success, false if trigger handle ID invalid.
 
 Parameters:
 
-#. uint32_t TriggerObjectID: handle id of the trigger volume to remove.
+#. uint32_t triggerObjectID: handle id of the trigger volume to remove.
 
 .. _LimonAPI-getObjectLinearVelocity:
 
@@ -661,15 +661,15 @@ Returns true if the player is inside the volume, false if not or if the trigger 
 
 .. _LimonAPI-getResultOfTrigger:
 
-std::vector<LimonTypes::GenericParameter> getResultOfTrigger(uint32_t TriggerObjectID, uint32_t TriggerCodeID)
+std::vector<LimonTypes::GenericParameter> getResultOfTrigger(uint32_t triggerObjectID, uint32_t triggerCodeID)
 --------------------------------------------------------------------------------------------------------------
 
 Returns the result of the trigger object. For details, check :ref:`trigger object editor<Trigger Object Editor>`
 
 Parameters:
 
-#. uint32_t TriggerObjectID: The handleID of trigger object
-#. uint32_t TriggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
+#. uint32_t triggerObjectID: The handleID of trigger object
+#. uint32_t triggerCodeID: Which triggers result is requested. 1-> first enter, 2-> enter, 3-> exit.
 
 .. _LimonAPI-getObjectByName:
 
