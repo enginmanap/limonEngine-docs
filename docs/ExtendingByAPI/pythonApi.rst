@@ -1083,8 +1083,8 @@ add_particle_emitter
 .. code-block:: python
 
     def add_particle_emitter(name: str, texture_file: str, start_position: Vec4,
-                             max_start_distances: Vec4, size: float, count: int,
-                             life_time: float, particles_per_ms: float,
+                             max_start_distances: Vec4, size: Vec2, count: int,
+                             life_time: int, particles_per_ms: float,
                              continuously_emit: bool) -> int:
         """
         Add a new particle emitter to the scene.
@@ -1094,9 +1094,9 @@ add_particle_emitter
             texture_file: Path to the particle texture file
             start_position: World-space origin of the emitter
             max_start_distances: Maximum random spawn offsets per axis (Vec4)
-            size: Size of each particle
+            size: Width and height of each particle billboard (Vec2)
             count: Maximum number of live particles
-            life_time: Lifetime of each particle in seconds
+            life_time: Lifetime of each particle in milliseconds
             particles_per_ms: Emission rate in particles per millisecond
             continuously_emit: If True, emitter loops indefinitely
 
