@@ -232,7 +232,7 @@ Convert models to binary button scans all the models used in the map, and conver
     It is worth repeating. The save button overrides if there is a file with same name. Please pay attention.
 
 Object Editor Details
-####################
+#####################
 
 Object editor has two parts. One is the window that is on the left by default, and the other is the gizmos that appear at the position of the object. The window content changes based on the selected object. Each possible object type is documented separately below.
 
