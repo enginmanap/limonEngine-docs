@@ -2,21 +2,6 @@
 Welcome
 =======
 
-.. only:: latex
-
-   .. toctree::
-      :maxdepth: 1
-
-      GettingStarted
-      UsingTheEditor
-      AssetManagement
-      ExtendingByAPI/index
-      EngineArchitecture
-      RenderingPipeline
-      SupportingSystems
-      RoadMap
-      authors
-
 Welcome to Limon Engine's documentation!
 ========================================
 
@@ -47,21 +32,19 @@ License
 
 The project is licensed under the LGPL license.
 
-.. only:: html
+.. toctree::
+   :maxdepth: 1
 
-   .. toctree::
-      :maxdepth: 1
-
-      self
-      GettingStarted
-      UsingTheEditor
-      AssetManagement
-      ExtendingByAPI/index
-      EngineArchitecture
-      RenderingPipeline
-      SupportingSystems
-      RoadMap
-      authors
+   self
+   GettingStarted
+   UsingTheEditor
+   AssetManagement
+   ExtendingByAPI/index
+   EngineArchitecture
+   RenderingPipeline
+   SupportingSystems
+   RoadMap
+   authors
 
 Indices and tables
 ==================

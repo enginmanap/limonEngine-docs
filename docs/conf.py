@@ -198,7 +198,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'limonengine.tex', u'Limon Engine Documentation',
+  ('latex_root', 'limonengine.tex', u'Limon Engine Documentation',
    u'Limon Engine', 'manual'),
 ]
 
