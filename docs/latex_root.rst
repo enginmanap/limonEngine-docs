@@ -5,7 +5,10 @@
 
    GettingStarted
    UsingTheEditor
+   AssetManagement
    ExtendingByAPI/index
    EngineArchitecture
+   RenderingPipeline
+   SupportingSystems
    RoadMap
    authors
