@@ -32,14 +32,10 @@ License
 
 The project is licensed under the LGPL license.
 
-Contents:
-_________
-
 .. toctree::
    :maxdepth: 1
-   :glob:
 
-   index
+   self
    GettingStarted
    UsingTheEditor
    AssetManagement
@@ -56,4 +52,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
