@@ -8,6 +8,11 @@ Limon is a multi-platform, multi-threaded 3D game engine built as a deliberate m
 
 The engine is optimised for integrated GPU hardware with dual-channel RAM -mainstream and budget hardware without a discrete GPU. This target directly shapes several architectural choices, particularly the CPU-side culling investment described in :ref:`RenderingPipeline`.
 
+This engine uses traditional OOP like structure internally. ECS is quite popular around game engine enthusiasts, but it comes with real tradeoffs. First of all, it is harder to reason about, and harder do debug, as well as harder to develop, both on engine side, but also game side.
+Games need many unique behaviours, one offs, and customizations. These are not the strong suite of ECS. The real win for it would be in numerous active entities, but modern games, with little exception, has very limited active entities, and this has been the trend for decades.
+Since Limon is focusing on learning, both on the game design side, but also on the engine side, and we are not specifically targeting thousands of active entities, not using ECS is an intentional decision.
+
+
 .. note::
     Any game type using a perspective camera is supported -first-person, third-person, top-down, orbital, or fixed camera. The engine ships with a first-person default and a third-person camera attachment sample. Orthographic camera is not supported.
 

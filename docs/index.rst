@@ -5,7 +5,7 @@ Welcome
 Welcome to Limon Engine's documentation!
 ========================================
 
-Limon is a multi platform 3D game engine mainly focusing on first person games. Focus of its development is ease of use and ease of study. It has builtin editor for maps, animations and GUIs.
+Limon is a multi platform 3D game engine. Focus of its development is ease of use and ease of study. It has builtin editor for maps, animations and GUIs.
 
 Prebuilt binaries for Windows, Linux and MacOS can be `found here <https://github.com/enginmanap/limonEngine/releases>`_
 
