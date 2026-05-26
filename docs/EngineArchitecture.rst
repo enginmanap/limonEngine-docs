@@ -266,7 +266,6 @@ Third-Party Libraries
      - CPU and GPU profiling
 
 .. toctree::
-   :hidden:
 
    AssetManagement
    RenderingPipeline
