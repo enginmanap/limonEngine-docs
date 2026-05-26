@@ -176,7 +176,7 @@ The world properties is used to set map global properties.
 .. figure:: _static/media/images/WorldEditor/WP_Onload.png
     :align: center
 
-If map designer wants to launch some custom action at map load, this interface can be used to set as many as required. Details of them are at :ref:`Triggers`
+If map designer wants to launch some custom action at map load, this interface can be used to set as many as required. Details of them are at :ref:`implementAction`
 
 **Music**
 
@@ -264,7 +264,7 @@ AI properties section has a list of available Actors. Game developers can write 
 
 Under AI settings, there is "Step on Sound" setting. This is used as step sound when "Physical player" move on top of the model.
 
-After That there is "Custom animation properties". This section lists currently available animations, you can apply any of the custom animations to any number of models. If you want to create a new custom animation, you can do so by using "Create new" button. This button will open animation sequencer. For details please check :ref:`TriggerVolumes`.
+After That there is "Custom animation properties". This section lists currently available animations, you can apply any of the custom animations to any number of models. If you want to create a new custom animation, you can do so by using "Create new" button. This button will open animation sequencer.
 
 Disconnect from physics button removes the collision mesh from map so the object won't be interacting with physics engine. This can be useful for small probes that should be ignored.
 
@@ -290,7 +290,7 @@ This section has 3 Trigger settings.
 #. Enter Trigger.
 #. Exit Trigger.
 
-The details of Triggers settings are not predefined, triggers can define their own settings. For details, please refer to :ref:`Triggers`. Any or all of the triggers can be left unset.
+The details of Triggers settings are not predefined, triggers can define their own settings. For details on implementing triggers, see :ref:`implementAction`. Any or all of the triggers can be left unset.
 
 The logic of triggers is as follows:
 
@@ -344,7 +344,7 @@ There are 4 file settings. Only the Normal file is required, the rest are option
 The Button can be interactive, depending on the player state. If player is set interactive, the following logic is used:
 
 #. If The button doesn't have an trigger, and have a disabled image set, the disabled image will be shown.
-#. If on click image is set, and mouse is down over the button, on click image is shown. Also Trigger will be run. For details, please check :ref:`Triggers`.
+#. If on click image is set, and mouse is down over the button, on click image is shown. Also Trigger will be run. For details, please check :ref:`implementAction`.
 #. If on hover image is set, and mouse cursor is over the button, that image will be shown.
 #. If all else were wrong, the normal image will be shown.
 

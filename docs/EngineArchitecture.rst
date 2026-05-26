@@ -144,12 +144,12 @@ Subsystems
 ==========
 
 Rendering
-*********
+---------
 
 The rendering subsystem uses a custom pipeline with a swappable graphics backend. Forward and deferred pipeline configurations ship with the engine. Custom pipelines are built using the visual pipeline editor without modifying engine source. Full details: :ref:`RenderingPipeline`.
 
 Physics
-*******
+-------
 
 Limon uses Bullet Physics. Collision shapes are generated automatically from mesh data:
 
@@ -174,27 +174,27 @@ Limon uses Bullet Physics. Collision shapes are generated automatically from mes
     Animated objects have per-bone convex hulls.
 
 Input
-*****
+-----
 
 Input is handled by SDL2. The full SDL2 input event stream is passed to Player Extensions each frame. Controllers, joysticks, and other SDL2-supported devices are handleable via Player Extension.
 
 Sound
-*****
+-----
 
 Audio backend is OpenAL. A separate thread refreshes sound buffers. Supported formats: OGG and WAV.
 
 GUI
-***
+---
 
 GUI objects must belong to a layer. Layer ordering controls draw order. Interactive GUI is active when the player is in menu mode. GUI elements are creatable, movable, and removable at runtime via API.
 
 Editor
-******
+------
 
 The editor runs inside the game process. There is no separate edit mode or play mode -changes apply to the next frame in a live world. Built with Dear ImGui. Each ``GameObject`` type implements its own editor UI via ``addImGuiEditorElements`` -no central editor registry.
 
 AI
-**
+--
 
 Limon builds a 3D navigation grid per world, flood-filled from the first AI actor location. AI actors implement ``ActorInterface``, called each simulation step with ``ActorInformation``: player direction, line-of-sight state, distance, and pathfinding results. Route requests are asynchronous -the simulation tick is never blocked. For extension details: :ref:`implementAIActor`.
 

@@ -1,8 +1,8 @@
 .. _implementCameraAttachment:
 
-===========================
-Camera Attachment Extension
-===========================
+====================================
+How to implement a camera attachment
+====================================
 
 Camera Attachment Extension is the fourth user-layer extension point. It takes full per-frame control of the camera - overriding the default first-person viewpoint with any camera behaviour you implement. It is implementable in C++ or Python and is scanned from the same user dynamic library as all other extension types.
 
