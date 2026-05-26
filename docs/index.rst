@@ -38,11 +38,8 @@ The project is licensed under the LGPL license.
    self
    GettingStarted
    UsingTheEditor
-   AssetManagement
    ExtendingByAPI/index
    EngineArchitecture
-   RenderingPipeline
-   SupportingSystems
    RoadMap
    authors
 
