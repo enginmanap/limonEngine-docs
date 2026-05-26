@@ -5,9 +5,11 @@ Extending Engine Capabilities
    :maxdepth: 1
    :name: toc-extending-by-api
 
-   APIUsage
+   CPPAPIUsage
+   APIFundamentals
    implementAction
    implementPlayerExtension
    implementAIActor
-   APIReference
+   implementCameraAttachment
+   CPPAPIReference
    pythonApi

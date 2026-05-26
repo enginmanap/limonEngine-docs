@@ -4,35 +4,141 @@
 Engine Architecture
 ===================
 
-.. note::
-    This page is a work in progress. If you have any issues or questions, please open a ticket on GitHub.
+Limon is a multi-platform, multi-threaded 3D game engine built as a deliberate monolith. The boundary between what game developers extend, what engine developers modify, and what backend implementers replace is explicit and stable.
 
-
-Limon is a multi-platform, multi-threaded 3D game engine. Engine is built as a monolith, and architecture is not meant to be pluggable. It doesn't mean there is no extension points. The possible extension methods can be separated by 3 groups:
-
-#. Dynamic Linking Extensions: Those are intended for game developers to use. Version 0.6 has 3 extension types:
-
-    * Actions: These are attached to Trigger volumes, buttons or run on map load. Details can be found at :ref:`implementAction`
-    * Player extensions: They attach to player, and get all inputs, as well as any requests to player interaction. :ref:`implementPlayerExtension` has the details.
-    * AI actors: They attach to Models, and add agency to them. Details are at :ref:`implementAIActor`
-
-#. Not Exposed Extensions: Those are extensions used by Engine developers.
-    * Player interface for camera and movement (ex: 3rd person support)
-    * GUIObject for GUI elements (ex: Video player)
-
-#. Backend wrappers: Both rendering, sound, and platform(windowing, threading IO) are wrapped to their respective classes. Those are not intended to be extended by users, but engine developers. For example it should be rather easy to add a Vulkan backend for rendering.
-    * Rendering: OpenGL
-    * Audio: OpenAL
-    * Platform: SDL2
+The engine is optimised for integrated GPU hardware with dual-channel RAM -mainstream and budget hardware without a discrete GPU. This target directly shapes several architectural choices, particularly the CPU-side culling investment described in :ref:`RenderingPipeline`.
 
 .. note::
-    Even though SDL2 and OpenAL are wrapped, multiple platform or sound backends not envisioned.
+    Any game type using a perspective camera is supported -first-person, third-person, top-down, orbital, or fixed camera. The engine ships with a first-person default and a third-person camera attachment sample. Orthographic camera is not supported.
 
-Engine Overview
+Target Hardware
 ===============
 
-.. figure:: _static/media/images/LimonEngineArch.png
-    :align: center
+.. list-table::
+   :header-rows: 1
+   :widths: 10 22 25 14 14 15
+
+   * - Release
+     - CPU
+     - GPU
+     - RAM
+     - Resolution
+     - Target framerate
+   * - **0.6**
+     - Pentium G4560
+     - Intel HD 610 (iGPU)
+     - Dual channel
+     - 720p
+     - 30 fps
+   * - **0.7**
+     - Intel Core i5-8400
+     - Intel UHD 630 (iGPU)
+     - Dual channel
+     - 1080p
+     - 60 fps (Low)
+
+Extension Layers
+================
+
+Three development roles have distinct extension boundaries:
+
+* **User layer** -Five extension points, all implemented in a single user dynamic library (DLL on Windows, SO on Linux/macOS). The library is scanned at engine launch.
+* **Engine developer layer** -Camera movement and GUI object implementations. C++ only, not intended for external extension.
+* **Backend layer** -The graphics backend is a public interface loadable as a dynamic library. Ships with OpenGL 3.3 and OpenGL ES 3.1. Custom backends (Vulkan, Metal, DirectX) are possible without modifying engine source. Audio and platform abstraction are wrapped similarly but not intended for external extension.
+
+Five User Extension Points
+--------------------------
+
+All five types are scanned from the same user dynamic library at engine launch.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Extension Type
+     - Interface Contract
+   * - **Action**
+     - Fires on spatial interaction, GUI button press, or map load.
+       See :ref:`implementAction`.
+   * - **Player Extension**
+     - Per-frame player input and transform control.
+       See :ref:`implementPlayerExtension`.
+   * - **AI Actor**
+     - Per-simulation-step AI callbacks with pathfinding access.
+       See :ref:`implementAIActor`.
+   * - **Camera Attachment Extension**
+     - Per-frame camera control -returns position, center, up, and right
+       vectors each frame. Implementable in C++ or Python.
+   * - **RenderMethod**
+     - Custom GPU rendering primitive -wired in the pipeline editor.
+       See :ref:`RenderingPipeline`.
+
+GenericParameter -Universal Data Contract
+==========================================
+
+``LimonTypes::GenericParameter`` is the single data type flowing through every layer of the engine. It is the canonical representation of any named, typed value shared between the editor, C++ extensions, Python scripts, AI actors, trigger results, and RenderMethod configuration. The editor automatically generates the appropriate ImGui widget for each parameter type -no separate editor code is required for any extension.
+
+**RequestParameterType** -controls which editor widget is rendered:
+
+    ``MODEL``, ``ANIMATION``, ``SWITCH``, ``FREE_TEXT``, ``TRIGGER``, ``GUI_TEXT``, ``FREE_NUMBER``, ``COORDINATE``, ``TRANSFORM``, ``MULTI_SELECT``
+
+**ValueType** -describes the stored value:
+
+    ``STRING``, ``DOUBLE``, ``LONG``, ``LONG_ARRAY``, ``FLOAT_ARRAY``, ``BOOLEAN``, ``VEC4``, ``MAT4``
+
+For full documentation of GenericParameter usage in extensions, see :ref:`CPPAPIUsage`.
+
+Game Object Types
+=================
+
+Every entity in a Limon world is a ``GameObject``. All types implement the base class virtual interface, including ``addImGuiEditorElements`` for their own editor UI.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Type
+     - Description
+   * - **Model**
+     - Static or animated mesh. Can carry an attachment tree directly or via a named bone.
+   * - **Model Group**
+     - Collection of models managed as a unit.
+   * - **Player**
+     - Player controller. Has one model attachment point.
+   * - **GUI Text**
+     - Text display element -animatable via sequencer.
+   * - **GUI Button**
+     - Wraps a LimonAPI call, executes it on player interaction.
+   * - **GUI Image**
+     - Image display element -animatable via sequencer.
+   * - **CPU Particle**
+     - CPU-side particle emitter.
+   * - **GPU Particle**
+     - GPU-side particle emitter.
+   * - **Light**
+     - Directional or point light. Creatable and removable at runtime.
+   * - **Skybox**
+     - Environment backdrop.
+   * - **Trigger Volume**
+     - Spatial volume with attached Actions.
+
+Object Attachment
+-----------------
+
+Models carry attachment trees. The following types can attach to a model root or to a specific named bone. Bone attachment means the child follows the bone transform through the full skeletal animation:
+
+* **Model** -can itself carry further attachments, forming a full tree
+* **Model Group**
+* **Trigger Volume** -moves with the parent model or bone
+* **CPU Particle** -e.g. attach to a foot bone for ground dust
+* **GPU Particle**
+* **Light** -e.g. attach to a hand bone for a held torch
+
+The Player has one model attachment point. The attached model is the root of a normal attachment tree -it can carry further models, particles, lights, and triggers.
+
+GUI elements and Skybox cannot be attached as children.
+
+For asset loading, lifetime management, world transitions, and the limonmodel format see :ref:`AssetManagement`.
 
 Subsystems
 ==========
@@ -40,66 +146,116 @@ Subsystems
 Rendering
 *********
 
-For rendering graphics, Limon uses a custom multi pass forward renderer, built using OpenGL.
-
-All renderable objects are child of class *Renderable*. *World* class flags *Renderable* instances with visibility for camera and lights in simulate step.
-
-There is a *PhysicalRenderable* child class, that is attached to the physics subsystem. Those which are child of it are also considered shadow casters, and they have *void renderWithProgram(GLSLProgram &program)* method that allows custom shaders to be used for rendering. Those objects are also batched based on their materials, and instanced rendering is used for batches, if the object is not animated. Per object world transform matrices are held in a array, and uploaded to GPU. For rendering, another array with indexes of world transforms is created and used to render the objects.
-
-Each renderable implements *void render()* method. *World* class sets the render target, resolution etc. for shadow map generation. After that, for each light, all visible flagged *PhysicalRenderable* instances will be rendered using either *void renderWithProgram(GLSLProgram &program)* or *void renderWithProgramInstanced(std::vector<uint32_t> &modelIndices, GLSLProgram &program)* for instanced rendering. When the shadow maps for all the lights are ready, normal rendering will be done again using visiblity flags.
+The rendering subsystem uses a custom pipeline with a swappable graphics backend. Forward and deferred pipeline configurations ship with the engine. Custom pipelines are built using the visual pipeline editor without modifying engine source. Full details: :ref:`RenderingPipeline`.
 
 Physics
 *******
 
-For physics Limon uses Bullet Physics. The only *PhysicalObject* children are registered to physics subsystem. At version 0.6, there are *Model* and *ModelGroup* classes that use Physics. The physical representation of Models are auto generated using the following logic:
+Limon uses Bullet Physics. Collision shapes are generated automatically from mesh data:
 
-#. For each mesh, if another mesh with same name prefixed with \"UCX_\" that mesh will be used.
-#. Else if object is not animated, and static, use the full mesh data to generate rigid body. This is because static objects might be concave.
-#. Else if object is not animated, and dynamic, auto generate a hull that encapsulates whole object. Dynamic objects are forced to be convex.
-#. Else if object is animated, for each bone, auto generate a hull for the vertices that are attached to that bone. Each of those hulls animate with the object itself
+#. For each mesh, if another mesh with the same name prefixed with ``UCX_`` exists, that mesh is used as the collision shape.
+#. Else if the object is static, the full mesh data is used (supports concave geometry).
+#. Else if the object is dynamic, an auto-generated convex hull is used.
+#. Else if the object is animated, a convex hull per bone is generated for the vertices attached to each bone.
 
-Model groups just groups the models with given physical representations.
+.. figure:: _static/media/images/physics-hull_vs_full.png
+    :align: center
 
-IO
-**
+    Dynamic objects have convex hulls (left), static objects use full mesh collision (right).
 
-IO is handled with multiple levels of abstraction. Part of platform wrapper maps raw input to engine inputs. After that, an implementer of *Player* will get the input in form of *void move(moveDirections)* and *void rotate(float xPosition, float yPosition, float xChange, float yChange)* methods. The Player class has settings that allow different types of interaction, like physical, editor etc. In the end, the inputs are feed to PlayerExtensions, so they can handle them as they see fit.
+.. figure:: _static/media/images/physics-hull_vs_baked.png
+    :align: center
+
+    Static objects can use baked ``UCX_`` collision meshes (right).
+
+.. figure:: _static/media/images/physics-animated.png
+    :align: center
+
+    Animated objects have per-bone convex hulls.
+
+Input
+*****
+
+Input is handled by SDL2. The full SDL2 input event stream is passed to Player Extensions each frame. Controllers, joysticks, and other SDL2-supported devices are handleable via Player Extension.
 
 Sound
 *****
 
-Sound backend is OpenAL. A separate thread is used to refresh sound buffers. Sound Assets and sound subsystem complexities are abstracted by Sound GameObject.
+Audio backend is OpenAL. A separate thread refreshes sound buffers. Supported formats: OGG and WAV.
 
 GUI
 ***
 
-GUI is rendered and IO is handled by normal subsystems. GUI objects must implement *GUIRenderable* class. If the current *Player* is flagged with *menuInteraction*, the GUI objects will react to player input.
+GUI objects must belong to a layer. Layer ordering controls draw order. Interactive GUI is active when the player is in menu mode. GUI elements are creatable, movable, and removable at runtime via API.
 
 Editor
 ******
 
-Editor is built using Dear ImGui library. Main part of it is within *World* class, but to enable custom behaviour, objects get to implement their own editor interfaces.
-
-Game Play and Game Objects
-**************************
-
-As of version 0.6, Limon engine has following game objects:
-
-* Player
-* Light
-* Model
-* Model Group
-* SkyBox
-* Trigger Object
-* Gui Text
-* Gui Image
-* Gui Button
-* Gui Animation
-* Sound
-
-Those object can be used in Editor, and by Triggers. Gameplay layer has an API called LimonAPI, and it has an interface to allow extending, and Limon Engine supports dynamically loading those custom triggers. For details, please check :ref:`implementAction`
+The editor runs inside the game process. There is no separate edit mode or play mode -changes apply to the next frame in a live world. Built with Dear ImGui. Each ``GameObject`` type implements its own editor UI via ``addImGuiEditorElements`` -no central editor registry.
 
 AI
 **
 
-Limon has an interface called *ActorInterface* that is used to allow custom AI implementations to be used. Each actor will be triggered each simulation step with *ActorInformation*, which contains the player direction, whether or not player is visible etc. It is possible to ask for a route to player using this interface too, assuming actor is same size with the player.
+Limon builds a 3D navigation grid per world, flood-filled from the first AI actor location. AI actors implement ``ActorInterface``, called each simulation step with ``ActorInformation``: player direction, line-of-sight state, distance, and pathfinding results. Route requests are asynchronous -the simulation tick is never blocked. For extension details: :ref:`implementAIActor`.
+
+Platform Support
+================
+
+The same engine binary selects its graphics backend at launch from a dynamic library -OpenGL 3.3 or OpenGL ES 3.1.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 22 15 18 45
+
+   * - Platform
+     - Arch.
+     - Backend
+     - Notes
+   * - **Linux**
+     - x86
+     - OpenGL 3.3
+     - Primary development platform
+   * - **Windows**
+     - x86
+     - OpenGL 3.3
+     - MSYS2 / CMake build
+   * - **macOS**
+     - AArch64
+     - OpenGL 3.3
+     - Apple Silicon -NEON occlusion backend
+   * - **Raspberry Pi 4/5**
+     - AArch64
+     - OpenGL ES 3.1
+     - NEON occlusion backend. Known Mesa driver issue -ticket open.
+
+Build requirements and platform-specific instructions: :ref:`GettingStarted`.
+
+Third-Party Libraries
+=====================
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Library
+     - Purpose
+   * - Bullet Physics
+     - Rigid body physics simulation
+   * - OpenAL
+     - Audio backend
+   * - Dear ImGui
+     - Editor UI
+   * - pybind11
+     - Python scripting bridge
+   * - Assimp
+     - Asset import (models, animations)
+   * - meshoptimizer
+     - Automatic LOD mesh generation
+   * - SDL2
+     - Platform abstraction, input, windowing
+   * - SDL2_image
+     - Texture loading
+   * - CityHash
+     - String interning
+   * - Tracy
+     - CPU and GPU profiling

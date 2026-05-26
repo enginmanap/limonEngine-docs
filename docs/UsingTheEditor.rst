@@ -268,6 +268,12 @@ After That there is "Custom animation properties". This section lists currently 
 
 Disconnect from physics button removes the collision mesh from map so the object won't be interacting with physics engine. This can be useful for small probes that should be ignored.
 
+**Flip Model**
+
+Models can be flipped on the X, Y, or Z axis - any combination of axes is supported. The flip setting is a property of the model object and is editable in the object editor.
+
+When a flip is applied, the engine generates a flipped mesh asset in the background using the same shader and material path as the original. There is no per-instance runtime cost - the flipped mesh participates in instanced rendering identically to the original mesh.
+
 .. _Trigger Object Editor:
 
 Trigger Object Settings
@@ -363,6 +369,67 @@ The gizmo is the tool interface that appears at the position of the object that 
 All three modes use same logic. Dragging an axis applies the transform on that axis. Meaning while in translate mode, clicking on vertical line and dragging will move model vertically. Dragging by the center moves freely, without axis locking. Translate mode also has boxes that can be used to move on a plane, instead of a line.
 
 Some objects have an *snap* setting. This setting is used by the gizmo, to determine step size of the update. Snap of 0.25 in scale mode means dragging the gizmo will scale the object as 1, 1.25, 1.5, 1.75 etc. Same applies for translate and rotate too.
+
+Material System
+###############
+
+Materials define the visual appearance of meshes - colour, specularity, and up to five texture slots. Every material in the world is tracked in a flat registry regardless of where it came from.
+
+Where Materials Come From
+_________________________
+
+When a model is added to the world, its embedded materials are loaded and registered automatically. If two models share the same source material, it is loaded once and shared - deduplication is automatic. Custom materials you modify in the editor are saved in the world file, but the asset manager treats them identically to model-sourced materials. The origin of a material has no effect on how it is managed at runtime.
+
+For details on loading, lifetime, and cross-world sharing see :ref:`AssetManagement`.
+
+Material Registry
+_________________
+
+.. figure:: _static/media/images/editor-global-material-pane.png
+    :align: center
+
+    The material registry panel showing all materials in the current world.
+
+The world editor maintains a list of every material currently in use. Selecting a material from the registry and editing it is a global edit - the change propagates immediately to every mesh using that material.
+
+Editing a Material on a Specific Model
+_______________________________________
+
+When a model is selected in the object editor, its materials are listed. Each material offers two options:
+
+.. figure:: _static/media/images/editor-mesh-material-pane_preview.png
+    :align: center
+
+    Per-mesh material editing with preview.
+
+* **Edit globally** - edits the shared material. All meshes using it are affected immediately.
+* **Edit per-model** - creates a permanent copy assigned only to this mesh. The original is unchanged. The new copy appears in the registry and can be shared or edited like any other material.
+
+Material Properties
+___________________
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Property
+     - Type
+   * - Diffuse colour
+     - RGB
+   * - Ambient colour
+     - RGB
+   * - Specular exponent
+     - Float
+   * - Diffuse texture
+     - Texture slot
+   * - Ambient texture
+     - Texture slot
+   * - Specular texture
+     - Texture slot
+   * - Normal texture
+     - Texture slot
+   * - Opacity texture
+     - Texture slot
 
 Animation Sequencer Details
 ###########################

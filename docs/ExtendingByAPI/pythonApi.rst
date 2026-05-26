@@ -1,3 +1,5 @@
+.. _pythonApi:
+
 Limon Engine Python API Documentation
 =====================================
 
@@ -675,6 +677,8 @@ set_object_orientation
             bool: True if successful, False if object not found
         """
 
+.. _pythonApi-get_object_transformation_matrix:
+
 get_object_transformation_matrix
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -707,6 +711,8 @@ get_model_children
             list: List of child object IDs
         """
 
+.. _pythonApi-set_model_animation:
+
 set_model_animation
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -724,6 +730,8 @@ set_model_animation
         Returns:
             bool: True if the model was found and animation applied
         """
+
+.. _pythonApi-set_model_animation_with_blend:
 
 set_model_animation_with_blend
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -744,6 +752,8 @@ set_model_animation_with_blend
             bool: True if the model was found and animation applied
         """
 
+.. _pythonApi-set_model_animation_speed:
+
 set_model_animation_speed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -761,6 +771,8 @@ set_model_animation_speed
             bool: True if the model was found and speed applied
         """
 
+.. _pythonApi-get_model_animation_name:
+
 get_model_animation_name
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -776,6 +788,8 @@ get_model_animation_name
         Returns:
             str: Name of the current animation
         """
+
+.. _pythonApi-get_model_animation_finished:
 
 get_model_animation_finished
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -907,6 +921,8 @@ get_result_of_trigger
 Sound
 ~~~~~
 
+.. _pythonApi-attach_sound_to_object_and_play:
+
 attach_sound_to_object_and_play
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -925,6 +941,8 @@ attach_sound_to_object_and_play
             bool: True if the sound was attached and started
         """
 
+.. _pythonApi-detach_sound_from_object:
+
 detach_sound_from_object
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -940,6 +958,8 @@ detach_sound_from_object
         Returns:
             bool: True if a sound was found and detached
         """
+
+.. _pythonApi-play_sound:
 
 play_sound
 ^^^^^^^^^^
@@ -960,6 +980,8 @@ play_sound
             int: Sound ID for use with stop_sound and set_sound_volume, or 0 on failure
         """
 
+.. _pythonApi-stop_sound:
+
 stop_sound
 ^^^^^^^^^^
 
@@ -975,6 +997,8 @@ stop_sound
         Returns:
             bool: True if the sound was found and stopped
         """
+
+.. _pythonApi-set_sound_volume:
 
 set_sound_volume
 ^^^^^^^^^^^^^^^^
@@ -992,6 +1016,8 @@ set_sound_volume
         Returns:
             bool: True if the sound was found and volume updated. False if not found or sound not yet started
         """
+
+.. _pythonApi-is_sound_playing:
 
 is_sound_playing
 ^^^^^^^^^^^^^^^^
@@ -1045,6 +1071,8 @@ interact_with_player
 Particle Systems
 ~~~~~~~~~~~~~~~~
 
+.. _pythonApi-disable_particle_emitter:
+
 disable_particle_emitter
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1061,6 +1089,8 @@ disable_particle_emitter
             bool: True if the emitter was found and disabled
         """
 
+.. _pythonApi-enable_particle_emitter:
+
 enable_particle_emitter
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1076,6 +1106,8 @@ enable_particle_emitter
         Returns:
             bool: True if the emitter was found and enabled
         """
+
+.. _pythonApi-add_particle_emitter:
 
 add_particle_emitter
 ^^^^^^^^^^^^^^^^^^^^
@@ -1104,6 +1136,8 @@ add_particle_emitter
             int: Emitter ID, or 0 on failure
         """
 
+.. _pythonApi-remove_particle_emitter:
+
 remove_particle_emitter
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1119,6 +1153,8 @@ remove_particle_emitter
         Returns:
             bool: True if the emitter was found and removed
         """
+
+.. _pythonApi-set_emitter_particle_speed:
 
 set_emitter_particle_speed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1137,6 +1173,8 @@ set_emitter_particle_speed
         Returns:
             bool: True if the emitter was found and updated
         """
+
+.. _pythonApi-set_emitter_particle_gravity:
 
 set_emitter_particle_gravity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1200,6 +1238,8 @@ ray_cast_first_hit
 Lighting
 ~~~~~~~~
 
+.. _pythonApi-add_light:
+
 add_light
 ^^^^^^^^^
 
@@ -1210,13 +1250,15 @@ add_light
         Add a new light to the scene.
 
         Args:
-            light_type: Light type — 1 for directional, 2 for point
+            light_type: Light type - 1 for directional, 2 for point
             position: World-space position of the light
             color: RGB color of the light (Vec4; w is ignored)
 
         Returns:
             int: Light ID, or 0 on failure
         """
+
+.. _pythonApi-remove_light:
 
 remove_light
 ^^^^^^^^^^^^
@@ -1321,6 +1363,8 @@ set_light_translate
 World Management
 ~~~~~~~~~~~~~~~~
 
+.. _pythonApi-load_and_switch_world:
+
 load_and_switch_world
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -1338,6 +1382,8 @@ load_and_switch_world
                   (a world cannot remove itself)
         """
 
+.. _pythonApi-return_to_world:
+
 return_to_world
 ^^^^^^^^^^^^^^^
 
@@ -1353,6 +1399,8 @@ return_to_world
         Returns:
             bool: False if load fails
         """
+
+.. _pythonApi-load_and_remove:
 
 load_and_remove
 ^^^^^^^^^^^^^^^
@@ -1370,6 +1418,8 @@ load_and_remove
             bool: False if load fails
         """
 
+.. _pythonApi-return_previous_world:
+
 return_previous_world
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -1380,6 +1430,8 @@ return_previous_world
         Return to the previously loaded world. No-op if no previous world exists.
         """
 
+.. _pythonApi-quit_game:
+
 quit_game
 ^^^^^^^^^
 
@@ -1389,6 +1441,8 @@ quit_game
         """
         Quit the game.
         """
+
+.. _pythonApi-change_render_pipeline:
 
 change_render_pipeline
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -1465,6 +1519,8 @@ cancel_timed_event
 
 Profiling
 ~~~~~~~~~
+
+.. _pythonApi-profile_scope:
 
 profile_scope
 ^^^^^^^^^^^^^
@@ -1615,7 +1671,7 @@ get_variable
 
     def get_variable(variable_name: str) -> GenericParameter:
         """
-        Get (or create) a script variable by name. Returns a reference — mutate it in place.
+        Get (or create) a script variable by name. Returns a reference - mutate it in place.
 
         Args:
             variable_name: Name of the variable
@@ -1626,6 +1682,8 @@ get_variable
 
 Logging
 ~~~~~~~
+
+.. _pythonApi-log:
 
 log
 ^^^
@@ -1652,6 +1710,8 @@ Debug Line Drawing
 Lines are stored in numbered buffers managed by the engine. Each buffer persists across frames
 until explicitly removed. The typical per-frame pattern is **clear → draw**.
 
+.. _pythonApi-draw_debug_line:
+
 draw_debug_line
 ^^^^^^^^^^^^^^^
 
@@ -1671,8 +1731,10 @@ draw_debug_line
             require_camera_transform: True for 3D world-space lines; False for 2D screen-space
 
         Returns:
-            int: Buffer ID — pass to add_to_debug_line() or clear_debug_lines()
+            int: Buffer ID - pass to add_to_debug_line() or clear_debug_lines()
         """
+
+.. _pythonApi-add_to_debug_line:
 
 add_to_debug_line
 ^^^^^^^^^^^^^^^^^
@@ -1697,6 +1759,8 @@ add_to_debug_line
         Returns:
             bool: True on success; False if buffer_id is not found
         """
+
+.. _pythonApi-clear_debug_lines:
 
 clear_debug_lines
 ^^^^^^^^^^^^^^^^^

@@ -1,7 +1,7 @@
-.. _APIReference:
+.. _CPPAPIReference:
 
 ==========================
-Limon Engine API Reference
+Limon Engine C++ API Reference
 ==========================
 
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -815,7 +815,7 @@ none
 LimonTypes::Vec4 getCameraPosition()
 --------------------------------------
 
-Returns the camera's world position as a Vec4 (w=1). This comes from the active camera attachment — if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerPosition<LimonAPI-getPlayerPosition>`.
+Returns the camera's world position as a Vec4 (w=1). This comes from the active camera attachment - if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerPosition<LimonAPI-getPlayerPosition>`.
 
 Parameters:
 
@@ -826,7 +826,7 @@ none
 LimonTypes::Vec4 getCameraLookDirection()
 ------------------------------------------
 
-Returns the camera's normalized look direction as a Vec4 (w=0). This comes from the active camera attachment — if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
+Returns the camera's normalized look direction as a Vec4 (w=0). This comes from the active camera attachment - if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
 
 Parameters:
 
@@ -994,8 +994,8 @@ Creates and adds a new light to the world. Returns the new light's handle ID, or
 
 ``lightType`` values:
 
-* ``1`` — Directional light (position parameter is used as direction, normalized internally)
-* ``2`` — Point light
+* ``1`` - Directional light (position parameter is used as direction, normalized internally)
+* ``2`` - Point light
 
 Parameters:
 
@@ -1188,7 +1188,7 @@ Append the returned vector to your ``getParameters()`` result at the position wh
 
 Parameters:
 
-#. const std::string& description: Display label shown in the editor. All generated parameters share this description — the editor uses it to group them.
+#. const std::string& description: Display label shown in the editor. All generated parameters share this description - the editor uses it to group them.
 #. const std::vector<std::string>& options: List of option strings.
 #. size_t selectedIndex: Index into ``options`` of the currently selected item. If out of range, the selection string is left empty.
 

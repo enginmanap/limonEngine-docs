@@ -2,52 +2,105 @@
 Road Map
 ========
 
-Latest release of the Limon Engine is 0.6. This page is meant to indicate the development plan up until 1.0. Please note information in this page is subject to change, and should not be considered final.
+Latest release of the Limon Engine is 0.7. This page tracks the development plan up to 1.0. Information here is subject to change.
 
 Version 0.6
 ===========
 
-Main goal of this release was fighting. All of the listed functionality implemented.
+Main goal was fighting mechanics. All items implemented.
 
-#. Asset discovery should be automatic, instead of current asset list approach.
-#. Allow attaching models to player. Should be used to carry weapons around.
-#. Allow listening for input by triggers. Should be used for attack
-#. Provide what is under the cursor, with its distance to player. Should allow checking for whether player hit something or not
-#. Provide "distance to player" to Actors, so AI can determine melee attack.
-#. Allow trigger <-> Actor communication for hits.
-#. Allow adding quad/s as bullet holes etc.
-#. There is no way to implement Player getting hit. A way should be exposed.
+#. Asset discovery automatic, instead of manual asset list.
+#. Model attachment to player -for carrying weapons.
+#. Input listening from triggers -for attack actions.
+#. Raycast to cursor with distance -for hit detection.
+#. Distance-to-player provided to AI Actors -for melee range checks.
+#. Trigger ↔ Actor communication -for hit events.
+#. Quad decals -for bullet holes etc.
+#. Player hit mechanics exposed via API.
 
 Version 0.7
 ===========
 
-#. Material editor.
-#. Particle emitters.
-#. Shadow mapping improvements.
+All items implemented.
 
+#. Material editor -global material registry with per-model copy-on-write editing.
+#. Particle emitters -CPU and GPU particle emitters with full runtime API.
+#. Shadow mapping improvements -staggered cascade rendering, point light cube map shadows.
+#. Node-based render pipeline editor -visual pipeline configuration with forward and deferred configurations shipped.
+#. SIMD software occlusion culling -SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5).
+#. Automatic LOD generation -meshoptimizer, 4 LOD levels per model.
+#. Python scripting -full LimonAPI surface via pybind11, multi-interpreter, all five extension types implementable in Python.
+#. Camera Attachment Extension -fourth user extension point, enabling third-person and custom cameras.
+#. RenderMethod Extension -fifth user extension point for custom GPU rendering primitives.
+#. Asset browser -typed tree with model preview using world lighting.
+#. limonmodel native format -near memory-direct layout for fast release builds.
+#. Debug line draw API -3D world-space coloured lines via ID-based buffer system.
+#. In-game logger overlay -transparent, toggleable, with C++ and Python API.
+#. Tracy profiling -embedded flame graph in editor, GPU zones from pipeline config, profileScope API.
 
 Before 1.0
 ==========
 
-#. Generate AI navigation mesh from AI navigation grid. Serialize it with map. Done
-#. Make world a tree, and allow modifications to groups. Done
+#. Generate AI navigation mesh from AI navigation grid. Serialize it with map. **Done**
+#. Make world a tree, and allow modifications to groups. **Done**
+#. Mixamo animation support. **Done**
+#. Object culling. **Done** (SIMD software occlusion culling)
+#. File logger. **Done** (in-game logger overlay)
+#. Custom shaders. **Done** (via pipeline editor and RenderMethod extension point)
+#. Python scripting support. **Done**
 #. Options can't be set using GUI, they should have.
-#. Mixamo support. Done
-#. Directory listings should auto generate for assets, and it should be able to refresh. Partially done, no refresh.
-#. There is no stair support, there should be.
-#. Editor should support undo/redo.
-#. Auto Align objects.
-#. Spot lights should be added.
-#. Debug draw needs improvements, like duration.
-#. Opacity should be better handled.
-#. Object culling should be implemented.
-#. File logger should be implemented.
+#. Directory listings should auto generate for assets, with refresh support. Partial -no refresh.
+#. Stair support.
+#. Editor undo/redo.
+#. Auto-align objects.
+#. Spot lights.
+#. Opacity handling improvements.
+
+Known Limitations in 0.7
+========================
+
+The following limitations are confirmed in version 0.7:
+
+**Rendering and Assets**
+
+* Model scaling is imported directly from the source file - no automatic correction is applied. Incorrect scale must be fixed in the editor.
+* Aggressive engine-wide LOD settings can produce visible mesh pop-in. Tune the ``LodDistanceList`` option for your scene.
+* Raspberry Pi 4/5 is affected by an upstream Mesa driver bug causing a visual artefact. A ticket is open on the public Mesa tracker.
+* limonmodel load-time benchmarks are not yet published.
+
+**Navigation and AI**
+
+* Pathfinding assumes actor collision size and mobility matches the player. Flying and swimming actors are not natively supported.
+* Navigation grid is not generated if the world contains no AI actors.
+* Navigation grid does not update for dynamic geometry changes at runtime. Planned post-0.7.
+* Map geometry disconnected from the flood-fill origin of the first AI actor is silently excluded from the navigation grid.
+
+**Animation**
+
+* Skeletal animation blending is two-animation crossfade only. Blend trees and state machines are not supported.
+
+**Camera**
+
+* Camera Attachment Extension is perspective camera only. CameraObject (free-floating camera independent of the player) is in progress.
+
+**Input**
+
+* Keyboard and mouse input are natively supported. Controllers and other devices require SDL2 passthrough via a Player Extension.
+
+**Player**
+
+* Player movement customisation beyond the options (jump factor, speeds) requires a custom Player Extension.
+
+**Missing Features**
+
+* No height map terrain support.
+* No time dilation.
+* No networking.
+* No mobile platform builds (Android/iOS).
 
 Possible Additions
 ==================
 
-#. Custom shaders
 #. Vulkan backend
-#. Python scripting support
 #. Android support
-#. Emscripten/webassembly support
+#. Emscripten/WebAssembly support
