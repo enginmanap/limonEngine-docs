@@ -389,10 +389,10 @@ Culling and LOD
      - Long
      - 10
      - When a model has more meshes than this, occlusion tests run per mesh rather than per model.
-   * - ``maximumPointLights``
+   * - ``maximumLights``
      - Long
      - 4
-     - Maximum number of simultaneously active point lights. The engine selects the most relevant lights up to this limit.
+     - Maximum number of simultaneously active lights. If there is a directional light, it is always active. The engine selects the most relevant point lights up to this limit.
 
 Player
 ------

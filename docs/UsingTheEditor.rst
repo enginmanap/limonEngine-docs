@@ -96,8 +96,8 @@ _____________
 .. figure:: _static/media/images/WorldEditor/addLight.png
     :align: center
 
-Limon Engine uses a custom forward renderer with full dynamic light calculation. Since these calculations are resource hungry, only 4 lights will be enabled at any given time. This value is set at compile time, and not expected to be changed by game developers.
-To make usage easier, only 1 directional light is allowed, but that light is never disabled (assumed Moon/Sun), so 1 directional + 3 point, or 4 point lights may be active at any given time. Engine itself decides which ones to activate and deactivate using player position, so adding more than 4 light is allowed.
+Limon Engine uses a custom forward renderer with full dynamic light calculation. Since these calculations are resource hungry, keeping the number of lights low is an important optimization. Limit for any given frame can be set using options.
+To make usage easier, only 1 directional light is allowed, and if it is set, that light is never disabled (assumed Moon/Sun). 1 directional +  (limit - 1) point lights may be active at any given time. Engine itself decides which ones to activate and deactivate using player position, so adding any number of  point lights is allowed.
 
 Adding GUI Elements
 ___________________
