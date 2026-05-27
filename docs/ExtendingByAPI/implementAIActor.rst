@@ -138,7 +138,7 @@ This struct is part of ActorInterface, and each frame Limon Engine checks all Ac
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 | bool                   | routeToPlayer               | Request a route to Player                                                |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
-| bool                   | routeToCustomPosition       | Request a route to custom position(not implemented yet)                  |
+| bool                   | routeToCustomPosition       | Request a route to custom position                                       |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 | glm::vec3              | customPosition              | Position to course path                                                  |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
