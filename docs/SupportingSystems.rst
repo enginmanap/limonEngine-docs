@@ -131,7 +131,7 @@ Debug Line Draw
    * - Method
      - Description
    * - ``drawDebugLine(from, to, fromColor, toColor, requireCameraTransform)``
-     - Create a new line buffer and add the first line. Returns buffer ID. Set ``requireCameraTransform=True`` for camera-space (HUD-style) lines, ``False`` for world-space. (:ref:`C++ <LimonAPI-drawDebugLine>` | :ref:`Python <pythonApi-draw_debug_line>`)
+     - Create a new line buffer and add the first line. Returns buffer ID. Set ``requireCameraTransform=False`` for camera-space (HUD-style) lines, ``True`` for world-space. (:ref:`C++ <LimonAPI-drawDebugLine>` | :ref:`Python <pythonApi-draw_debug_line>`)
    * - ``addToDebugLine(bufferID, from, to, fromColor, toColor, requireCameraTransform)``
      - Add a line to an existing buffer. (:ref:`C++ <LimonAPI-addToDebugLine>` | :ref:`Python <pythonApi-add_to_debug_line>`)
    * - ``clearDebugLines(bufferID)``
