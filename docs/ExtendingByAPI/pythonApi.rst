@@ -1,5 +1,8 @@
 .. _pythonApi:
 
+.. role:: del
+    :class: del
+
 Limon Engine Python API Documentation
 =====================================
 
@@ -944,41 +947,28 @@ Sound
 
 .. _pythonApi-attach_sound_to_object_and_play:
 
-attach_sound_to_object_and_play
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+:del:`attach_sound_to_object_and_play`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
+.. warning::
+    **Removed.** Sound is now a first-class game object with full attachment support. Use :ref:`play_sound<pythonApi-play_sound>` to create the sound and obtain its ID, then use ``attach_object_to_object`` to attach it to the target model. Stop and remove it with :ref:`stop_sound<pythonApi-stop_sound>`.
 
-    def attach_sound_to_object_and_play(object_id: int, sound_path: str, looped: bool = True) -> bool:
-        """
-        Attach a sound to an object and begin playing it.
+    .. code-block:: python
 
-        Args:
-            object_id: ID of the object to attach the sound to
-            sound_path: Path to the sound file
-            looped: Whether the sound should loop. Defaults to True.
+        # Before (no longer available)
+        limon.attach_sound_to_object_and_play(model_id, "sound.wav", looped=True)
 
-        Returns:
-            bool: True if the sound was attached and started
-        """
+        # After
+        sound_id = limon.play_sound("sound.wav", Vec4(0, 0, 0, 1), looped=True)
+        limon.attach_object_to_object(sound_id, model_id)
 
 .. _pythonApi-detach_sound_from_object:
 
-detach_sound_from_object
-^^^^^^^^^^^^^^^^^^^^^^^^
+:del:`detach_sound_from_object`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: python
-
-    def detach_sound_from_object(object_id: int) -> bool:
-        """
-        Detach a sound from an object and stop playing it.
-
-        Args:
-            object_id: ID of the object
-
-        Returns:
-            bool: True if a sound was found and detached
-        """
+.. warning::
+    **Removed.** Now that :ref:`attach_sound_to_object_and_play<pythonApi-attach_sound_to_object_and_play>` has been replaced with the :ref:`play_sound<pythonApi-play_sound>` + ``attach_object_to_object`` flow, the sound ID is available and :ref:`stop_sound<pythonApi-stop_sound>` serves as the direct replacement.
 
 .. _pythonApi-play_sound:
 
@@ -987,18 +977,27 @@ play_sound
 
 .. code-block:: python
 
-    def play_sound(sound_path: str, position: Vec4, position_relative: bool = False, looped: bool = False) -> int:
+    def play_sound(sound_path: str, position: Vec4, position_relative: bool = False,
+                   looped: bool = False, reference_distance: float = 2.0,
+                   max_distance: float = 50.0) -> int:
         """
         Play a non-attached sound at a world position.
 
         Args:
             sound_path: Path to the sound file
             position: World-space position to play the sound at
-            position_relative: If True, position is relative to the listener
-            looped: Whether the sound should loop
+            position_relative: If True, position is relative to the listener. Defaults to False.
+            looped: Whether the sound should loop. Defaults to False.
+            reference_distance: Distance at which the sound plays at full volume.
+                Below this distance gain is clamped to maximum. Defaults to 2.0.
+            max_distance: Distance at which the sound is fully attenuated and inaudible.
+                Defaults to 50.0.
 
         Returns:
-            int: Sound ID for use with stop_sound and set_sound_volume, or 0 on failure
+            int: Sound ID for use with stop_sound, pause_sound, etc., or 0 on failure
+
+        Note:
+            Only mono audio files are spatialized. Stereo files play at a fixed volume.
         """
 
 .. _pythonApi-stop_sound:
@@ -1010,13 +1009,50 @@ stop_sound
 
     def stop_sound(sound_id: int) -> bool:
         """
-        Stop a playing sound.
+        Stop a playing sound and remove it from the world.
 
         Args:
             sound_id: Sound ID returned by play_sound
 
         Returns:
             bool: True if the sound was found and stopped
+        """
+
+.. _pythonApi-pause_sound:
+
+pause_sound
+^^^^^^^^^^^
+
+.. code-block:: python
+
+    def pause_sound(sound_id: int) -> bool:
+        """
+        Pause a playing sound without stopping it.
+        The sound can be resumed with resume_sound.
+
+        Args:
+            sound_id: Sound ID returned by play_sound
+
+        Returns:
+            bool: True if the sound was found and paused
+        """
+
+.. _pythonApi-resume_sound:
+
+resume_sound
+^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def resume_sound(sound_id: int) -> bool:
+        """
+        Resume a paused sound from where it left off.
+
+        Args:
+            sound_id: Sound ID returned by play_sound
+
+        Returns:
+            bool: True if the sound was found and resumed
         """
 
 .. _pythonApi-set_sound_volume:
@@ -1036,6 +1072,27 @@ set_sound_volume
 
         Returns:
             bool: True if the sound was found and volume updated. False if not found or sound not yet started
+        """
+
+.. _pythonApi-set_sound_looped:
+
+set_sound_looped
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_sound_looped(sound_id: int, looped: bool) -> bool:
+        """
+        Change whether a sound loops after the current play-through.
+        Useful for transitioning a looping sound into a one-shot that
+        stops after the current cycle completes.
+
+        Args:
+            sound_id: Sound ID returned by play_sound
+            looped: True to loop, False to stop after the current play-through
+
+        Returns:
+            bool: True if the sound was found and updated
         """
 
 .. _pythonApi-is_sound_playing:

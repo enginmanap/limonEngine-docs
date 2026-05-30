@@ -1,5 +1,8 @@
 .. _CPPAPIReference:
 
+.. role:: del
+    :class: del
+
 ==============================
 Limon Engine C++ API Reference
 ==============================
@@ -79,15 +82,21 @@ Limon Engine C++ API Reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)<LimonAPI-attachSoundToObjectAndPlay>`                                                                                                                                                               |
+| :del:`bool`                                   | :del:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)` — :ref:`Removed<LimonAPI-attachSoundToObjectAndPlay>`                                                                                                                                              |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`detachSoundFromObject(uint32_t objectWorldID)<LimonAPI-detachSoundFromObject>`                                                                                                                                                                                                                           |
+| :del:`bool`                                   | :del:`detachSoundFromObject(uint32_t objectWorldID)` — :ref:`Removed<LimonAPI-detachSoundFromObject>`                                                                                                                                                                                                          |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``uint32_t``                                  | :ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false)<LimonAPI-playSound>`                                                                                                                                                              |
+| ``uint32_t``                                  | :ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f)<LimonAPI-playSound>`                                                                                                   |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`stopSound(uint32_t soundID)<LimonAPI-stopSound>`                                                                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`pauseSound(uint32_t soundID)<LimonAPI-pauseSound>`                                                                                                                                                                                                                                                       |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`resumeSound(uint32_t soundID)<LimonAPI-resumeSound>`                                                                                                                                                                                                                                                     |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setSoundVolume(uint32_t soundID, float volume)<LimonAPI-setSoundVolume>`                                                                                                                                                                                                                                 |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setSoundLooped(uint32_t soundID, bool looped)<LimonAPI-setSoundLooped>`                                                                                                                                                                                                                                  |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`isSoundPlaying(uint32_t soundID)<LimonAPI-isSoundPlaying>`                                                                                                                                                                                                                                               |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -729,48 +738,76 @@ Sound
 
 .. _LimonAPI-attachSoundToObjectAndPlay:
 
-bool attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)
----------------------------------------------------------------------------------------------------------
+:del:`bool attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)`
+-----------------------------------------------------------------------------------------------------------------
 
-Creates a sound, attaches it to an object and plays it. Attaching means the sound source position and velocity follow the object. Returns false if the object is not found.
+.. warning::
+    **Removed.** Sound is now a first-class game object with full attachment support. Use :ref:`playSound<LimonAPI-playSound>` to create the sound and obtain its ID, then use :ref:`attachObjectToObject<LimonAPI-attachObjectToObject>` to attach it to the target model. Stop and remove it with :ref:`stopSound<LimonAPI-stopSound>`.
 
-Parameters:
+    .. code-block:: cpp
 
-#. uint32_t objectWorldID: Handle id of the object to attach.
-#. const std::string &soundPath: Path of the sound to play.
-#. bool looped: Whether the sound plays in a loop. Defaults to true.
+        // Before (no longer available)
+        limonAPI->attachSoundToObjectAndPlay(modelID, "sound.wav", true);
+
+        // After
+        uint32_t soundID = limonAPI->playSound("sound.wav", glm::vec3(0,0,0), false, true);
+        limonAPI->attachObjectToObject(soundID, modelID);
 
 .. _LimonAPI-detachSoundFromObject:
 
-bool detachSoundFromObject(uint32_t objectWorldID)
---------------------------------------------------
+:del:`bool detachSoundFromObject(uint32_t objectWorldID)`
+----------------------------------------------------------
 
-Removes the sound already attached from the object, and stops the sound. Returns false if the object is not found.
-
-Parameter:
-
-#. uint32_t objectWorldID: Handle id of the object to remove.
+.. warning::
+    **Removed.** Now that :ref:`attachSoundToObjectAndPlay<LimonAPI-attachSoundToObjectAndPlay>` has been replaced with the :ref:`playSound<LimonAPI-playSound>` + :ref:`attachObjectToObject<LimonAPI-attachObjectToObject>` flow, the sound ID is available and :ref:`stopSound<LimonAPI-stopSound>` serves as the direct replacement.
 
 .. _LimonAPI-playSound:
 
-uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative, bool looped)
----------------------------------------------------------------------------------------------------------------
+uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Creates and plays a sound. Returns uin32_t playing sound ID.
+Creates and plays a sound at a world position. Returns the sound ID used to control playback. Returns 0 on failure.
 
 Parameters:
 
 #. const std::string &soundPath: Path of the sound to play.
 #. const glm::vec3 &position: World position of the sound source.
-#. bool positionRelative: True if position given it relative to player. Defaults to false.
-#. bool looped: Play once or play in a loop. Defaults to false
+#. bool positionRelative: If true, position is relative to the listener (camera). Defaults to false.
+#. bool looped: Play once or play in a loop. Defaults to false.
+#. float referenceDistance: Distance at which the sound plays at full volume. Below this distance gain is clamped to maximum. Defaults to 2.0.
+#. float maxDistance: Distance at which the sound is fully attenuated and becomes inaudible. Defaults to 50.0.
+
+.. note::
+    Only mono audio files are spatialized by OpenAL. Stereo files play at a fixed volume regardless of position.
 
 .. _LimonAPI-stopSound:
 
 bool stopSound(uint32_t soundID)
 ---------------------------------
 
-Stops a playing sound. Returns false if the sound ID is not found.
+Stops a playing sound and removes it from the world. Returns false if the sound ID is not found.
+
+Parameters:
+
+#. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
+
+.. _LimonAPI-pauseSound:
+
+bool pauseSound(uint32_t soundID)
+----------------------------------
+
+Pauses a playing sound without stopping it. The sound can be resumed with :ref:`resumeSound<LimonAPI-resumeSound>`. Returns false if the sound ID is not found.
+
+Parameters:
+
+#. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
+
+.. _LimonAPI-resumeSound:
+
+bool resumeSound(uint32_t soundID)
+------------------------------------
+
+Resumes a paused sound from where it left off. Returns false if the sound ID is not found.
 
 Parameters:
 
@@ -787,6 +824,18 @@ Parameters:
 
 #. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
 #. float volume: New gain value.
+
+.. _LimonAPI-setSoundLooped:
+
+bool setSoundLooped(uint32_t soundID, bool looped)
+---------------------------------------------------
+
+Changes whether a sound loops after the current play-through. Can be used to transition a looping sound into a one-shot that stops after the current cycle. Returns false if the sound ID is not found.
+
+Parameters:
+
+#. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
+#. bool looped: True to loop, false to stop after the current play-through.
 
 .. _LimonAPI-isSoundPlaying:
 
