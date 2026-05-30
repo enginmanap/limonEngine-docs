@@ -41,6 +41,8 @@ Limon Engine C++ API Reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObject>`                                                                                                                                                                                                     |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`attachObjectToObjectAtWorldPosition(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObjectAtWorldPosition>`                                                                                                                                                                       |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setObjectTemporary(uint32_t objectID, bool temporary)<LimonAPI-setObjectTemporary>`                                                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getObjectTransformation(uint32_t objectID)<LimonAPI-getObjectTransformation>`                                                                                                                                                                                                                            |
@@ -416,6 +418,18 @@ bool attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)
 -------------------------------------------------------------------------
 
 Attaches object indicated by the handle ID, to another object indicated by second parameter. Returns true for success, false for invalid Handle ID for either parameter. Attachment means if parent object move, child will move too. Example usage: bullet hole decals to dynamic objects. The object should have a transformation relative to the object it will be attached.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to attach as child.
+#. uint32_t objectToAttachToID: handle id of the object to attach as parent.
+
+.. _LimonAPI-attachObjectToObjectAtWorldPosition:
+
+bool attachObjectToObjectAtWorldPosition(uint32_t objectID, uint32_t objectToAttachToID)
+-----------------------------------------------------------------------------------------
+
+Attaches object indicated by the handle ID to another object, using the object's current world-space position as the attachment offset. This is equivalent to ``attachObjectToObject``, but instead of using a pre-set relative transform the engine computes the offset from the child's current world position at the moment of attachment. Returns true for success, false for invalid handle ID for either parameter.
 
 Parameters:
 

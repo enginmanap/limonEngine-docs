@@ -356,6 +356,27 @@ attach_object_to_object
             bool: True if attachment succeeded
         """
 
+attach_object_to_object_at_world_position
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def attach_object_to_object_at_world_position(object_id: int, object_to_attach_to_id: int) -> bool:
+        """
+        Attach one object to another using the child's current world-space position as the offset.
+
+        Unlike attach_object_to_object, the attachment offset is computed from the child's
+        current world position at the moment of attachment rather than using a pre-set
+        relative transform.
+
+        Args:
+            object_id: ID of the object to attach
+            object_to_attach_to_id: ID of the object to attach to
+
+        Returns:
+            bool: True if attachment succeeded
+        """
+
 remove_trigger_object
 ^^^^^^^^^^^^^^^^^^^^^
 
