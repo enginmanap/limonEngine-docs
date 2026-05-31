@@ -8,6 +8,10 @@ AI Actor is the way Limon enables custom behaviour for NPCs or enemies. Limon en
 
 Limon editor allows selecting Actor per model. After Actor selected, a new instance of the selected Actor is created, and called each frame with current information about the world. It is also possible to expose some settings to be filled by level designer using the same interface of editor.
 
+Actors follow the :ref:`unified parameter contract <GenericParameter-unified-contract>`. Like Triggers and Player Extensions, ``ActorInterface`` provides a protected ``parameters`` member with base ``getParameters()`` / ``setParameters()`` implementations, so a simple actor can seed its defaults into that member in the constructor and rely on the base methods - no override required.
+
+Most actors, however, read their configuration every frame in ``play()`` and prefer real typed members (``float aggroRange``, ``int health``, ...) over scanning an untyped vector. Because both methods are ``virtual``, an actor is free to keep its configuration in whatever form it likes: override ``getParameters()`` to convert its typed members into a ``GenericParameter`` vector - each entry filled with its current value - and override ``setParameters()`` to apply edited or loaded values back onto those members. The same vector drives editor widgets, map serialization, and load either way. The bundled actors use this "typed-member" style, and it is the recommended approach for non-trivial AI.
+
 ActorInterface Class
 ____________________
 
@@ -46,14 +50,14 @@ The constructor of the interface.
 std::vector<LimonTypes::GenericParameter> getParameters()
 =========================================================
 
-Returns a vector of ``LimonTypes::GenericParameter``. These parameters are going to be set by map designer using the editor. These parameters should be filled with their current values, because Load/Save logic uses these parameters to persist AI information.
+Returns a vector of ``LimonTypes::GenericParameter``. These parameters are going to be set by the map designer using the editor, and must be filled with their current values, because the Load/Save logic uses them to persist AI information. The base implementation returns the protected ``parameters`` member - seed your defaults into it in the constructor and they are returned here, exactly as for Triggers and Player Extensions. Override this method when the actor owns its configuration as its own typed members and assembles the vector from them; this is what the bundled actors do.
 
 .. _ActorInterface-setParameters:
 
 void setParameters(std::vector<LimonTypes::GenericParameter> parameters)
 ========================================================================
 
-The parameters set by map designer will be passed to this method. It might be just set, or they might be loading as part of map load.
+The parameters set by map designer will be passed to this method. It might be just set, or they might be loading as part of map load. The base implementation stores them in the protected ``parameters`` member; override it to apply the values onto the actor's own typed members instead.
 
 .. _ActorInterface-play:
 

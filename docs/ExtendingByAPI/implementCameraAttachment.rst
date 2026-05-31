@@ -6,6 +6,9 @@ How to implement a camera attachment
 
 Camera Attachment Extension is the fourth user-layer extension point. It takes full per-frame control of the camera - overriding the default first-person viewpoint with any camera behaviour you implement. It is implementable in C++ or Python and is scanned from the same user dynamic library as all other extension types.
 
+.. note::
+    Camera Attachment is the one extension point **not yet migrated** to the :ref:`unified parameter contract <GenericParameter-unified-contract>`. Unlike Triggers, Actors, Player Extensions, and RenderMethods, it does not expose ``getParameters()`` / ``setParameters()`` and therefore has no editor-exposed ``GenericParameter`` configuration. Configuration is currently passed in code (for example, through the owning Player Extension's constructor) rather than persisted and edited in the editor. Migrating it to the shared contract is planned.
+
 Interface
 =========
 

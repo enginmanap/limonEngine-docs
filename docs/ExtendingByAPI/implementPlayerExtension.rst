@@ -6,6 +6,8 @@ How to Implement a Player Extension
 
 Player extensions are main ways of handling input in Limon Engine. Input from player is first handled by PhysicalPlayer class, which governs look around and movement, then all input information is passed to selected extension, so it can handle custom interactions, like pickups, shooting etc. On the other side, any interaction send by other entities to player is directly passed to player extension for handling.
 
+Player extensions follow the :ref:`unified parameter contract <GenericParameter-unified-contract>`. Like Triggers, the base class holds the values on a protected ``parameters`` member: you seed any default parameters into that member in the **constructor**, the base ``getParameters() const`` returns it, and ``setParameters()`` overwrites it when the designer edits values or a map is loaded. The configured values are persisted with the map and editable in the editor. An extension with no configurable settings simply seeds nothing and the member stays empty.
+
 PlayerExtensionInterface Class
 ______________________________
 
@@ -18,6 +20,10 @@ ______________________________
      - :ref:`processInput(const InputStates &inputState, const PlayerInformation &playerInformation, long time)<PlayerExtensionInterface-processInput>`
    * - ``void``
      - :ref:`interact(std::vector\<LimonTypes::GenericParameter\> &parameters)<PlayerExtensionInterface-interact>`
+   * - ``std::vector<LimonTypes::GenericParameter>``
+     - :ref:`getParameters() const<PlayerExtensionInterface-getParameters>`
+   * - ``void``
+     - :ref:`setParameters(std::vector\<LimonTypes::GenericParameter\>parameters)<PlayerExtensionInterface-setParameters>`
    * - ``std::string``
      - :ref:`getName() const<PlayerExtensionInterface-getName>`
    * - ``CameraAttachment*``
@@ -27,7 +33,7 @@ ______________________________
 
 PlayerExtensionInterface(LimonAPI \*limonAPI)
 =============================================
-The constructor of the interface.
+The constructor of the interface. If the extension exposes editor-configurable settings, this is where it seeds their **defaults**: build each ``LimonTypes::GenericParameter`` descriptor and ``push_back`` it onto the protected ``this->parameters`` member.
 
 .. note::
     All Player Extension must have the same signature, no other parameters should be required.
@@ -51,6 +57,20 @@ void interact(std::vector<LimonTypes::GenericParameter> &interactionData)
 =========================================================================
 
 Called by other entities to interact with player.
+
+.. _PlayerExtensionInterface-getParameters:
+
+std::vector<LimonTypes::GenericParameter> getParameters() const
+===============================================================
+
+Returns the configurable parameters of this extension. These are rendered by the editor under the selected extension and persisted with the map. The base implementation returns the instance's protected ``parameters`` member - the defaults you seeded in the constructor, or the configured values after an edit or load - so you normally do not override it. Override only to expose typed members as descriptors (Actor-style). An empty member means the extension has no editor-exposed configuration.
+
+.. _PlayerExtensionInterface-setParameters:
+
+void setParameters(std::vector<LimonTypes::GenericParameter>parameters)
+=======================================================================
+
+Stores the configured parameter values on the extension instance. Called when the map designer edits values in the editor and when a map is loaded. The base implementation keeps the values in the protected ``parameters`` member - the single source of truth for load, serialize, and editor edits. Override only if the extension needs to react to value changes.
 
 .. _PlayerExtensionInterface-getName:
 
@@ -114,3 +134,9 @@ This method should fill the actorMap passed, with all the custom actors, like th
 
     (*playerExtensionMap)["$EXTENSION_NAME1$"] = &createPlayerExtension<$ExtensionClass1$>;
     (*playerExtensionMap)["$EXTENSION_NAME2$"] = &createPlayerExtension<$ExtensionClass2$>;
+
+.. note::
+    Every registered extension name is available through the static ``PlayerExtensionInterface::getExtensionNames()`` (Python: ``get_extension_names()``). The editor uses this list to present the launch-time extension as a drop-down in Player Properties, so the registered name you use here is the one a map designer will pick from. See :ref:`UsingBuiltinEditor`.
+
+.. note::
+    ``getExtensionNames()`` was previously named ``getTriggerNames()``. It returns registered player-extension names, not trigger names; the old name was a misnomer and has been corrected.

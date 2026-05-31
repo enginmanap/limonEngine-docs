@@ -29,6 +29,13 @@ The pipeline editor is accessible from within the editor UI. Every available GLS
 
     Opening the pipeline editor from within the editor UI.
 
+.. figure:: _static/media/images/editor-pipeline_editor_open.png
+    :align: center
+
+    When the renderMethod has parameters to configure, they are exposed on the node.
+.. figure:: _static/media/images/editor-pipeline-rendermethod-parameters.png
+    :align: center
+
 Nodes and Wiring
 ----------------
 
@@ -40,6 +47,8 @@ Each node has two configuration fields beyond wiring:
 
 * **RenderMethod** -selects which RenderMethod renders geometry through this shader pass. See `RenderMethod Extension Point`_ below.
 * **Camera name** -names which camera's culling results this pass uses. Multiple cameras with independent culling results are supported.
+
+When the selected RenderMethod exposes configurable parameters, those parameter widgets appear on the node directly beneath the RenderMethod field. The values are saved with the node graph and the runtime pipeline -see `RenderMethod Extension Point`_ below.
 
 The pipeline editor performs **automatic stage reordering** at compile time -passes are ordered for correctness based on their dependency graph.
 
@@ -119,20 +128,27 @@ RenderMethod is the fifth user-layer extension point. It is a custom GPU renderi
 
 .. list-table::
    :header-rows: 1
-   :widths: 20 80
+   :widths: 22 78
 
    * - Method
      - Description
    * - ``getName``
      - Returns the method name for the editor dropdown.
-   * - ``initMethod``
-     - Called at pipeline load. Receives a GenericParameter list for configuration.
+   * - ``getParameters``
+     - Pure virtual. Returns the method's ``GenericParameter`` list - each entry carrying both its descriptor (request type, description, value type) and its value. Drives both the editor widgets and persistence.
+   * - ``initRender``
+     - Called at pipeline load. Receives the GPU program and the configured GenericParameter list. Set up GPU resources here.
    * - ``renderFrame``
-     - Called each frame. Receives the graphics interface pointer and GPU program pointer.
-   * - ``clearMethod``
-     - Tears down GPU resources on pipeline unload or reconfiguration.
+     - Called each frame. Receives the GPU program pointer.
+   * - ``cleanupRender``
+     - Tears down GPU resources on pipeline unload or reconfiguration. Receives the GPU program and the GenericParameter list.
 
-GenericParameter fields declared in the RenderMethod constructor automatically appear as editable fields on the shader node in the pipeline editor -no separate editor code required.
+The ``GenericParameter`` list returned from ``getParameters()`` automatically appears as editable fields on the shader node in the pipeline editor -no separate editor code required. RenderMethod is part of the :ref:`unified parameter contract <GenericParameter-unified-contract>`, with one difference from the other extension points: its configured values are persisted in **two** places.
+
+* **nodeGraph.xml** - the editor's node graph. The values you set on the node are saved here so they survive editing sessions and reopen with the node.
+* **renderPipeline.xml** - the runtime pipeline. The values are also written here so the compiled pipeline can apply them when it runs, independently of the editor graph.
+
+Both persistence points use the same ``<Parameter>`` element format as the rest of the engine, so a RenderMethod's configuration round-trips through the editor and the runtime identically.
 
 Two built-in RenderMethods ship with the engine:
 

@@ -1241,13 +1241,15 @@ std::vector<LimonTypes::GenericParameter> buildMultiSelect(const std::string& de
 
 Builds the parameter block that the editor expects for a ``MULTI_SELECT`` parameter. Returns a vector of ``GenericParameter`` objects: the first element holds the currently selected string; subsequent elements are one entry per option.
 
-Append the returned vector to your ``getParameters()`` result at the position where the multi-select should appear.
+Append the returned vector to the extension's parameter vector at the position where the multi-select should appear. For Triggers and Player Extensions that means seeding it into the ``parameters`` member in the constructor; for Actors it means appending it inside the overridden ``getParameters()``.
 
 .. code-block:: cpp
 
     // Example: select which gun type the enemy carries
-    auto gunOptions = LimonAPI::buildMultiSelect("Gun type", {"Pistol", "Rifle", "Shotgun"}, 0);
-    for(auto& p : gunOptions) parameters.push_back(p);
+    std::vector<LimonTypes::GenericParameter> gunOptions = LimonAPI::buildMultiSelect("Gun type", {"Pistol", "Rifle", "Shotgun"}, 0);
+    for(LimonTypes::GenericParameter& gunOption : gunOptions) {
+        this->parameters.push_back(gunOption);
+    }
 
 Parameters:
 

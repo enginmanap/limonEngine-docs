@@ -81,7 +81,9 @@ All five types are scanned from the same user dynamic library at engine launch.
 GenericParameter -Universal Data Contract
 ==========================================
 
-``LimonTypes::GenericParameter`` is the single data type flowing through every layer of the engine. It is the canonical representation of any named, typed value shared between the editor, C++ extensions, Python scripts, AI actors, trigger results, and RenderMethod configuration. The editor automatically generates the appropriate ImGui widget for each parameter type -no separate editor code is required for any extension.
+``LimonTypes::GenericParameter`` is the single data type flowing through every layer of the engine. It is the canonical representation of any named, typed value shared between the editor, C++ extensions, Python scripts, AI actors, trigger results, and RenderMethod configuration. One struct covers three concerns for an extension at once - **load** from disk, **serialize** to disk, and **edit** in the editor - so an extension describes its parameters once and gets all three. The editor automatically generates the appropriate ImGui widget for each parameter type -no separate editor code is required for any extension.
+
+Actions, Player Extensions, AI Actors, and RenderMethods all expose their configuration through this contract via ``getParameters()`` / ``setParameters()``. Camera Attachment is the one extension point not yet migrated to it.
 
 **RequestParameterType** -controls which editor widget is rendered:
 

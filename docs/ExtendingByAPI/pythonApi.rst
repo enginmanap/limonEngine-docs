@@ -2125,6 +2125,37 @@ Base class for creating player extensions.
             """
             print(f"Player interaction: {interaction_data}")
 
+        def get_parameters(self) -> list:
+            """
+            Return the configurable parameters of this extension.
+
+            Player extensions follow the same unified parameter contract as
+            Actors: the returned list - each entry carrying both its descriptor
+            and its value - is rendered by the editor and the values are
+            persisted with the map. Return an empty list for no configuration.
+
+            Returns:
+                list: List of GenericParameter objects
+            """
+            from generic_parameter import RequestParameterType, ValueType, GenericParameter
+            param = GenericParameter()
+            param.request_type = RequestParameterType.FREE_NUMBER
+            param.description = "Starting ammo"
+            param.value = 30
+            return [param]
+
+        def set_parameters(self, parameters):
+            """
+            Store the configured parameter values on this extension.
+
+            Called when the map designer edits values and when a map is loaded.
+
+            Args:
+                parameters: List of GenericParameter objects to set
+            """
+            if parameters and parameters[0].is_set:
+                self._starting_ammo = parameters[0].value
+
         def get_name(self) -> str:
             """
             Get the name of this extension.

@@ -21,6 +21,52 @@ The struct is main means of data transfer. The serialize and deserialize methods
 .. note::
     The value of any instance is initialized to 0.
 
+.. _GenericParameter-unified-contract:
+
+The Unified Parameter Contract
+==============================
+
+``LimonTypes::GenericParameter`` is the single mechanism the engine uses to handle three concerns for every extension point:
+
+#. **Load** - reading saved configuration back from disk when a map or pipeline is loaded.
+#. **Serialize** - writing the current configuration (and, where relevant, state) to disk.
+#. **Edit** - building the editor interface so a level designer can change values.
+
+Because all three concerns flow through the same struct, an extension only has to describe its parameters once. The same vector drives the editor widgets, the on-disk format, and the values handed back at runtime - there is no separate editor-binding, serializer, or loader to write.
+
+All extension points share this contract:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 28 36 36
+
+   * - Extension point
+     - Where defaults come from
+     - Value home (read/write)
+   * - :ref:`TriggerInterface <implementAction>`
+     - seeded into the ``parameters`` member in the **constructor**
+     - instance ``parameters`` member, via ``getParameters()`` / ``setParameters()``
+   * - :ref:`ActorInterface <implementAIActor>`
+     - base ``parameters`` member (seeded in the **constructor**), or built from typed members in an overridden ``getParameters()``
+     - instance ``parameters`` member by default; the actor's own typed members when overridden (the bundled actors do this)
+   * - :ref:`PlayerExtensionInterface <implementPlayerExtension>`
+     - seeded into the ``parameters`` member in the **constructor**
+     - instance ``parameters`` member, via ``getParameters() const`` / ``setParameters()``
+   * - :ref:`RenderMethodInterface <RenderingPipeline>`
+     - the method's ``getParameters()``
+     - persisted in both ``nodeGraph.xml`` (editor) and ``renderPipeline.xml`` (runtime)
+   * - :ref:`CameraAttachment <implementCameraAttachment>`
+     - not yet unified
+     - not yet unified
+
+In every case ``getParameters()`` returns one vector whose entries carry **both** a descriptor (request type, description, value type) **and** a value. There is no separate schema call. ``TriggerInterface``, ``PlayerExtensionInterface`` and ``ActorInterface`` all provide the same convenience: a protected ``parameters`` member with base ``getParameters()`` / ``setParameters()`` implementations that hold and return it directly. You seed your defaults into that member in the constructor, and the engine overwrites them through ``setParameters()`` on edit or load; that single member is then the source of truth for load, serialize, editor edits, and ``run()``. Because both methods are ``virtual``, an extension may instead keep its configuration in any form it likes - override ``getParameters()`` to convert typed members into the vector, and override ``setParameters()`` to apply values back onto them (the Actor style). Override ``setParameters()`` alone if you only need to react to a value change rather than just store it.
+
+.. note::
+    This is a change from earlier releases, where triggers returned their parameter descriptors from ``getParameters()`` each call and the engine threaded the values separately. Triggers now seed defaults in the constructor and let the base ``getParameters()`` return the stored member. A short-lived ``getParametersReference()`` accessor that existed during the transition has been removed - use ``getParameters()`` and ``setParameters()``.
+
+.. note::
+    ``CameraAttachment`` is the one extension point not yet migrated to this contract. It currently takes full per-frame control of the camera without any editor-exposed ``GenericParameter`` configuration. See :ref:`implementCameraAttachment`.
+
 RequestParameterTypes Enum
 ==========================
 

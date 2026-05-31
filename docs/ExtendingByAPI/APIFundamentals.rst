@@ -6,6 +6,15 @@ API Fundamentals
 
 This page covers engine behaviours that cut across multiple extension types and are important to understand before writing non-trivial extensions. Topics here are not tied to a single extension point but affect how animations, audio, and Python scripts behave at runtime.
 
+Extension Parameters
+====================
+
+Every extension point exposes its configurable settings through ``LimonTypes::GenericParameter``. This single struct covers three concerns at once - loading saved configuration, serializing it back to disk, and building the editor interface to edit it - so an extension describes its parameters once and gets all three for free.
+
+The pattern is uniform across extension points: ``getParameters()`` returns the extension's parameter vector - each entry carrying both its descriptor (request type, description, value type) and its value - and ``setParameters()`` stores edited or loaded values back. There is a single vector, not a separate schema and value list: right after construction it holds the **defaults** the extension seeded, and after an editor edit or a map load it holds the **configured values**. That one vector is the source of truth for editing, serialization, and runtime. Triggers, Actors, and Player Extensions hold it on a protected ``parameters`` member; RenderMethods persist theirs in both the editor node graph and the runtime pipeline file.
+
+For the full contract, the per-extension-point breakdown, and the one extension point (Camera Attachment) not yet migrated, see :ref:`the unified parameter contract <GenericParameter-unified-contract>`.
+
 Animation Blending
 ==================
 

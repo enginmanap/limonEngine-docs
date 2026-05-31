@@ -164,7 +164,12 @@ The Player properties section allows to set what is the launch time player mode.
 * Editor: Builtin editor.
 * Menu: Menu interaction is allowed, movement and screen rotation disallowed. Mouse is set to free movement.
 
-If a custom player extension is going to be used, entering its name will load and enable the extension. If player has a Model attached, there will be an "Disconnect Attachment" button.
+If a custom player extension is going to be used, it can be selected from the **Extension Type** drop-down. The drop-down is populated automatically from every registered player extension (the engine queries ``getExtensionNames()``), so there is no need to type a name and risk a typo - only valid, loaded extensions are offered. Selecting an extension loads and enables it.
+
+When an extension is selected, any configurable parameters it exposes are drawn directly beneath the drop-down, the same way Actor settings appear under a selected Actor. These parameters are edited here and saved with the map. An extension that exposes no parameters simply shows the drop-down with nothing below it. For how an extension declares these parameters, see :ref:`implementPlayerExtension`.
+
+If player has a Model attached, there will be an "Disconnect Attachment" button.
+
 
 Setting Up World Properties
 ___________________________

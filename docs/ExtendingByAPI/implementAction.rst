@@ -8,7 +8,10 @@ Actions are generalized by the class TriggerInterface, under src/GamePlay of the
 
 Action constructors will get a populated LimonAPI instance for the world they are to be run in. Using this instance, API calls can be made to interact or change the world to game design.
 
-Actions never get persisted, but parameters to pass to actions are persisted with maps.
+The action object itself is never persisted, but its parameters are. Triggers follow the :ref:`unified parameter contract <GenericParameter-unified-contract>`: you seed the action's default parameters into the protected ``parameters`` member in the **constructor**. The base ``getParameters()`` returns that member, the engine overwrites it through ``setParameters()`` when the map designer edits values or a map is loaded, and the same member is read back when serializing the map.
+
+.. note::
+    This is a breaking change from earlier releases. Actions used to build and return their parameter descriptors from ``getParameters()`` on every call; now they seed those descriptors once in the constructor and let the inherited ``getParameters()`` return the stored member. If you are porting an older action, move the body of your old ``getParameters()`` into the constructor, assigning into ``this->parameters`` instead of a local vector, and delete the ``getParameters()`` override.
 
 TriggerInterface Class
 ______________________
@@ -20,6 +23,8 @@ ______________________
      - :ref:`TriggerInterface(LimonAPI *limonAPI)<TriggerInterface-TriggerInterface>`
    * - ``std::vector<LimonTypes::GenericParameter>``
      - :ref:`getParameters()<TriggerInterface-getParameters>`
+   * - ``void``
+     - :ref:`setParameters(std::vector\<LimonTypes::GenericParameter\>parameters)<TriggerInterface-setParameters>`
    * - ``bool``
      - :ref:`run(std::vector\<LimonTypes::GenericParameter\>parameters)<TriggerInterface-run>`
    * - ``std::vector<LimonTypes::GenericParameter>``
@@ -31,7 +36,7 @@ ______________________
 
 TriggerInterface(LimonAPI \*limonAPI)
 =====================================
-The constructor of the interface.
+The constructor of the interface. This is where an action seeds its **default parameters**: build each ``LimonTypes::GenericParameter`` descriptor and ``push_back`` it onto the protected ``this->parameters`` member. Those defaults are what the editor shows before the designer configures anything, and what serialization falls back to if the action is saved untouched.
 
 .. note::
     All actions must have the same signature, no other parameters should be required.
@@ -41,7 +46,17 @@ The constructor of the interface.
 getParameters()
 ===============
 
-Returns a vector of ``LimonTypes::GenericParameter``. These parameters are going to be set by map designer using the editor.
+Provided by the base class - it returns the instance's ``parameters`` member directly: the defaults you seeded in the constructor, or the configured values after the designer edits them or a map is loaded. The editor and the serializer both read this vector, so it always reflects what is actually configured. You normally do **not** override ``getParameters()`` for an action; seed your descriptors in the constructor instead. Override it only when you build the vector from typed members (the Actor style described in :ref:`implementAIActor`).
+
+.. _TriggerInterface-setParameters:
+
+setParameters(std::vector<LimonTypes::GenericParameter>parameters)
+==================================================================
+
+Stores the configured parameter values on the trigger instance. This is called when the map designer edits values in the editor and when a map is loaded from disk. The base implementation keeps the values in the protected ``parameters`` member, which is the single source of truth for load, serialize, and editor edits. Override it only if your action needs to react to value changes rather than simply hold them.
+
+.. note::
+    ``run()`` still receives the parameter vector as an argument for backwards compatibility with existing actions. New actions can rely on the instance-owned ``parameters`` member instead, which is kept in sync by ``setParameters()``.
 
 .. _TriggerInterface-run:
 
