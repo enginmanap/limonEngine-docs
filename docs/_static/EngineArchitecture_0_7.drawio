@@ -1,0 +1,828 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="limon07" name="LimonEngine 0.7 Architecture">
+    <mxGraphModel dx="4907" dy="2953" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="b_py" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6eef8;strokeColor=#0b3d91;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Python API" vertex="1">
+          <mxGeometry height="310" width="900" x="2220" y="-950" as="geometry" />
+        </mxCell>
+        <mxCell id="b_cpp" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6efe6;strokeColor=#1b5e20;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="C++ API" vertex="1">
+          <mxGeometry height="260" width="1180" x="1000" y="-780" as="geometry" />
+        </mxCell>
+        <mxCell id="b_go" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf3fb;strokeColor=#08306b;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Game Objects" vertex="1">
+          <mxGeometry height="260" width="2690" x="150" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="b_sr" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff1e0;strokeColor=#7f2704;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Shared Resources" vertex="1">
+          <mxGeometry height="190" width="2720" x="150" y="344" as="geometry" />
+        </mxCell>
+        <mxCell id="b_ren" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0edf7;strokeColor=#3f007d;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Rendering" vertex="1">
+          <mxGeometry height="410" width="500" x="2590" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="b_mgr" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f2f2f2;strokeColor=#000000;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Managers" vertex="1">
+          <mxGeometry height="130" width="520" x="1370" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="b_dbg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f2f2f2;strokeColor=#000000;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Profiling and Debug" vertex="1">
+          <mxGeometry height="130" width="560" x="3230" y="-450" as="geometry" />
+        </mxCell>
+        <mxCell id="b_gbk" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fde0dc;strokeColor=#7f0000;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="&lt;div&gt;Graphics Backend&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="665" x="2425" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="b_pal" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8f0ee;strokeColor=#114b3a;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Platform Abstraction Layer" vertex="1">
+          <mxGeometry height="130" width="520" x="1450" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="pyAction" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Action" vertex="1">
+          <mxGeometry height="54" width="190" x="2250" y="-910" as="geometry" />
+        </mxCell>
+        <mxCell id="pyActor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="AI Actor" vertex="1">
+          <mxGeometry height="54" width="190" x="2460" y="-910" as="geometry" />
+        </mxCell>
+        <mxCell id="pyPlayerExt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="PlayerExtension" vertex="1">
+          <mxGeometry height="54" width="190" x="2670" y="-910" as="geometry" />
+        </mxCell>
+        <mxCell id="pyCamAtt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="CameraAttachment" vertex="1">
+          <mxGeometry height="54" width="210" x="2880" y="-910" as="geometry" />
+        </mxCell>
+        <mxCell id="pybind11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="pybind11" vertex="1">
+          <mxGeometry height="50" width="180" x="2565" y="-800" as="geometry" />
+        </mxCell>
+        <mxCell id="ScriptManager" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="ScriptManager" vertex="1">
+          <mxGeometry height="50" width="180" x="2565" y="-720" as="geometry" />
+        </mxCell>
+        <mxCell id="Action" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="&lt;div&gt;Action&lt;/div&gt;" vertex="1">
+          <mxGeometry height="54" width="190" x="1080" y="-730" as="geometry" />
+        </mxCell>
+        <mxCell id="Actor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="AI Actor" vertex="1">
+          <mxGeometry height="54" width="190" x="1300" y="-730" as="geometry" />
+        </mxCell>
+        <mxCell id="PlayerExt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="&lt;div&gt;PlayerExtension&lt;/div&gt;" vertex="1">
+          <mxGeometry height="54" width="190" x="1510" y="-730" as="geometry" />
+        </mxCell>
+        <mxCell id="CamAtt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="CameraAttachment" vertex="1">
+          <mxGeometry height="54" width="210" x="1720" y="-730" as="geometry" />
+        </mxCell>
+        <mxCell id="RMI" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="RenderMethod" vertex="1">
+          <mxGeometry height="54" width="190" x="1950" y="-730" as="geometry" />
+        </mxCell>
+        <mxCell id="LimonAPI" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="LimonAPI + GenericParameter" vertex="1">
+          <mxGeometry height="56" width="250" x="1465" y="-600" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-8" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=23;" target="SkyBox">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1680" y="-180" />
+              <mxPoint x="2535" y="-180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="World" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="&lt;font style=&quot;font-size: 48px;&quot;&gt;World&lt;/font&gt;" vertex="1">
+          <mxGeometry height="210" width="480" x="1340" y="-470" as="geometry" />
+        </mxCell>
+        <mxCell id="GUILayer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GUI Layer" vertex="1">
+          <mxGeometry height="54" width="170" x="510" y="-25" as="geometry" />
+        </mxCell>
+        <mxCell id="GUIButton" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GUI Button" vertex="1">
+          <mxGeometry height="54" width="170" x="840" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="GUIAnimation" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GUI Animation" vertex="1">
+          <mxGeometry height="54" width="170" x="420" y="111" as="geometry" />
+        </mxCell>
+        <mxCell id="GUIImage" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GUI Image" vertex="1">
+          <mxGeometry height="54" width="170" x="630" y="111" as="geometry" />
+        </mxCell>
+        <mxCell id="GUIText" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GUI Text" vertex="1">
+          <mxGeometry height="54" width="170" x="180" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="GPUParticle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GPU Particle" vertex="1">
+          <mxGeometry height="54" width="170" x="1250" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="Trigger" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Trigger" vertex="1">
+          <mxGeometry height="54" width="170" x="2250" y="-25" as="geometry" />
+        </mxCell>
+        <mxCell id="ModelGroup" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Model Group" vertex="1">
+          <mxGeometry height="54" width="170" x="1650" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="Light" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Light" vertex="1">
+          <mxGeometry height="54" width="170" x="1450" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="SkyBox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="SkyBox" vertex="1">
+          <mxGeometry height="54" width="170" x="2450" y="-25" as="geometry" />
+        </mxCell>
+        <mxCell id="GUIImageBase" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GUIImageBase" vertex="1">
+          <mxGeometry height="54" width="180" x="625" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="GUITextBase" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GUITextBase" vertex="1">
+          <mxGeometry height="54" width="180" x="175" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="Face" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Face" vertex="1">
+          <mxGeometry height="54" width="180" x="175" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="GfxProgAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GraphicsProgram&lt;br&gt;Asset" vertex="1">
+          <mxGeometry height="54" width="180" x="2650" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="AnimationAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="AnimationAsset" vertex="1">
+          <mxGeometry height="54" width="180" x="2000" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-13" edge="1" parent="1" source="MaterialAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=23;" target="Assimp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1390" y="250" />
+            </Array>
+            <mxPoint x="1639.999999999999" y="281" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MaterialAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="MaterialAsset" vertex="1">
+          <mxGeometry height="54" width="180" x="1290" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="MeshAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="MeshAsset" vertex="1">
+          <mxGeometry height="54" width="180" x="1530" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-11" edge="1" parent="1" source="ModelAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=23;" target="Assimp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1840" y="300" />
+              <mxPoint x="1715" y="300" />
+            </Array>
+            <mxPoint x="1789.999999999999" y="284" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ModelAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="ModelAsset" vertex="1">
+          <mxGeometry height="54" width="180" x="1770" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-27" edge="1" parent="1" source="CubeMapAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2320" y="600" />
+              <mxPoint x="1780" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CubeMapAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="CubeMapAsset" vertex="1">
+          <mxGeometry height="54" width="180" x="2230" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="GraphicsPipeline" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bcbddc;strokeColor=#3f007d;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GraphicsPipeline" vertex="1">
+          <mxGeometry height="54" width="190" x="2640" y="748" as="geometry" />
+        </mxCell>
+        <mxCell id="VisibilityManager" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bcbddc;strokeColor=#3f007d;strokeWidth=2;fontColor=#000000;fontSize=23;" value="VisibilityManager" vertex="1">
+          <mxGeometry height="54" width="190" x="2860" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="RenderList" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bcbddc;strokeColor=#3f007d;strokeWidth=2;fontColor=#000000;fontSize=23;" value="RenderList" vertex="1">
+          <mxGeometry height="54" width="190" x="2860" y="884" as="geometry" />
+        </mxCell>
+        <mxCell id="RenderMethods" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bcbddc;strokeColor=#3f007d;strokeWidth=2;fontColor=#000000;fontSize=23;" value="RenderMethods" vertex="1">
+          <mxGeometry height="54" width="190" x="2640" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="GfxIface" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bcbddc;strokeColor=#3f007d;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GraphicsInterface" vertex="1">
+          <mxGeometry height="54" width="190" x="2640" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="AssetManager" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="AssetManager" vertex="1">
+          <mxGeometry height="54" width="200" x="1650" y="738" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-17" edge="1" parent="1" source="FontManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=23;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FontManager" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="FontManager" vertex="1">
+          <mxGeometry height="54" width="200" x="1410" y="738" as="geometry" />
+        </mxCell>
+        <mxCell id="Profiler" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="ProfilerSystem / Tracy" vertex="1">
+          <mxGeometry height="54" width="230" x="3255" y="-412" as="geometry" />
+        </mxCell>
+        <mxCell id="DbgDraw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="BulletDebugDrawer" vertex="1">
+          <mxGeometry height="54" width="240" x="3515" y="-412" as="geometry" />
+        </mxCell>
+        <mxCell id="GraphicsBackends" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GraphicsBackends  (OpenGL 3.3 / OpenGL ES 3.1)" vertex="1">
+          <mxGeometry height="62" width="520" x="2485" y="1204" as="geometry" />
+        </mxCell>
+        <mxCell id="SDL2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="SDL2" vertex="1">
+          <mxGeometry height="54" width="190" x="1480" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="OpenAL" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="OpenAL" vertex="1">
+          <mxGeometry height="54" width="190" x="1700" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-9" edge="1" parent="1" source="Freetype" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=23;" target="Face">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="544" />
+              <mxPoint x="260" y="544" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Freetype" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Freetype" vertex="1">
+          <mxGeometry height="54" width="150" x="190" y="554" as="geometry" />
+        </mxCell>
+        <mxCell id="Bullet" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Bullet" vertex="1">
+          <mxGeometry height="54" width="150" x="2060" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-10" edge="1" parent="1" source="Assimp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=23;" target="ModelAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1860" y="250" />
+            </Array>
+            <mxPoint x="1789.999999999999" y="274" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Assimp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Assimp" vertex="1">
+          <mxGeometry height="54" width="150" x="1640" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="OS" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="&lt;font style=&quot;font-size: 48px;&quot;&gt;Operating System&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="1640" x="1440" y="1350" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" edge="1" parent="1" source="Action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1160" y="-640" />
+              <mxPoint x="1540" y="-640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="Actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1395" y="-660" />
+              <mxPoint x="1560" y="-660" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="PlayerExt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1580" y="-640" />
+              <mxPoint x="1580" y="-640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="CamAtt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1800" y="-660" />
+              <mxPoint x="1600" y="-660" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="RMI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2020" y="-640" />
+              <mxPoint x="1620" y="-640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="LimonAPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="World">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1580" y="-510" />
+              <mxPoint x="1580" y="-510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="pyAction" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="pybind11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2360" y="-820" />
+              <mxPoint x="2620" y="-820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="pyActor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="pybind11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2555" y="-840" />
+              <mxPoint x="2640" y="-840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="pyPlayerExt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="pybind11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2765" y="-840" />
+              <mxPoint x="2670" y="-840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="pyCamAtt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="pybind11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2975" y="-820" />
+              <mxPoint x="2690" y="-820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="pybind11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="ScriptManager">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="ScriptManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2640" y="-620" />
+              <mxPoint x="1640" y="-620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Sound">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1720" y="-200" />
+              <mxPoint x="2735" y="-200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="ModelGroup">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1520" y="-100" />
+              <mxPoint x="1735" y="-100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="Player" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2120" y="-45" />
+              <mxPoint x="1950" y="-45" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1560" y="-120" />
+              <mxPoint x="1935" y="-120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Light">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1480" y="-80" />
+              <mxPoint x="1540" y="-80" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Trigger">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1640" y="-160" />
+              <mxPoint x="2335" y="-160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="CPUParticle">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="-200" />
+              <mxPoint x="1140" y="-200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GPUParticle">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1440" y="-180" />
+              <mxPoint x="1335" y="-180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUILayer">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1360" y="-220" />
+              <mxPoint x="595" y="-220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="1" source="ModelGroup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1750" y="-45" />
+              <mxPoint x="1920" y="-45" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e24" edge="1" parent="1" source="GUILayer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUIText">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="55" />
+              <mxPoint x="265" y="55" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e25" edge="1" parent="1" source="GUILayer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUIImage">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="70" />
+              <mxPoint x="715" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e26" edge="1" parent="1" source="GUILayer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUIAnimation">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e27" edge="1" parent="1" source="GUILayer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUIButton">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="45" />
+              <mxPoint x="925" y="45" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e28" edge="1" parent="1" source="Model" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="ModelAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1910" y="240" />
+              <mxPoint x="1880" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e29" edge="1" parent="1" source="ModelAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="MeshAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1790" y="394" />
+              <mxPoint x="1620" y="394" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e30" edge="1" parent="1" source="ModelAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="MaterialAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1810" y="384" />
+              <mxPoint x="1410" y="384" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e31" edge="1" parent="1" source="ModelAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="AnimationAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1890" y="404" />
+              <mxPoint x="2090" y="404" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e32" edge="1" parent="1" source="MaterialAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="TextureAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1370" y="384" />
+              <mxPoint x="740" y="384" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e33" edge="1" parent="1" source="SkyBox" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=23;" target="CubeMapAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2535" y="250" />
+              <mxPoint x="2350" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e35" edge="1" parent="1" source="GUIText" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUITextBase">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="230" />
+              <mxPoint x="250" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e36" edge="1" parent="1" source="GUITextBase" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Face">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="264.9999999999991" y="328.00000000000045" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e37" edge="1" parent="1" source="TextureAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=23;" target="FontManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="476" />
+              <mxPoint x="650" y="660" />
+              <mxPoint x="1510" y="660" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e38" edge="1" parent="1" source="GUIImage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUIImageBase">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e39" edge="1" parent="1" source="GUIAnimation" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUIImageBase">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="505" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e40" edge="1" parent="1" source="GUIButton" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GUIImageBase">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="925" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e41" edge="1" parent="1" source="GUIImageBase" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="TextureAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="320" />
+              <mxPoint x="680" y="320" />
+            </Array>
+            <mxPoint x="680.090909090909" y="318.00000000000045" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e42" edge="1" parent="1" source="CPUParticle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="TextureAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1140" y="290" />
+              <mxPoint x="700" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e43" edge="1" parent="1" source="GPUParticle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="TextureAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1335" y="310" />
+              <mxPoint x="720" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e44" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GraphicsPipeline">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1760" y="-220" />
+              <mxPoint x="2920" y="-220" />
+              <mxPoint x="2920" y="560" />
+              <mxPoint x="2760" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e45" edge="1" parent="1" source="GraphicsPipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="VisibilityManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2955" y="775" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e46" edge="1" parent="1" source="VisibilityManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="RenderList">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e47" edge="1" parent="1" source="GraphicsPipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="RenderMethods">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2610" y="775" />
+              <mxPoint x="2610" y="980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e48" edge="1" parent="1" source="RenderList" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="RenderMethods">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2955" y="990" />
+            </Array>
+            <mxPoint x="2860" y="986.8800000000005" as="sourcePoint" />
+            <mxPoint x="2830" y="986.8800000000005" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e49" edge="1" parent="1" source="RenderMethods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GfxProgAsset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2560" y="1000" />
+              <mxPoint x="2560" y="690" />
+              <mxPoint x="2735" y="690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e50" edge="1" parent="1" source="RenderMethods" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GfxIface">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e52" edge="1" parent="1" source="GfxIface" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GraphicsBackends">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2730" y="1140" />
+              <mxPoint x="2730" y="1140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e53" edge="1" parent="1" source="ModelAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1860" y="560" />
+              <mxPoint x="1740" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e54" edge="1" parent="1" source="MeshAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1620" y="560" />
+              <mxPoint x="1720" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e55" edge="1" parent="1" source="MaterialAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1380" y="580" />
+              <mxPoint x="1700" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e58" edge="1" parent="1" source="SoundAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2510" y="620" />
+              <mxPoint x="1800" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e59" edge="1" parent="1" source="AnimationAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2090" y="580" />
+              <mxPoint x="1760" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e60" edge="1" parent="1" source="GfxProgAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2670" y="640" />
+              <mxPoint x="1820" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e62" edge="1" parent="1" source="AssetManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="SDL2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1720" y="1070" />
+              <mxPoint x="1540" y="1070" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e63" edge="1" parent="1" source="AssetManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="GfxIface">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1760" y="1070" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e66" edge="1" parent="1" source="SoundAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="OpenAL">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2540" y="950" />
+              <mxPoint x="1870" y="950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e67" edge="1" parent="1" source="Model" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Bullet">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1935" y="240" />
+              <mxPoint x="2110" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e68" edge="1" parent="1" source="Trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Bullet">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2335" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e70" edge="1" parent="1" source="DbgDraw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Bullet">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3635" y="290" />
+              <mxPoint x="2135" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e71" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Profiler">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3250" y="-380" />
+              <mxPoint x="3250" y="-380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e72" edge="1" parent="1" source="LimonAPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Profiler">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1600" y="-490" />
+              <mxPoint x="3330" y="-490" />
+            </Array>
+            <mxPoint x="2080" y="-491.9333333333334" as="sourcePoint" />
+            <mxPoint x="3125" y="738" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e73" edge="1" parent="1" source="ScriptManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Profiler">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2670" y="-510" />
+              <mxPoint x="3370" y="-510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e74" edge="1" parent="1" source="GraphicsPipeline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Profiler">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2780" y="600" />
+              <mxPoint x="2980" y="600" />
+              <mxPoint x="2980" y="-220" />
+              <mxPoint x="3370" y="-220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e75" edge="1" parent="1" source="GraphicsBackends" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="OS">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2745" y="1360" />
+              <mxPoint x="2745" y="1360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e76" edge="1" parent="1" source="SDL2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="OS">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1565" y="1371" />
+              <mxPoint x="1650" y="1371" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e77" edge="1" parent="1" source="OpenAL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="OS">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1785" y="1371" />
+              <mxPoint x="1680" y="1371" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-1" edge="1" parent="1" source="Sound" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="SoundAsset" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2750" y="260" />
+              <mxPoint x="2550" y="260" />
+            </Array>
+            <mxPoint x="1450" y="542" as="sourcePoint" />
+            <mxPoint x="1135" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CPUParticle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="CPU Particle" vertex="1">
+          <mxGeometry height="54" width="170" x="1055" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-3" edge="1" parent="1" source="Face" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Freetype" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="514" />
+              <mxPoint x="280" y="514" />
+            </Array>
+            <mxPoint x="700" y="449" as="sourcePoint" />
+            <mxPoint x="1505" y="624" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SoundAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="SoundAsset" vertex="1">
+          <mxGeometry height="54" width="180" x="2430" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-4" edge="1" parent="1" source="Face" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="TextureAsset" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="290" y="384" />
+              <mxPoint x="660" y="384" />
+            </Array>
+            <mxPoint x="330" y="498" as="sourcePoint" />
+            <mxPoint x="2420" y="962" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-28" edge="1" parent="1" source="TextureAsset" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="AssetManager">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="600" />
+              <mxPoint x="1680" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TextureAsset" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdae6b;strokeColor=#7f2704;strokeWidth=2;fontColor=#000000;fontSize=23;" value="TextureAsset" vertex="1">
+          <mxGeometry height="54" width="180" x="590" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-5" edge="1" parent="1" source="World" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="Player" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1600" y="-140" />
+              <mxPoint x="2135" y="-140" />
+            </Array>
+            <mxPoint x="1640" y="-40" as="sourcePoint" />
+            <mxPoint x="1840" y="591" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oTuQztfmfqsLL9M5yXTc-12" edge="1" parent="1" source="Player" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=23;" target="Bullet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Player" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Player" vertex="1">
+          <mxGeometry height="54" width="170" x="2050" y="-25" as="geometry" />
+        </mxCell>
+        <mxCell id="Model" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Model" vertex="1">
+          <mxGeometry height="54" width="170" x="1850" y="-25" as="geometry" />
+        </mxCell>
+        <mxCell id="Sound" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Sound" vertex="1">
+          <mxGeometry height="54" width="170" x="2650" y="-25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

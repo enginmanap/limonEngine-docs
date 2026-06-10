@@ -16,6 +16,36 @@ Since Limon is focusing on learning, both on the game design side, but also on t
 .. note::
     Any game type using a perspective camera is supported -first-person, third-person, top-down, orbital, or fixed camera. The engine ships with a first-person default and a third-person camera attachment sample. Orthographic camera is not supported.
 
+High-Level Structure
+====================
+
+The diagram below traces the engine class by class, the way the original 0.6 overview did, updated for 0.7. It is read top to bottom: a ``World`` owns the **game objects**; each game object references **shared resources** (reference-counted, deduplicated assets) rather than owning its data; ``AssetManager`` manages those assets; and the renderer resolves to a swappable graphics backend that, together with the platform-abstraction libraries, sits on the operating system. User extensions reach the engine only through the C++ or Python API.
+
+.. only:: html
+
+   .. figure:: _static/media/images/EngineArchitecture_0_7.svg
+       :width: 100%
+       :alt: Limon 0.7 engine class architecture
+
+.. only:: not html
+
+   .. figure:: _static/media/images/EngineArchitecture_0_7.png
+       :width: 100%
+       :alt: Limon 0.7 engine class architecture
+
+
+The bands read top to bottom, updating the original 0.6 overview for 0.7:
+
+* **C++ API** -the five extension interfaces a C++ plugin implements (Action, AI Actor, Player Extension, Camera Attachment, RenderMethod), plus the ``LimonAPI`` / ``GenericParameter`` surface they call. Detailed under `Five User Extension Points`_.
+* **Python API** -the four Python-capable interfaces (every gameplay extension) reach ``LimonAPI`` through ``pybind11`` and the per-world ``ScriptManager``. See :ref:`pythonApi`.
+* **Game Objects** -what a ``World`` owns. 0.7 adds ``Light``, ``Trigger``, the CPU/GPU particle emitters, and ``Player`` to the original set; the full list and attachment rules are under `Game Object Types`_.
+* **Shared Resources** -the reference-counted, deduplicated assets game objects point into instead of owning. A ``ModelAsset`` (imported via ``Assimp``) references its ``MeshAsset``, a ``MaterialAsset`` (which holds the ``TextureAsset`` set, also sourced from the import), and an ``AnimationAsset``. The shader ``GraphicsProgramAsset`` (replacing 0.6's ``GLSLProgram``) is bound by the renderer, not the mesh. Lifetime and loading: :ref:`AssetManagement`.
+* **Rendering** -``GraphicsPipeline`` drives ``VisibilityManager``, which fills a ``RenderList`` of survivors; ``RenderMethods`` then consume that ``RenderList`` and draw, binding ``GraphicsProgramAsset`` and issuing the calls through the abstract ``GraphicsInterface``. Full detail: :ref:`RenderingPipeline`.
+* **Managers** -``AssetManager`` manages every asset type. Most assets register with it directly; font textures are the exception - ``FontManager`` owns the per-``Face`` set of font ``TextureAsset``\ s and is itself managed by ``AssetManager``, so those are managed indirectly.
+* **Profiling and Debug** -cross-cutting instrumentation that ``World``, both APIs, and the render pipeline feed: Tracy / ``ProfilerSystem`` and the ``BulletDebugDrawer``.
+* **Graphics Backend** -``GraphicsInterface`` resolves to a swappable ``GraphicsBackends`` dynamic library (OpenGL 3.3 or OpenGL ES 3.1 - see `Platform Support`_), so the backend changes without touching engine code.
+* **Platform Abstraction Layer** -only ``SDL2`` (windowing, input, image loading) and ``OpenAL`` (audio) abstract the operating system directly. The other third-party libraries are wired where they are used rather than as an OS layer: ``Freetype`` rasterises font faces, ``Assimp`` imports models and materials, and ``Bullet`` runs physics for ``Model``, ``Player``, and ``Trigger``. Full list: `Third-Party Libraries`_.
+
 Target Hardware
 ===============
 
