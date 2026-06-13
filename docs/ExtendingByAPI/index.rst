@@ -12,4 +12,5 @@ Extending Engine Capabilities
    implementAIActor
    implementCameraAttachment
    CPPAPIReference
+   PythonAPIUsage
    pythonApi

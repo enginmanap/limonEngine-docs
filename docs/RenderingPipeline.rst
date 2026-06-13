@@ -155,7 +155,7 @@ Two built-in RenderMethods ship with the engine:
 * **Render By Tag** -the primary RenderMethod for all 3D geometry. Uses a named camera's culling results and a tag filter. Used by static model, GPU skinning model, and transparent pass nodes.
 * **Quad Renderer** -convenience RenderMethod for post-processing passes. Full-screen quad, no geometry iteration.
 
-**SSAO ships as a sample RenderMethod**, demonstrating GenericParameter configuration (sample count) and full-screen post-processing. It is a good starting point for custom effects.
+**SSAO ships as a sample RenderMethod**, demonstrating GenericParameter configuration (sample count) and full-screen post-processing. It is a good starting point for custom effects. The source is under ``samples/`` as `SSAOKernelRenderMethod <https://github.com/enginmanap/limonEngine/blob/master/samples/SSAOKernelRenderMethod.cpp>`_.
 
 Materials and the Pipeline
 ==========================

@@ -180,6 +180,8 @@ Limon Engine C++ API Reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``const OptionsUtil::Options*``               | :ref:`getOptions()<LimonAPI-getOptions>`                                                                                                                                                                                                                                                                       |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`saveOptions()<LimonAPI-saveOptions>`                                                                                                                                                                                                                                                                     |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |void                                           | :ref:`simulateInput(const InputStates& input)<LimonAPI-simulateInput>`                                                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                                           | :ref:`changeRenderPipeline(const std::string& pipelineFileName)<LimonAPI-changeRenderPipeline>`                                                                                                                                                                                                                |
@@ -1214,6 +1216,18 @@ const OptionsUtil::Options *getOptions()
 ----------------------------------------
 
 Returns a pointer to the current options.
+
+Options are loaded from two files at startup. The engine defaults are read from ``./Engine/Options.xml`` first, then the user options from ``./Data/Options.xml`` are loaded on top, overriding any matching engine defaults. The user options file is optional; if it is missing the engine defaults are used as-is.
+
+.. _LimonAPI-saveOptions:
+
+bool saveOptions()
+------------------
+
+Saves the current options to the user options file (``./Data/Options.xml``). Any changes made to the options at runtime are persisted, and will override the engine defaults on the next startup.
+
+Returns:
+   bool: True if the options were saved successfully, false otherwise.
 
 Variables
 =========

@@ -147,6 +147,33 @@ This struct is part of ActorInterface, and each frame Limon Engine checks all Ac
 | glm::vec3              | customPosition              | Position to course path                                                  |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 
+.. _ActorInterface-python:
+
+Python Actors
+_____________
+
+Actors can also be written in Python by subclassing ``ActorInterface`` from ``actor_interface.py`` (see :ref:`PythonAPIUsage` for how scripts are discovered and the conventions they must follow). The actor type is registered under the **class name**, so a Python ``class PythonCowboyEnemy(ActorInterface)`` appears in the editor as the actor ``PythonCowboyEnemy``. Method and field names use Python casing: ``play``, ``interaction``, ``get_parameters``, ``set_parameters``, ``get_name``, and the ``ActorInformation`` passed to ``play`` exposes the same fields in snake_case (``can_see_player_directly``, ``player_distance``, ``cosine_between_player``, ``route_to_request``, ``route_ready`` ...).
+
+The Python base provides the actor-state helpers that C++ actors get as members/methods. They are valid from the first ``play()`` / ``interaction()`` call onward (the engine binds the model after load):
+
+* ``self.model_id`` / ``self.get_model_id()`` - world-object ID of the model this actor drives. It is **distinct** from ``self.actor_id`` / ``self.get_world_id()`` (the actor's own ID). Pass ``model_id`` to every model-targeted API call (animations, translate, orientation, transform queries).
+* ``self.get_position()`` - the model's world position as a ``Vec3`` (mirror of C++ ``getPosition()``).
+* ``self.get_front_vector()`` - the model's forward direction as a ``Vec3`` (mirror of C++ ``getFrontVector()``).
+
+To request a navigation route - the Python equivalent of writing the :ref:`InformationRequest <ActorInterface-InformationRequest>` struct - set the flags on ``self.information_request`` inside ``play()``:
+
+::
+
+    def play(self, time, information):
+        if not self.route_to_request:
+            self.information_request.route_to_player = True   # ask the engine for a route
+        # ... follow information.route_to_request once information.route_ready is True
+
+The engine reads the request once per tick and clears it (the same one-shot semantics as the C++ ``getRequests()`` path), so re-raise it whenever you still need a route. Setting ``route_to_custom_position`` together with ``custom_position`` (a ``Vec3``) requests a route to an arbitrary point instead of the player.
+
+.. note::
+    Route nodes in ``information.route_to_request`` arrive as ``{x, y, z}`` dicts, and VEC4 parameter values as 4-tuples. Convert them to ``Vec3`` before doing vector math - ``python_cowboy_enemy.py`` includes small helpers for this.
+
 .. _ActorInterface-enableDynamicDiscovery:
 
 How to enable Dynamic Library discovery
@@ -162,3 +189,18 @@ This method should fill the actorMap passed, with all the custom actors, like th
 
     (*actorMap)["$ACTOR_NAME1$"] = &createActorT<$ActorClass1$>;
     (*actorMap)["$ACTOR_NAME2$"] = &createActorT<$ActorClass2$>;
+
+.. _ActorInterface-samples:
+
+Sample Actors
+_____________
+
+The engine ships with sample actors under ``samples/`` that implement ``ActorInterface``:
+
+* `HumanEnemy <https://github.com/enginmanap/limonEngine/blob/master/samples/HumanEnemy.cpp>`_ - a navigation-mesh driven enemy that chases and attacks the player.
+* `CowboyEnemyAI <https://github.com/enginmanap/limonEngine/blob/master/samples/CowboyEnemyAI.cpp>`_ - the western-demo gunslinger AI built on the same interface.
+
+Two Python actor samples ship under ``Engine/Scripts/``, both subclassing the Python base in `actor_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/actor_interface.py>`_ (see :ref:`ActorInterface-python`):
+
+* `python_cowboy_enemy.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_cowboy_enemy.py>`_ (the ``PythonCowboyEnemy`` class) - a faithful Python port of the C++ ``CowboyEnemyAI`` above, and the fullest example: it drives its own position, requests routes, plays animations, and interacts with the player. Registers as the actor type ``PythonCowboyEnemy``, distinct from the C++ ``Cowboy Enemy`` so both coexist in the editor.
+* `simple_guard_actor.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/simple_guard_actor.py>`_ (the ``SimpleGuardActor`` class) - a minimal starting point that reacts to player presence without moving or animating.

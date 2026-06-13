@@ -100,3 +100,20 @@ This method should fill the triggerMap passed, with all the custom actions, like
     (*triggerMap)["$ACTION_NAME1$"] = &createT<$ActionClass1$>;
     (*triggerMap)["$ACTION_NAME2$"] = &createT<$ActionClass2$>;
 
+.. _TriggerInterface-samples:
+
+Sample Actions
+______________
+
+The engine ships with several actions under ``samples/`` that implement ``TriggerInterface``. They are registered in `CoinPickUpOnTrigger.cpp <https://github.com/enginmanap/limonEngine/blob/master/samples/CoinPickUpOnTrigger.cpp>`_ via ``registerAsTrigger`` and are good references for writing your own:
+
+* `OptionsDisplayAction <https://github.com/enginmanap/limonEngine/blob/master/samples/OptionsDisplayAction.cpp>`_ - lists every engine option on screen by iterating ``getOptions()->getAllOptions()`` and drawing each entry with :ref:`addGuiText <LimonAPI-addGuiText>`.
+* `CoinPickUpOnTrigger <https://github.com/enginmanap/limonEngine/blob/master/samples/CoinPickUpOnTrigger.cpp>`_ - removes a coin object and updates a counter when the player enters the trigger volume.
+* `MayanCoinPickup <https://github.com/enginmanap/limonEngine/blob/master/samples/MayanCoinPickup.cpp>`_ - Mayan-theme coin pickup variant.
+* `MayanLever <https://github.com/enginmanap/limonEngine/blob/master/samples/MayanLever.cpp>`_ - animates a lever and fires a follow-up action.
+* `DoorAnimationAction <https://github.com/enginmanap/limonEngine/blob/master/samples/DoorAnimationAction.cpp>`_ - plays a door open/close animation.
+* `KillCowboyPlayer <https://github.com/enginmanap/limonEngine/blob/master/samples/KillCowboyPlayer.cpp>`_ - kills the player and triggers the death flow.
+* `WesternStoryStartupAction <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternStoryStartupAction.cpp>`_, `WesternStoryNewGameAction <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternStoryNewGameAction.cpp>`_, `WesternStoryAtGraveAction <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternStoryAtGraveAction.cpp>`_, `WesternStoryAtSaloonAction <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternStoryAtSaloonAction.cpp>`_, `WesternStoryAtTrainAction <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternStoryAtTrainAction.cpp>`_, `WesternStoryAtUndertakerAction <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternStoryAtUndertakerAction.cpp>`_ - story-progression actions used by the bundled western demo.
+
+For a smaller starting point, a Python action sample ships under ``Engine/Scripts/`` as `limonimp.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/limonimp.py>`_ (the ``MyTrigger`` class), subclassing the Python base in `trigger_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/trigger_interface.py>`_.
+

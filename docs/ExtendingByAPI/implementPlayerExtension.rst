@@ -140,3 +140,16 @@ This method should fill the actorMap passed, with all the custom actors, like th
 
 .. note::
     ``getExtensionNames()`` was previously named ``getTriggerNames()``. It returns registered player-extension names, not trigger names; the old name was a misnomer and has been corrected.
+
+.. _PlayerExtensionInterface-samples:
+
+Sample Player Extensions
+________________________
+
+The engine ships with sample player extensions under ``samples/`` that implement ``PlayerExtensionInterface``:
+
+* `ShooterPlayerExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/ShooterPlayerExtension.cpp>`_ - a first-person shooter player controller.
+* `CowboyShooterExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/CowboyShooterExtension.cpp>`_ - the western-demo shooter controller, which also drives a :ref:`camera attachment <implementCameraAttachment>`.
+* `WesternMenuPlayerExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternMenuPlayerExtension.cpp>`_ - a menu controller using absolute mouse input for the western demo's menus.
+
+A Python player-extension sample ships under ``Engine/Scripts/`` as `python_player_extension.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_player_extension.py>`_ (the ``PythonPlayerExtension`` class), subclassing the Python base in `player_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/player_extension_interface.py>`_.

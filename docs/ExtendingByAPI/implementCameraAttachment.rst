@@ -83,6 +83,13 @@ The engine ships with a "3D object pick up" sample implementing Camera Attachmen
 
 The sample is a good starting point for any custom camera mode. It is available as part of the bundled extension samples alongside the western theme AI actor and player controller samples.
 
+The samples under ``samples/`` that implement ``CameraAttachment`` are:
+
+* `ObjectFollowCameraAttachment <https://github.com/enginmanap/limonEngine/blob/master/samples/ObjectFollowCameraAttachment.h>`_ - the "3D object pick up" sample described above; follows a target object's transform each frame.
+* `ThirdPersonCameraAttachment <https://github.com/enginmanap/limonEngine/blob/master/samples/ThirdPersonCameraAttachment.cpp>`_ - a third-person follow camera.
+
+A Python camera-attachment sample ships under ``Engine/Scripts/`` as `python_third_person_camera.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_third_person_camera.py>`_ (the ``ThirdPersonCamera`` class), subclassing the Python base in `camera_attachment.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/camera_attachment.py>`_.
+
 Limitations
 ===========
 

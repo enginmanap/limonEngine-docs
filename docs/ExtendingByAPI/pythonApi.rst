@@ -12,6 +12,21 @@ This page is the API reference for Python users.
    :depth: 3
    :local:
 
+.. _pythonApi-sample-scripts:
+
+Sample Scripts
+--------------
+
+The engine ships with small Python samples under ``Engine/Scripts/``, each subclassing the matching Python base interface. They are the quickest way to see the API in use:
+
+* `limonimp.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/limonimp.py>`_ - a minimal trigger/action (``MyTrigger``). See :ref:`implementAction`.
+* `python_cowboy_enemy.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_cowboy_enemy.py>`_ - a full gunslinger AI (``PythonCowboyEnemy``), the Python port of the C++ ``CowboyEnemyAI``. See :ref:`implementAIActor`.
+* `simple_guard_actor.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/simple_guard_actor.py>`_ - a minimal guard AI (``SimpleGuardActor``). See :ref:`implementAIActor`.
+* `python_third_person_camera.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_third_person_camera.py>`_ - a third-person camera (``ThirdPersonCamera``). See :ref:`implementCameraAttachment`.
+* `python_player_extension.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_player_extension.py>`_ - a shooter-style player controller (``PythonPlayerExtension``). See :ref:`implementPlayerExtension`.
+
+The base classes these subclass (`trigger_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/trigger_interface.py>`_, `actor_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/actor_interface.py>`_, `camera_attachment.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/camera_attachment.py>`_, `player_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/player_extension_interface.py>`_) document each method's contract in their docstrings. Helper types live in `vec3.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/vec3.py>`_ and `generic_parameter.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/generic_parameter.py>`_.
+
 Core Types
 ----------
 
@@ -1547,8 +1562,28 @@ get_options
         """
         Get the engine options object.
 
+        Options are loaded from ./Engine/Options.xml (engine defaults) first,
+        then ./Data/Options.xml (user options) is loaded on top, overriding any
+        matching engine defaults. The user options file is optional.
+
         Returns:
             Options object with current engine configuration
+        """
+
+save_options
+^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def save_options() -> bool:
+        """
+        Save current options to the user options file (./Data/Options.xml).
+
+        Any changes made to the options at runtime are persisted, and will
+        override the engine defaults on the next startup.
+
+        Returns:
+            bool: True on success, False otherwise
         """
 
 Timed Events
@@ -1855,7 +1890,7 @@ clear_debug_lines
         Returns:
             bool: True on success; False if buffer_id is not found
 
-        Example (per-frame pattern inside an actor's play() or camera's getCameraVariables()):
+        Example (per-frame pattern inside an actor's play() or camera's get_camera_variables()):
             if self._line_buf != 0:
                 api.clear_debug_lines(self._line_buf)
             self._line_buf = api.draw_debug_line(
@@ -2007,7 +2042,9 @@ Base class for custom camera attachments.
 
 .. code-block:: python
 
-    class MyCamera(limon.CameraAttachment):
+    from camera_attachment import CameraAttachment
+
+    class MyCamera(CameraAttachment):
         def __init__(self, limon_api):
             super().__init__(limon_api)
 
@@ -2040,7 +2077,9 @@ Base class for creating custom triggers.
 
 .. code-block:: python
 
-    class MyTrigger(limon.TriggerInterface):
+    from trigger_interface import TriggerInterface
+
+    class MyTrigger(TriggerInterface):
         def __init__(self, limon_api):
             super().__init__(limon_api)
             self._limon_api = limon_api
@@ -2099,7 +2138,9 @@ Base class for creating player extensions.
 
 .. code-block:: python
 
-    class MyPlayerExtension(limon.PlayerExtensionInterface):
+    from player_extension_interface import PlayerExtensionInterface
+
+    class MyPlayerExtension(PlayerExtensionInterface):
         def __init__(self, limon_api):
             super().__init__(limon_api)
             self._limon_api = limon_api
@@ -2181,7 +2222,9 @@ Base class for creating AI actors.
 
 .. code-block:: python
 
-    class MyActor(limon.ActorInterface):
+    from actor_interface import ActorInterface
+
+    class MyActor(ActorInterface):
         def __init__(self, limon_api):
             super().__init__(limon_api)
             self._limon_api = limon_api
@@ -2309,7 +2352,7 @@ Contains information about the actor's environment and player state, passed to t
 
 .. code-block:: python
 
-    class MyActor(limon.ActorInterface):
+    class MyActor(ActorInterface):  # from actor_interface import ActorInterface
         def play(self, time: int, actor_information):
             # Check if player is visible
             if actor_information.can_see_player_directly:
