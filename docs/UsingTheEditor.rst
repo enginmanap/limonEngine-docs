@@ -77,8 +77,15 @@ Static object have a full mesh representing physical object. It is possible to r
 .. note::
     Models with animations, both from the asset itself and custom using the editor are considered "kinematic" It means the object is allowed to move, but the movement is not governed by physics engine. Those types of objects can't be moved by physical interactions like pushing or pulling, but they can effect physical objects.
 
+The mass of an object can be changed after it has been added to the world, both from the editor (the "Mass" field in the selected object's properties) and at runtime through the API (:ref:`setObjectMass<LimonAPI-setObjectMass>` / ``set_object_mass``). Because the physical representation depends on the mass, the engine reloads the collision shape when the value crosses between 0 and a positive value:
+
+* Switching from 0 to a value greater than 0 turns a static object into a dynamic one: its full-mesh (or baked) collider is replaced with the simplified convex hull, and from then on its movement is governed by the physics engine.
+* Switching from a value greater than 0 back to 0 turns a dynamic object into a static one: it stops being driven by physics and gets the full triangle mesh (or baked ``UCX_`` mesh) as its collider again.
+
+The collision shape swap and re-registration with the physics world happen automatically; you no longer need to remove and re-add the object.
+
 .. note::
-    Because physical representation is dependent on the mass, mass setting cant be changed once an model is added to the world. If you need to change the mass, remove and add again.
+    Changing the mass has no effect on animated models. As described above they are "kinematic" and always use per-bone convex hulls regardless of mass, so there is no static/dynamic representation to switch between.
 
 Add Trigger Volume button will create an empty cube. That cube can be used to trigger custom code paths. The details are at :ref:`Trigger Object Editor`.
 

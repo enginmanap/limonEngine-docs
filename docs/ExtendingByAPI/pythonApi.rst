@@ -525,6 +525,29 @@ get_object_mass
             float: Mass in kg, or 0.0 for static objects / not found
         """
 
+set_object_mass
+^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_object_mass(object_id: int, mass: float) -> bool:
+        """
+        Change a model's mass, switching it between static and dynamic physics at runtime.
+        A mass of 0 makes the object static (exact triangle-mesh collider); a mass greater
+        than 0 makes it a dynamic rigid body (simplified convex-hull collider). The collision
+        shape is reloaded and the body re-registered with the physics world accordingly.
+
+        Has no effect on animated models: they are kinematic and always use the convex-hull
+        collider regardless of mass.
+
+        Args:
+            object_id: ID of the object
+            mass: New mass in kilograms. 0 = static, > 0 = dynamic
+
+        Returns:
+            bool: True on success, False if the object is not found or is not a model
+        """
+
 disconnect_object_from_physics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

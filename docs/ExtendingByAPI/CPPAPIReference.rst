@@ -74,6 +74,8 @@ Limon Engine C++ API Reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``float``                                     | :ref:`getObjectMass(uint32_t objectID)<LimonAPI-getObjectMass>`                                                                                                                                                                                                                                                |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setObjectMass(uint32_t objectID, float mass)<LimonAPI-setObjectMass>`                                                                                                                                                                                                                                    |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`disconnectObjectFromPhysics(uint32_t modelID)<LimonAPI-disconnectObjectFromPhysics>`                                                                                                                                                                                                                     |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`reconnectObjectToPhysics(uint32_t modelID)<LimonAPI-reconnectObjectToPhysics>`                                                                                                                                                                                                                           |
@@ -624,6 +626,24 @@ Returns the mass of the object in kilograms. Returns 0.0 for static objects or i
 Parameters:
 
 #. uint32_t objectID: Handle ID of the model.
+
+.. _LimonAPI-setObjectMass:
+
+bool setObjectMass(uint32_t objectID, float mass)
+-------------------------------------------------
+
+Changes the mass of the model, switching it between static and dynamic physics at runtime. A mass of ``0`` makes
+the object static and gives it an exact triangle-mesh collider; a mass greater than ``0`` makes it a dynamic rigid
+body using the simplified convex-hull collider. The collision shape is reloaded and the body is re-registered with
+the physics world accordingly. Returns false if the object is not found or is not a model.
+
+Parameters:
+
+#. uint32_t objectID: Handle ID of the model.
+#. float mass: New mass in kilograms. ``0`` = static, ``> 0`` = dynamic.
+
+.. note::
+    Has no effect on animated models: they are kinematic and always use the convex-hull collider regardless of mass.
 
 .. _LimonAPI-disconnectObjectFromPhysics:
 
