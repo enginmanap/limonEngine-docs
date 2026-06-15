@@ -195,18 +195,14 @@ Lighting and Shadows
      - Double
      - ``-5000``
      - Back-off distance for the directional light orthographic projection.
-   * - ``lightOrthogonalProjectionValues``
-     - Vec4
-     - ``(-100, 100, -100, 100)``
-     - Orthographic projection bounds (left/right/bottom/top) for the directional light.
-   * - ``lightPerspectiveProjectionNearPlane``
+   * - ``lightPointNearPlane``
      - Double
      - ``0.1``
-     - Near plane for point light perspective shadow projection.
-   * - ``lightPerspectiveProjectionFarPlane``
+     - Near plane for point light shadow projection.
+   * - ``lightPointFarPlane``
      - Double
      - ``100``
-     - Far plane for point light perspective shadow projection.
+     - Far plane for point light shadow projection.
 
 Ambient Occlusion (SSAO)
 ========================
@@ -219,10 +215,6 @@ Ambient Occlusion (SSAO)
      - Type
      - Default
      - Description
-   * - ``SSAOEnabled``
-     - Boolean
-     - ``True``
-     - Enable screen-space ambient occlusion.
    * - ``SSAOWidth``
      - Long
      - ``2560``

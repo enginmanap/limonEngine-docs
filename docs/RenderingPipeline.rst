@@ -309,14 +309,14 @@ Shadows
      - Double
      - -5000
      - How far behind the player frustum the directional light's view origin is pulled. Increase to capture shadow casters behind the camera.
-   * - ``lightPerspectiveProjectionNearPlane``
+   * - ``lightPointNearPlane``
      - Double
-     - 1.0
-     - Near plane for point light perspective projection.
-   * - ``lightPerspectiveProjectionFarPlane``
+     - 0.1
+     - Near plane for point light shadow projection.
+   * - ``lightPointFarPlane``
      - Double
      - 100
-     - Far plane for point light perspective projection.
+     - Far plane for point light shadow projection.
 
 SSAO
 ----
@@ -329,10 +329,6 @@ SSAO
      - Type
      - Default
      - Description
-   * - ``SSAOEnabled``
-     - Bool
-     - True
-     - Enable screen-space ambient occlusion.
    * - ``SSAOWidth``
      - Long
      - 2560
