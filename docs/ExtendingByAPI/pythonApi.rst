@@ -3,7 +3,7 @@
 .. role:: del
     :class: del
 
-Limon Engine Python API Documentation
+Python API reference
 =====================================
 
 This page is the API reference for Python users.
