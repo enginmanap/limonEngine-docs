@@ -65,4 +65,5 @@ After engine launch, the key bindings are as follows:
 * Pressing `+` and `-` changes mouse sensitivity.
 * `wasd` for walking around and mouse for looking around as usual.
 
-The options of the game engine can be edited using ./Engine/Options.xml file. 
+The options of the game engine can be edited using the ``./Engine/Options.xml`` file.
+See :ref:`OptionsReference` for the full list of available options, their types and defaults.

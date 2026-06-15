@@ -1150,11 +1150,13 @@ set_sound_volume
 
     def set_sound_volume(sound_id: int, volume: float) -> bool:
         """
-        Set the volume (gain) of a sound.
+        Set the per-sound volume (gain).
 
         Args:
             sound_id: Sound ID returned by play_sound
-            volume: New gain value
+            volume: New gain, normalized 0.0..1.0 (1.0 = full volume). This is the
+                per-sound gain; the effective output is this value multiplied by the
+                sound's channel volume and the master volume (see Audio Channels below).
 
         Returns:
             bool: True if the sound was found and volume updated. False if not found or sound not yet started
@@ -1198,6 +1200,103 @@ is_sound_playing
         Returns:
             bool: True if playing, False if stopped or not found
         """
+
+Music
+~~~~~
+
+Each level has a single dedicated music track that plays on the ``MUSIC`` audio
+channel, loops by default, and is positioned at the listener (2D). Previously
+music could only be set in the editor; it can now be switched at runtime,
+optionally crossfading between tracks.
+
+.. _pythonApi-set_music:
+
+set_music
+^^^^^^^^^
+
+.. code-block:: python
+
+    def set_music(music_path: str, fade_seconds: float = 0.0, looped: bool = True) -> bool:
+        """
+        Set (switch) the level music track.
+
+        With fade_seconds == 0 the current track stops immediately and the new one
+        starts at full volume. With fade_seconds > 0 the outgoing track fades out
+        while the new track fades in over the same duration (crossfade).
+
+        Pass an empty music_path to clear the level music.
+
+        Args:
+            music_path: Path to the music asset, or "" to clear the music
+            fade_seconds: Crossfade duration in seconds. 0 swaps instantly.
+            looped: Whether the music loops. Defaults to True.
+
+        Returns:
+            bool: True on success
+        """
+
+.. _pythonApi-stop_music:
+
+stop_music
+^^^^^^^^^^
+
+.. code-block:: python
+
+    def stop_music(fade_seconds: float = 0.0) -> bool:
+        """
+        Stop the level music, optionally fading it out.
+
+        Args:
+            fade_seconds: Fade-out duration in seconds. 0 stops instantly.
+
+        Returns:
+            bool: True if music was playing, False if no music was set
+        """
+
+.. _pythonApi-get_music_name:
+
+get_music_name
+^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_music_name() -> str:
+        """
+        Get the current music asset path.
+
+        Returns:
+            str: The current music path, or an empty string if no music is set
+        """
+
+.. _pythonApi-is_music_playing:
+
+is_music_playing
+^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def is_music_playing() -> bool:
+        """
+        Returns:
+            bool: True if level music is currently playing
+        """
+
+.. _pythonApi-audio_channels:
+
+Audio Channels
+~~~~~~~~~~~~~~
+
+Every sound is mixed on one of four channels (buses): ``MASTER``, ``MUSIC``,
+``SFX`` and ``SPEECH``. The effective output gain of a sound is
+``per-sound gain × channel volume × master volume``.
+
+Channel volumes are **not** set through dedicated API calls — they are global,
+persisted options. Change them through the options API
+(:ref:`get_options<pythonApi-get_options>` / ``save_options``) using the option
+names ``soundVolumeMaster``, ``soundVolumeMusic``, ``soundVolumeSFX`` and
+``soundVolumeSpeech`` (each normalized 0.0..1.0, default 1.0). The engine reads
+these options and applies any change to the audio mixer automatically. This keeps
+player audio settings in one place and persisted across levels and sessions.
 
 AI Interaction
 ~~~~~~~~~~~~~~
@@ -1623,6 +1722,8 @@ change_render_pipeline
         Returns:
             bool: False if the pipeline file could not be loaded
         """
+
+.. _pythonApi-get_options:
 
 get_options
 ^^^^^^^^^^^

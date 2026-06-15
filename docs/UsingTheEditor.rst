@@ -195,7 +195,17 @@ If map designer wants to launch some custom action at map load, this interface c
 .. figure:: _static/media/images/WorldEditor/WP_Onload.png
     :align: center
 
-Music of the map can be set using the directory listing
+The level music is chosen here: pick a sound asset from the directory listing and
+press **Change Music** to set it as the map's music, or **Clear Music** to remove
+it. The selected track is saved with the level and plays (looped) when the level
+loads.
+
+The editor only authors *which* track is the level music. Runtime behaviour such
+as crossfading between tracks is done from scripts via
+:ref:`set_music<pythonApi-set_music>`, and channel volumes (Master / Music / SFX /
+Speech) are global options rather than editor settings — see
+:ref:`Audio Channels<pythonApi-audio_channels>` in the Python API reference. These
+are not adjustable in the editor because the editor runs with audio paused.
 
 **SkyBox**
 

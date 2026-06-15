@@ -1,4 +1,4 @@
-.. _CPPAPIReference:
+﻿.. _CPPAPIReference:
 
 .. role:: del
     :class: del
@@ -88,9 +88,9 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| :del:`bool`                                   | :del:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)` — :ref:`Removed<LimonAPI-attachSoundToObjectAndPlay>`                                                                                                                                              |
+| :del:`bool`                                   | :del:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)` â€” :ref:`Removed<LimonAPI-attachSoundToObjectAndPlay>`                                                                                                                                              |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| :del:`bool`                                   | :del:`detachSoundFromObject(uint32_t objectWorldID)` — :ref:`Removed<LimonAPI-detachSoundFromObject>`                                                                                                                                                                                                          |
+| :del:`bool`                                   | :del:`detachSoundFromObject(uint32_t objectWorldID)` â€” :ref:`Removed<LimonAPI-detachSoundFromObject>`                                                                                                                                                                                                          |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f)<LimonAPI-playSound>`                                                                                                   |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -105,6 +105,14 @@ C++ API reference
 | ``bool``                                      | :ref:`setSoundLooped(uint32_t soundID, bool looped)<LimonAPI-setSoundLooped>`                                                                                                                                                                                                                                  |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`isSoundPlaying(uint32_t soundID)<LimonAPI-isSoundPlaying>`                                                                                                                                                                                                                                               |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setMusic(const std::string &musicPath, float fadeSeconds = 0.0f, bool looped = true)<LimonAPI-setMusic>`                                                                                                                                                                                                 |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`stopMusic(float fadeSeconds = 0.0f)<LimonAPI-stopMusic>`                                                                                                                                                                                                                                                 |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``std::string``                               | :ref:`getMusicName()<LimonAPI-getMusicName>`                                                                                                                                                                                                                                                                   |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`isMusicPlaying()<LimonAPI-isMusicPlaying>`                                                                                                                                                                                                                                                               |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``LimonTypes::Vec4``                          | :ref:`getPlayerPosition()<LimonAPI-getPlayerPosition>`                                                                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -868,12 +876,12 @@ Parameters:
 bool setSoundVolume(uint32_t soundID, float volume)
 ---------------------------------------------------
 
-Sets the volume (gain) of a sound. Returns false if the sound ID is not found or the sound has not started playing yet.
+Sets the per-sound volume (gain). Returns false if the sound ID is not found or the sound has not started playing yet.
 
 Parameters:
 
 #. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
-#. float volume: New gain value.
+#. float volume: New per-sound gain, normalized 0.0..1.0 (1.0 = full volume). The effective output is this value multiplied by the sound's channel volume and the master volume (see :ref:`Audio Channels<LimonAPI-audioChannels>`).
 
 .. _LimonAPI-setSoundLooped:
 
@@ -897,6 +905,58 @@ Returns true if the sound is currently playing or finishing a non-looped play-th
 Parameters:
 
 #. uint32_t soundID: The ID returned by :ref:`playSound<LimonAPI-playSound>`.
+
+Music
+=====
+
+Each level has a single dedicated music track that plays on the ``MUSIC`` audio channel, loops by default, and is positioned at the listener (2D). It can be switched at runtime, optionally crossfading between tracks.
+
+.. _LimonAPI-setMusic:
+
+bool setMusic(const std::string &musicPath, float fadeSeconds = 0.0f, bool looped = true)
+-----------------------------------------------------------------------------------------
+
+Sets (switches) the level music. With ``fadeSeconds == 0`` the current track stops immediately and the new one starts at full volume. With ``fadeSeconds > 0`` the outgoing track fades out while the new one fades in over the same duration (crossfade). Pass an empty ``musicPath`` to clear the music. Returns true on success.
+
+Parameters:
+
+#. const std::string &musicPath: Path to the music asset, or "" to clear the music.
+#. float fadeSeconds: Crossfade duration in seconds. 0 swaps instantly.
+#. bool looped: Whether the music loops. Defaults to true.
+
+.. _LimonAPI-stopMusic:
+
+bool stopMusic(float fadeSeconds = 0.0f)
+----------------------------------------
+
+Stops the level music, optionally fading it out over ``fadeSeconds``. Returns true if music was playing, false if no music was set.
+
+Parameters:
+
+#. float fadeSeconds: Fade-out duration in seconds. 0 stops instantly.
+
+.. _LimonAPI-getMusicName:
+
+std::string getMusicName()
+--------------------------
+
+Returns the current music asset path, or an empty string if no music is set.
+
+.. _LimonAPI-isMusicPlaying:
+
+bool isMusicPlaying()
+---------------------
+
+Returns true if level music is currently playing.
+
+.. _LimonAPI-audioChannels:
+
+Audio Channels
+==============
+
+Every sound is mixed on one of four channels (buses): ``MASTER``, ``MUSIC``, ``SFX`` and ``SPEECH``. The effective output gain of a sound is ``per-sound gain × channel volume × master volume``.
+
+Channel volumes are not set through dedicated API calls. They are global, persisted options — change them through the options API (:ref:`getOptions<LimonAPI-getOptions>` / ``saveOptions``) using the option names ``soundVolumeMaster``, ``soundVolumeMusic``, ``soundVolumeSFX`` and ``soundVolumeSpeech`` (each normalized 0.0..1.0, default 1.0). The engine reads these options and applies any change to the audio mixer automatically, so player audio settings live in one place and persist across levels and sessions.
 
 Player
 ======

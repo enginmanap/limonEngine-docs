@@ -43,6 +43,7 @@ The project is licensed under the LGPL license.
    EngineArchitecture
    RenderingPipeline
    SupportingSystems
+   OptionsReference
    RoadMap
    authors
 
