@@ -10,6 +10,10 @@ Limon Engine C++ API Reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string\& soundPath = "")<LimonAPI-animateModel>`                                                                                                                                                                            |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`animateModelByName(uint32_t modelID, const std::string& animationName, bool looped, const std::string& soundPath = "")<LimonAPI-animateModelByName>`                                                                                                                                                     |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``std::vector\<std::string\>``                | :ref:`listLoadedAnimations()<LimonAPI-listLoadedAnimations>`                                                                                                                                                                                                                                                   |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::string``                               | :ref:`getModelAnimationName(uint32_t modelID)<LimonAPI-getModelAnimationName>`                                                                                                                                                                                                                                 |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`getModelAnimationFinished(uint32_t modelID)<LimonAPI-getModelAnimationFinished>`                                                                                                                                                                                                                         |
@@ -207,14 +211,38 @@ Animation
 uint32_t animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string& soundPath = "")
 -------------------------------------------------------------------------------------------------------------
 
+.. deprecated::
+    Animation indices are positional and depend on load order. Use :ref:`animateModelByName()<LimonAPI-animateModelByName>` instead. This overload is kept only as a fallback.
+
 Applies a custom animation to a model. Returns model handle ID.
 
 Parameters:
 
 #. uint32_t modelID: handle ID of the model to animate
-#. uint32_t animationID: handle ID of the animation
+#. uint32_t animationID: index of the loaded custom animation. This is a positional index into the world's loaded animation list and depends on load order. Prefer :ref:`animateModelByName()<LimonAPI-animateModelByName>` to address animations by their stable name instead.
 #. bool looped: whether the animation is looped or one off.
 #. const std::string& soundPath: path of the sound to play while the animation runs. If empty (default), no sound plays. Otherwise the sound will be played in a loop until the animation stops.
+
+.. _LimonAPI-animateModelByName:
+
+uint32_t animateModelByName(uint32_t modelID, const std::string& animationName, bool looped, const std::string& soundPath = "")
+-------------------------------------------------------------------------------------------------------------------------------
+
+Applies a custom animation to a model, resolving the animation by its name instead of its index. This is the recommended way to start a custom animation: animation indices are positional and depend on load order, while names are stable. Returns the model handle ID, or ``0`` if no loaded animation matches ``animationName``. Use :ref:`listLoadedAnimations()<LimonAPI-listLoadedAnimations>` to discover the available names.
+
+Parameters:
+
+#. uint32_t modelID: handle ID of the model to animate
+#. const std::string& animationName: name of the loaded custom animation to apply
+#. bool looped: whether the animation is looped or one off.
+#. const std::string& soundPath: path of the sound to play while the animation runs. If empty (default), no sound plays. Otherwise the sound will be played in a loop until the animation stops.
+
+.. _LimonAPI-listLoadedAnimations:
+
+std::vector<std::string> listLoadedAnimations()
+------------------------------------------------
+
+Returns the names of all custom (transformation) animations currently loaded in the world. These are the animations that can be applied with :ref:`animateModelByName()<LimonAPI-animateModelByName>`. The index of a name in the returned vector is the same value accepted by :ref:`animateModel()<LimonAPI-animateModel>`.
 
 .. _LimonAPI-getModelAnimationName:
 

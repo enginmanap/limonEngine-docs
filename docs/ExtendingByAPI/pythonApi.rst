@@ -911,7 +911,12 @@ animate_model
 
     def animate_model(model_id: int, animation_id: int, looped: bool = False, sound_path: str = "") -> int:
         """
-        Animate a model with a specific animation ID (numeric, not by name).
+        [DEPRECATED] Animate a model with a specific animation ID (numeric, not by name).
+
+        The animation_id is a positional index into the world's loaded animation
+        list and depends on load order. Prefer animate_model_by_name to address
+        animations by their stable name instead. This function is kept only as a
+        fallback.
 
         Args:
             model_id: ID of the model
@@ -921,6 +926,49 @@ animate_model
 
         Returns:
             int: Animation status ID, or 0 on failure
+        """
+
+.. _pythonApi-animate_model_by_name:
+
+animate_model_by_name
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def animate_model_by_name(model_id: int, animation_name: str, looped: bool = False, sound_path: str = "") -> int:
+        """
+        Animate a model using the loaded animation's name instead of its index.
+
+        This is the recommended way to start a custom animation, since names are
+        stable while indices depend on load order. Use list_loaded_animations to
+        discover the available names.
+
+        Args:
+            model_id: ID of the model
+            animation_name: Name of the loaded custom animation to apply
+            looped: Whether the animation should loop
+            sound_path: Path to a sound file to play with the animation. Pass "" for no sound.
+
+        Returns:
+            int: The model ID on success, or 0 if no loaded animation matches the name
+        """
+
+.. _pythonApi-list_loaded_animations:
+
+list_loaded_animations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def list_loaded_animations() -> list[str]:
+        """
+        Return the names of all custom (transformation) animations loaded in the world.
+
+        These names can be passed to animate_model_by_name. The index of a name in
+        the returned list is the same value accepted by animate_model.
+
+        Returns:
+            list[str]: Loaded custom animation names
         """
 
 add_object
