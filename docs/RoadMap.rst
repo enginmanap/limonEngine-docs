@@ -38,6 +38,15 @@ All items implemented.
 #. In-game logger overlay -transparent, toggleable, with C++ and Python API.
 #. Tracy profiling -embedded flame graph in editor, GPU zones from pipeline config, profileScope API.
 
+Planned for 0.8
+===============
+
+#. Navigation reimplementation -switch to dynamic navmesh generation and steering.
+#. GUI system extension -proper layout engine, input widgets, etc.
+#. Editor updates -undo/redo, usability improvements.
+#. Reference search in editor -e.g. search by animation, returning all objects referencing that animation, to help game development troubleshooting.
+#. Projected decals (Optional).
+
 Before 1.0
 ==========
 
