@@ -22,10 +22,10 @@ The engine ships with small Python samples under ``Engine/Scripts/``, each subcl
 * `limonimp.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/limonimp.py>`_ - a minimal trigger/action (``MyTrigger``). See :ref:`implementAction`.
 * `python_cowboy_enemy.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_cowboy_enemy.py>`_ - a full gunslinger AI (``PythonCowboyEnemy``), the Python port of the C++ ``CowboyEnemyAI``. See :ref:`implementAIActor`.
 * `simple_guard_actor.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/simple_guard_actor.py>`_ - a minimal guard AI (``SimpleGuardActor``). See :ref:`implementAIActor`.
-* `python_third_person_camera.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_third_person_camera.py>`_ - a third-person camera (``ThirdPersonCamera``). See :ref:`implementCameraAttachment`.
+* `python_orthographic_camera_rig.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_orthographic_camera_rig.py>`_ - an orthographic camera rig (``PythonOrthographicCameraRig``). See :ref:`implementCameraAttachment`.
 * `python_player_extension.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_player_extension.py>`_ - a shooter-style player controller (``PythonPlayerExtension``). See :ref:`implementPlayerExtension`.
 
-The base classes these subclass (`trigger_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/trigger_interface.py>`_, `actor_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/actor_interface.py>`_, `camera_attachment.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/camera_attachment.py>`_, `player_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/player_extension_interface.py>`_) document each method's contract in their docstrings. Helper types live in `vec3.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/vec3.py>`_ and `generic_parameter.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/generic_parameter.py>`_.
+The base classes these subclass (`trigger_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/trigger_interface.py>`_, `actor_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/actor_interface.py>`_, `camera_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/camera_extension_interface.py>`_, `player_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/player_extension_interface.py>`_) document each method's contract in their docstrings. Helper types live in `vec3.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/vec3.py>`_ and `generic_parameter.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/generic_parameter.py>`_.
 
 Core Types
 ----------
@@ -1873,7 +1873,7 @@ get_camera_position
     def get_camera_position() -> Vec4:
         """
         Returns the camera's world position as Vec4 (w=1). May differ from player position
-        if a PlayerExtension overrides the camera attachment.
+        if a camera rig is driving the camera.
 
         Returns:
             Vec4: Camera world position with w=1
@@ -1887,7 +1887,7 @@ get_camera_look_direction
     def get_camera_look_direction() -> Vec4:
         """
         Returns the camera's normalized look direction as Vec4 (w=0). May differ from player
-        look direction if a PlayerExtension overrides the camera attachment.
+        look direction if a camera rig is driving the camera.
 
         Returns:
             Vec4: Normalized camera look direction with w=0
@@ -2251,39 +2251,37 @@ Input States
 Camera System
 -------------
 
-CameraAttachment
-~~~~~~~~~~~~~~~~
-Base class for custom camera attachments.
+CameraExtensionInterface
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Base class for a registered camera rig (see :ref:`implementCameraAttachment`). Subclass it and the engine auto-discovers it by class name, like Triggers and Actors; it appears in the editor's Cameras tree, is configurable, and may be perspective or orthographic.
 
 .. code-block:: python
 
-    from camera_attachment import CameraAttachment
+    import limon
+    from camera_extension_interface import CameraExtensionInterface
 
-    class MyCamera(CameraAttachment):
+    class MyCameraRig(CameraExtensionInterface):
         def __init__(self, limon_api):
             super().__init__(limon_api)
 
+        def get_name(self) -> str:
+            return "MyCameraRig"
+
         def is_dirty(self) -> bool:
-            """Return True if the camera parameters have changed."""
-            return True
+            return self._dirty
 
         def clear_dirty(self) -> None:
-            """Mark the camera parameters as clean."""
-            pass
+            self._dirty = False
 
         def get_camera_variables(self, position: Vec3, center: Vec3, up: Vec3, right: Vec3) -> None:
             """
-            Get camera position and orientation.
-
-            The parameters are Vec3 objects that can be modified directly.
-            Changes to these objects will be reflected in the camera.
-
-            Args:
-                position: Camera position vector (modifiable)
-                center: Camera center/look-at point (modifiable)
-                up: Camera up vector (modifiable)
-                right: Camera right vector (modifiable)
+            Fill the camera pose in place. The four Vec3 arguments are modified directly:
+            position, center (look-at direction), up, and right.
             """
+
+        def get_projection(self) -> "limon.ProjectionParameters":
+            # Default perspective; set type = limon.ProjectionType.ORTHOGRAPHIC for orthographic.
+            return limon.ProjectionParameters()
 
 Trigger Interface
 -----------------
@@ -2420,15 +2418,6 @@ Base class for creating player extensions.
                 str: The extension's name
             """
             return "My Player Extension"
-
-        def get_custom_camera_attachment(self):
-            """
-            Get a custom camera attachment for this extension.
-
-            Returns:
-                CameraAttachment: A camera attachment, or None to use default
-            """
-            return None
 
 Actor Interface
 ---------------

@@ -26,8 +26,6 @@ ______________________________
      - :ref:`setParameters(std::vector\<LimonTypes::GenericParameter\>parameters)<PlayerExtensionInterface-setParameters>`
    * - ``std::string``
      - :ref:`getName() const<PlayerExtensionInterface-getName>`
-   * - ``CameraAttachment*``
-     - :ref:`getCustomCameraAttachment()<PlayerExtensionInterface-getCustomCameraAttachment>`
 
 .. _PlayerExtensionInterface-PlayerExtensionInterface:
 
@@ -82,12 +80,8 @@ Returns the name of the Player Extension.
 .. warning::
     The name must be unique, or the results will be undefined.
 
-.. _PlayerExtensionInterface-getCustomCameraAttachment:
-
-CameraAttachment* getCustomCameraAttachment()
-=============================================
-
-Returns a custom ``CameraAttachment`` instance for this extension, or ``nullptr`` to use the default first-person camera. Override this method to provide a third-person or any other custom camera. The default implementation returns ``nullptr``.
+.. note::
+   To drive the camera from a player extension, activate a :ref:`camera rig <implementCameraAttachment>` at runtime with ``createCameraRig`` / ``activateCameraRig`` (for example from ``processInput``). The old ``getCustomCameraAttachment`` mechanism has been removed.
 
 .. _PlayerExtensionInterface-PlayerInformation:
 

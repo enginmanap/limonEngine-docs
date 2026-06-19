@@ -11,10 +11,9 @@ perspective and orthographic projection**, is configurable through the same ``Ge
 as every other extension point, and is edited and activated as a first-class scene object in the editor.
 
 .. note::
-   This replaces the older "camera attachment handed out by a Player Extension" mechanism. Camera rigs are
-   now registered extensions (like Triggers and Actors) and live as ``CameraRig`` objects in the scene. The
-   legacy ``PlayerExtensionInterface::getCustomCameraAttachment()`` path still exists for plain camera
-   overrides, but new camera behaviour should be authored as a camera rig.
+   Camera rigs are registered extensions (like Triggers and Actors) and live as ``CameraRig`` objects in the
+   scene. They replace the older mechanism of a Player Extension handing the engine a plain camera
+   attachment, which has been removed.
 
 The model: behaviour + object
 =============================
@@ -189,11 +188,6 @@ works on any rig, whether it was created through the API or placed in the editor
 
 (Python: ``create_camera_rig`` / ``activate_camera_rig`` / ``deactivate_camera_rig``.)
 
-.. note::
-    Activate from a per-frame entry point such as ``process_input`` (with a one-shot guard), not from an
-    extension's constructor: a constructor runs while the world is still finishing load, where the camera is
-    set up afterwards and would overwrite a too-early activation.
-
 Samples
 =======
 
@@ -225,18 +219,9 @@ The Python method names are the snake_case equivalents (``get_name``, ``get_para
 ``is_dirty`` / ``clear_dirty``, ``set_attachment_transform``). A sample ships as
 ``python_orthographic_camera_rig.py`` under ``Engine/Scripts/``.
 
-.. note::
-   The older ``camera_attachment.CameraAttachment`` (handed out by a Player Extension's
-   ``get_custom_camera_attachment``) still exists for plain, unregistered camera overrides - see
-   :ref:`implementPlayerExtension`. New camera behaviour should be a registered rig.
-
 Relationship to the player
 ==========================
 
 The player is no longer a camera itself. Each player owns a default camera attachment that it feeds its own
 eye pose to; that default is what you see when no rig is active. Activating a camera rig overrides it, and
 deactivating restores it - this is why the player's own camera is always the backup.
-
-The older ``PlayerExtensionInterface::getCustomCameraAttachment()`` remains as a separate, simpler path for
-handing the engine a plain camera override from a Player Extension. It is still supported, but it is not the
-registered-rig system described here and does not get an editor presence or ``GenericParameter`` editing.

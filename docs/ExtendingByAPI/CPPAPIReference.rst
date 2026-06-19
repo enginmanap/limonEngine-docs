@@ -994,7 +994,7 @@ none
 LimonTypes::Vec4 getCameraPosition()
 --------------------------------------
 
-Returns the camera's world position as a Vec4 (w=1). This comes from the active camera attachment - if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerPosition<LimonAPI-getPlayerPosition>`.
+Returns the camera's world position as a Vec4 (w=1). This comes from the active player camera - if a camera rig is driving it, this value may differ from :ref:`getPlayerPosition<LimonAPI-getPlayerPosition>`.
 
 Parameters:
 
@@ -1005,7 +1005,7 @@ none
 LimonTypes::Vec4 getCameraLookDirection()
 ------------------------------------------
 
-Returns the camera's normalized look direction as a Vec4 (w=0). This comes from the active camera attachment - if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
+Returns the camera's normalized look direction as a Vec4 (w=0). This comes from the active player camera - if a camera rig is driving it, this value may differ from :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
 
 Parameters:
 

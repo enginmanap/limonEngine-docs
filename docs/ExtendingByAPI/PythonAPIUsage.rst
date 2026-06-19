@@ -23,13 +23,13 @@ Scripts are loaded from two directories, following the engine-wide convention th
         __init__.py                      # package marker (not loaded as a script)
         trigger_interface.py             # base class
         actor_interface.py               # base class
-        camera_attachment.py             # base class
+        camera_extension_interface.py    # base class
         player_extension_interface.py    # base class
         generic_parameter.py             # helper type
         vec3.py                          # helper type
         limonimp.py                      # sample trigger (MyTrigger)
         simple_guard_actor.py            # sample actor (SimpleGuardActor)
-        python_third_person_camera.py    # sample camera (ThirdPersonCamera)
+        python_orthographic_camera_rig.py  # sample camera rig (PythonOrthographicCameraRig)
         python_player_extension.py       # sample player extension (PythonPlayerExtension)
 
     Data/Scripts/                        # your game's scripts go here
@@ -39,7 +39,7 @@ Scripts are loaded from two directories, following the engine-wide convention th
 Both directories are on the Python import path (``Engine/Scripts`` first), so a script in ``Data/Scripts`` can freely import the built-in base classes and helpers - ``from trigger_interface import TriggerInterface`` works from either location.
 
 .. warning::
-    Don't give a user script the same filename as a built-in module (``trigger_interface.py``, ``actor_interface.py``, ``camera_attachment.py``, ``player_extension_interface.py``, ``generic_parameter.py``, ``vec3.py``). Python resolves a module name to the built-in copy (it is first on the path), so a same-named file in ``Data/Scripts`` is skipped with a warning and never loads. Pick a distinct filename.
+    Don't give a user script the same filename as a built-in module (``trigger_interface.py``, ``actor_interface.py``, ``camera_extension_interface.py``, ``player_extension_interface.py``, ``generic_parameter.py``, ``vec3.py``). Python resolves a module name to the built-in copy (it is first on the path), so a same-named file in ``Data/Scripts`` is skipped with a warning and never loads. Pick a distinct filename.
 
 How discovery works
 ===================
@@ -54,7 +54,7 @@ When a world is loaded, the engine creates an isolated Python sub-interpreter fo
 Registration is automatic - there is no Python equivalent of the C++ ``registerAsTrigger`` entry point. The name the extension is registered under, and the name a map designer picks from in the editor, is the **Python class name** itself.
 
 .. note::
-    The legacy plain camera *attachment* (``camera_attachment.CameraAttachment``) is the one camera path not discovered this way - it is handed to the engine by a Player Extension through ``get_custom_camera_attachment`` rather than registered as a standalone class. Registered camera *rigs* (``CameraExtensionInterface``) are auto-discovered like the four interfaces above. See :ref:`implementCameraAttachment`.
+    Registered camera *rigs* (``CameraExtensionInterface``) are auto-discovered the same way - a class subclassing it is registered as a :ref:`Camera Rig <implementCameraAttachment>`.
 
 .. warning::
     Because every class in every module is inspected, keep one extension class per file (the samples follow this convention). Helper classes that do **not** subclass one of the extension interfaces are ignored, so they are safe to keep alongside.
@@ -95,11 +95,13 @@ The engine calls a fixed set of methods on each extension instance. The base cla
    * - ``TriggerInterface``
      - ``get_name``, ``get_parameters``, ``set_parameters``, ``run``, ``get_results``
    * - ``PlayerExtensionInterface``
-     - ``get_name``, ``process_input``, ``interact``, ``get_custom_camera_attachment``
+     - ``get_name``, ``process_input``, ``interact``
    * - ``ActorInterface``
      - ``get_name``, ``play``, ``interaction``, ``get_parameters``, ``set_parameters``
+   * - ``CameraExtensionInterface``
+     - ``get_name``, ``get_parameters``, ``set_parameters``, ``get_camera_variables``, ``get_projection``, ``is_dirty``, ``clear_dirty``, ``set_attachment_transform``
 
-All method names are ``snake_case`` to match the Python API binding - including the Camera Attachment (``is_dirty``, ``clear_dirty``, ``get_camera_variables``), which the engine calls on the object returned from the Player Extension's ``get_custom_camera_attachment``. See :ref:`implementCameraAttachment`.
+All method names are ``snake_case`` to match the Python API binding. See :ref:`implementCameraAttachment` for camera rigs.
 
 Parameters
 ==========

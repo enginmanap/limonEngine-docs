@@ -65,7 +65,7 @@ In every case ``getParameters()`` returns one vector whose entries carry **both*
     This is a change from earlier releases, where triggers returned their parameter descriptors from ``getParameters()`` each call and the engine threaded the values separately. Triggers now seed defaults in the constructor and let the base ``getParameters()`` return the stored member. A short-lived ``getParametersReference()`` accessor that existed during the transition has been removed - use ``getParameters()`` and ``setParameters()``.
 
 .. note::
-    Registered :ref:`camera rigs <implementCameraAttachment>` (``CameraExtensionInterface``) participate in this contract too - they hold the same protected ``parameters`` member and provide ``getParameters()`` / ``setParameters()``. The only camera path *outside* the contract is the legacy plain ``CameraAttachment`` override handed out by a Player Extension's ``getCustomCameraAttachment()``, which has no editor-exposed ``GenericParameter`` configuration.
+    Registered :ref:`camera rigs <implementCameraAttachment>` (``CameraExtensionInterface``) participate in this contract too - they hold the same protected ``parameters`` member and provide ``getParameters()`` / ``setParameters()``.
 
 RequestParameterTypes Enum
 ==========================
