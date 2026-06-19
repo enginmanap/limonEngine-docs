@@ -49,14 +49,15 @@ When a world is loaded, the engine creates an isolated Python sub-interpreter fo
 * A class that subclasses **TriggerInterface** is registered as an :ref:`Action <implementAction>`.
 * A class that subclasses **PlayerExtensionInterface** is registered as a :ref:`Player Extension <implementPlayerExtension>`.
 * A class that subclasses **ActorInterface** is registered as an :ref:`AI Actor <implementAIActor>`.
+* A class that subclasses **CameraExtensionInterface** is registered as a :ref:`Camera Rig <implementCameraAttachment>`.
 
 Registration is automatic - there is no Python equivalent of the C++ ``registerAsTrigger`` entry point. The name the extension is registered under, and the name a map designer picks from in the editor, is the **Python class name** itself.
 
 .. note::
-    Camera Attachments are not discovered this way. A Camera Attachment is handed to the engine by a Player Extension through its ``get_custom_camera_attachment`` method, rather than being registered as a standalone script class. See :ref:`implementCameraAttachment`.
+    The legacy plain camera *attachment* (``camera_attachment.CameraAttachment``) is the one camera path not discovered this way - it is handed to the engine by a Player Extension through ``get_custom_camera_attachment`` rather than registered as a standalone class. Registered camera *rigs* (``CameraExtensionInterface``) are auto-discovered like the four interfaces above. See :ref:`implementCameraAttachment`.
 
 .. warning::
-    Because every class in every module is inspected, keep one extension class per file (the samples follow this convention). Helper classes that do **not** subclass one of the three interfaces are ignored, so they are safe to keep alongside.
+    Because every class in every module is inspected, keep one extension class per file (the samples follow this convention). Helper classes that do **not** subclass one of the extension interfaces are ignored, so they are safe to keep alongside.
 
 The ``limon`` module and the base classes
 =========================================

@@ -1893,6 +1893,49 @@ get_camera_look_direction
             Vec4: Normalized camera look direction with w=0
         """
 
+create_camera_rig
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def create_camera_rig(camera_rig_type_name: str) -> int:
+        """
+        Create a registered camera rig type and add it to the world as a non-active scene object.
+
+        Args:
+            camera_rig_type_name: the registered type name of the rig to create
+
+        Returns:
+            int: the new rig's world object id, or 0 if the type is unknown
+        """
+
+activate_camera_rig
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def activate_camera_rig(camera_rig_id: int) -> bool:
+        """
+        Make the camera rig with this world object id drive the player camera. Works for rigs
+        created via create_camera_rig or placed in the editor.
+
+        Args:
+            camera_rig_id: world object id of the rig to activate
+
+        Returns:
+            bool: False if no rig has that id
+        """
+
+deactivate_camera_rig
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def deactivate_camera_rig() -> None:
+        """
+        Revert the player camera to the player's own (built-in) camera, releasing any active rig.
+        """
+
 get_player_attached_model
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

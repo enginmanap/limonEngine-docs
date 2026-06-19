@@ -84,6 +84,12 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`reconnectObjectToPhysics(uint32_t modelID)<LimonAPI-reconnectObjectToPhysics>`                                                                                                                                                                                                                           |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`createCameraRig(const std::string &cameraRigTypeName)<LimonAPI-createCameraRig>`                                                                                                                                                                                                                         |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`activateCameraRig(uint32_t cameraRigId)<LimonAPI-activateCameraRig>`                                                                                                                                                                                                                                     |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``void``                                      | :ref:`deactivateCameraRig()<LimonAPI-deactivateCameraRig>`                                                                                                                                                                                                                                                     |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`applyForce(uint32_t modelID, const LimonAPI::Vec4 &forcePosition, const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForce>`                                                                                                                                                                               |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                                                                                                      |
@@ -1000,6 +1006,39 @@ LimonTypes::Vec4 getCameraLookDirection()
 ------------------------------------------
 
 Returns the camera's normalized look direction as a Vec4 (w=0). This comes from the active camera attachment - if a ``PlayerExtensionInterface`` overrides the camera attachment, this value may differ from :ref:`getPlayerLookDirection<LimonAPI-getPlayerLookDirection>`.
+
+Parameters:
+
+none
+
+.. _LimonAPI-createCameraRig:
+
+uint32_t createCameraRig(const std::string &cameraRigTypeName)
+-----------------------------------------------------------------
+
+Create a :ref:`camera rig <implementCameraAttachment>` of a registered type (the name it is registered under) and add it to the world as a non-active scene object. Returns its new world object id, or ``0`` if the type is unknown. Activate it with :ref:`activateCameraRig<LimonAPI-activateCameraRig>`.
+
+Parameters:
+
+#. const std::string &cameraRigTypeName: the registered type name of the rig to create.
+
+.. _LimonAPI-activateCameraRig:
+
+bool activateCameraRig(uint32_t cameraRigId)
+-----------------------------------------------
+
+Make the camera rig with this world object id drive the player camera. Works for rigs created via :ref:`createCameraRig<LimonAPI-createCameraRig>` or placed in the editor. Returns ``false`` if no rig has that id.
+
+Parameters:
+
+#. uint32_t cameraRigId: world object id of the rig to activate.
+
+.. _LimonAPI-deactivateCameraRig:
+
+void deactivateCameraRig()
+-----------------------------
+
+Revert the player camera to the player's own (built-in) camera, releasing any active camera rig.
 
 Parameters:
 

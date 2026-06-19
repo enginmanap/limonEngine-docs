@@ -149,7 +149,7 @@ ________________________
 The engine ships with sample player extensions under ``samples/`` that implement ``PlayerExtensionInterface``:
 
 * `ShooterPlayerExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/ShooterPlayerExtension.cpp>`_ - a first-person shooter player controller.
-* `CowboyShooterExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/CowboyShooterExtension.cpp>`_ - the western-demo shooter controller, which also drives a :ref:`camera attachment <implementCameraAttachment>`.
+* `CowboyShooterExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/CowboyShooterExtension.cpp>`_ - the western-demo shooter controller, which also activates a third-person :ref:`camera rig <implementCameraAttachment>` at runtime (``createCameraRig`` / ``activateCameraRig``).
 * `WesternMenuPlayerExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternMenuPlayerExtension.cpp>`_ - a menu controller using absolute mouse input for the western demo's menus.
 
 A Python player-extension sample ships under ``Engine/Scripts/`` as `python_player_extension.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_player_extension.py>`_ (the ``PythonPlayerExtension`` class), subclassing the Python base in `player_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/player_extension_interface.py>`_.
