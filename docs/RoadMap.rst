@@ -30,7 +30,7 @@ All items implemented.
 #. SIMD software occlusion culling -SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5).
 #. Automatic LOD generation -meshoptimizer, 4 LOD levels per model.
 #. Python scripting -full LimonAPI surface via pybind11, multi-interpreter, all five extension types implementable in Python.
-#. Camera Rig -fourth user extension point: registered, configurable cameras (perspective and orthographic) as first-class scene objects, enabling third-person, isometric, top-down, and custom cameras.
+#. Camera Attachment -fourth user extension point: registered, configurable cameras (perspective and orthographic) wrapped in first-class ``CameraRig`` scene objects, enabling third-person, isometric, top-down, and custom cameras.
 #. RenderMethod Extension -fifth user extension point for custom GPU rendering primitives.
 #. Asset browser -typed tree with model preview using world lighting.
 #. limonmodel native format -near memory-direct layout for fast release builds.

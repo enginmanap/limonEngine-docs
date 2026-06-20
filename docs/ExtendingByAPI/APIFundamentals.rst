@@ -103,7 +103,7 @@ Key behaviours:
 * When a world is loaded (or reloaded), a fresh interpreter starts. Scripts do not carry state across world loads unless they persist data externally (e.g., to a file or via the engine's ``setVariable`` / ``getVariable`` API).
 * C++ extensions and Python extensions can coexist in the same user library. A C++ Action and a Python Player Extension running in the same world share the same engine API instance but have separate execution contexts.
 
-All five extension types are implementable in Python: Actions, Player Extensions, AI Actors, Camera Rigs, and RenderMethods. Python extensions have full parity with the C++ API - the same GenericParameter contract, the same enums, and automatic type conversion via pybind11.
+All five extension types are implementable in Python: Actions, Player Extensions, AI Actors, Camera Attachments, and RenderMethods. Python extensions have full parity with the C++ API - the same GenericParameter contract, the same enums, and automatic type conversion via pybind11.
 
 .. note::
     Because Python interpreter state is world-scoped, be careful with module-level singletons or caches that assume persistent lifetime. An extension that registers itself globally on first load will re-register on every world load, which may cause double-registration if the pattern is not world-aware.

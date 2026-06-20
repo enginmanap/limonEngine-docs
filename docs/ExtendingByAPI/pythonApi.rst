@@ -22,7 +22,7 @@ The engine ships with small Python samples under ``Engine/Scripts/``, each subcl
 * `limonimp.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/limonimp.py>`_ - a minimal trigger/action (``MyTrigger``). See :ref:`implementAction`.
 * `python_cowboy_enemy.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_cowboy_enemy.py>`_ - a full gunslinger AI (``PythonCowboyEnemy``), the Python port of the C++ ``CowboyEnemyAI``. See :ref:`implementAIActor`.
 * `simple_guard_actor.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/simple_guard_actor.py>`_ - a minimal guard AI (``SimpleGuardActor``). See :ref:`implementAIActor`.
-* `python_orthographic_camera_rig.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_orthographic_camera_rig.py>`_ - an orthographic camera rig (``PythonOrthographicCameraRig``). See :ref:`implementCameraAttachment`.
+* `python_orthographic_camera_rig.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_orthographic_camera_rig.py>`_ - an orthographic camera attachment (``PythonOrthographicCameraRig``). See :ref:`implementCameraAttachment`.
 * `python_player_extension.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_player_extension.py>`_ - a shooter-style player controller (``PythonPlayerExtension``). See :ref:`implementPlayerExtension`.
 
 The base classes these subclass (`trigger_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/trigger_interface.py>`_, `actor_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/actor_interface.py>`_, `camera_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/camera_extension_interface.py>`_, `player_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/player_extension_interface.py>`_) document each method's contract in their docstrings. Helper types live in `vec3.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/vec3.py>`_ and `generic_parameter.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/generic_parameter.py>`_.
@@ -1900,10 +1900,11 @@ create_camera_rig
 
     def create_camera_rig(camera_rig_type_name: str) -> int:
         """
-        Create a registered camera rig type and add it to the world as a non-active scene object.
+        Create a ``CameraRig`` scene object of a registered camera attachment type and add it to the
+        world as a non-active scene object.
 
         Args:
-            camera_rig_type_name: the registered type name of the rig to create
+            camera_rig_type_name: the registered type name of the camera attachment to instantiate
 
         Returns:
             int: the new rig's world object id, or 0 if the type is unknown
@@ -2253,7 +2254,7 @@ Camera System
 
 CameraExtensionInterface
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-Base class for a registered camera rig (see :ref:`implementCameraAttachment`). Subclass it and the engine auto-discovers it by class name, like Triggers and Actors; it appears in the editor's Cameras tree, is configurable, and may be perspective or orthographic.
+Base class for a registered camera attachment (see :ref:`implementCameraAttachment`). Subclass it and the engine auto-discovers it by class name, like Triggers and Actors; the engine wraps it in a ``CameraRig`` scene object that appears in the editor's Cameras tree, is configurable, and may be perspective or orthographic.
 
 .. code-block:: python
 

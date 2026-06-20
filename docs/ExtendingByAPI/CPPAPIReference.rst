@@ -1016,11 +1016,11 @@ none
 uint32_t createCameraRig(const std::string &cameraRigTypeName)
 -----------------------------------------------------------------
 
-Create a :ref:`camera rig <implementCameraAttachment>` of a registered type (the name it is registered under) and add it to the world as a non-active scene object. Returns its new world object id, or ``0`` if the type is unknown. Activate it with :ref:`activateCameraRig<LimonAPI-activateCameraRig>`.
+Create a ``CameraRig`` scene object of a registered :ref:`camera attachment <implementCameraAttachment>` type (the name it is registered under) and add it to the world as a non-active scene object. Returns its new world object id, or ``0`` if the type is unknown. Activate it with :ref:`activateCameraRig<LimonAPI-activateCameraRig>`.
 
 Parameters:
 
-#. const std::string &cameraRigTypeName: the registered type name of the rig to create.
+#. const std::string &cameraRigTypeName: the registered type name of the camera attachment to instantiate.
 
 .. _LimonAPI-activateCameraRig:
 

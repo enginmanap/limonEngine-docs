@@ -1,38 +1,39 @@
 .. _implementCameraAttachment:
 
-==============================
-How to implement a camera rig
-==============================
+====================================
+How to implement a camera attachment
+====================================
 
-A **camera rig** is the extension point for camera behaviour. It takes full per-frame control of the
+A **camera attachment** is the extension point for camera behaviour. It takes full per-frame control of the
 player camera - overriding the default first-person viewpoint with any camera behaviour you implement:
 third-person, isometric, top-down, orbital, fixed security camera, and so on. It supports **both
 perspective and orthographic projection**, is configurable through the same ``GenericParameter`` contract
 as every other extension point, and is edited and activated as a first-class scene object in the editor.
 
 .. note::
-   Camera rigs are registered extensions (like Triggers and Actors) and live as ``CameraRig`` objects in the
-   scene. They replace the older mechanism of a Player Extension handing the engine a plain camera
-   attachment, which has been removed.
+   Camera attachments (implementing ``CameraExtensionInterface``) are registered extensions (like Triggers
+   and Actors). The engine wraps each one in a ``CameraRig`` scene object - that is the game object type
+   you see in the editor's **Cameras** tree and in the world file.
 
 The model: behaviour + object
 =============================
 
-A camera rig is two pieces that work together:
+A camera attachment works together with an engine-side ``CameraRig`` scene object:
 
-* **The behaviour** - a ``CameraExtensionInterface`` you implement in C++ **or Python** (see
+* **The camera attachment** - a ``CameraExtensionInterface`` you implement in C++ **or Python** (see
   `Python cameras`_). This is the registered, configurable part: it produces the camera pose and declares
   the projection.
-* **The object** - an engine-side ``CameraRig`` that *owns* your behaviour. It is a normal scene object
-  (it has a transform, a world id, a tree node, and is saved in the world file). The engine provides this;
-  you do not implement it.
+* **The ``CameraRig`` scene object** - an engine-side object that *owns* your camera attachment. It is a
+  normal scene object (it has a transform, a world id, a tree node, and is saved in the world file). The
+  engine provides this; you do not implement it.
 
-This split is deliberate. Your behaviour cannot subclass an engine scene object across the plugin boundary,
-so the engine wraps it in a ``CameraRig`` for you. Following a world object then uses the engine's standard
-attachment system (see `Following an object`_) rather than anything camera-specific.
+This split is deliberate. Your camera attachment cannot subclass an engine scene object across the plugin
+boundary, so the engine wraps it in a ``CameraRig`` for you. Following a world object then uses the
+engine's standard attachment system (see `Following an object`_) rather than anything camera-specific.
 
-Many camera rigs may exist in a world, but **only one is active at a time**. When no rig is active, the
-player drives its own built-in camera - so deactivating a rig always falls back to the first-person view.
+Many ``CameraRig`` objects may exist in a world, but **only one is active at a time**. When none is
+active, the player drives its own built-in camera - so deactivating a rig always falls back to the
+first-person view.
 
 Interface
 =========
@@ -60,10 +61,10 @@ Interface
      - ``isDirty`` returns ``true`` when the pose has changed since the last frame; ``clearDirty`` marks it
        consumed. A follow camera typically returns ``true`` every frame.
    * - ``setAttachmentTransform``
-     - Optional. When the rig's ``CameraRig`` is attached to a world object, the engine calls this each frame
-       *before* ``getCameraVariables`` with the target's world transform, already decomposed into position,
-       orientation, and scale (so no rig ever decomposes a matrix per frame). When the rig is unattached,
-       this is never called and the rig produces its own pose.
+     - Optional. When the ``CameraRig`` carrying this attachment is attached to a world object, the engine
+       calls this each frame *before* ``getCameraVariables`` with the target's world transform, already
+       decomposed into position, orientation, and scale (so no attachment ever decomposes a matrix per
+       frame). When the rig is unattached, this is never called and the attachment produces its own pose.
 
 .. _camerarig-projection:
 
@@ -110,11 +111,11 @@ composes your local offset and any custom behaviour (smoothing, collision pushba
 that engine-provided parent transform. An *unattached* rig produces its own pose instead - for example, a
 rig that follows the player by querying ``getPlayerPosition`` through the API.
 
-Registering a rig (C++)
-=======================
+Registering a camera attachment (C++)
+=====================================
 
-Camera rigs are discovered from the same user dynamic library as every other extension type, through the
-``registerCameraExtensions`` entry point:
+Camera attachments are discovered from the same user dynamic library as every other extension type, through
+the ``registerCameraExtensions`` entry point:
 
 .. code-block:: cpp
 
@@ -191,7 +192,7 @@ works on any rig, whether it was created through the API or placed in the editor
 Samples
 =======
 
-The engine ships these camera rigs under ``samples/``:
+The engine ships these camera attachments under ``samples/``:
 
 * `ObjectAttachedCameraRig <https://github.com/enginmanap/limonEngine/blob/master/samples/ObjectAttachedCameraRig.h>`_
   - a perspective follow camera. It composes a local offset on top of the transform of whatever object its
@@ -208,11 +209,13 @@ The engine ships these camera rigs under ``samples/``:
 Python cameras
 ==============
 
-Camera rigs have full Python parity. Subclass ``camera_extension_interface.CameraExtensionInterface`` in a
-script under ``Engine/Scripts`` or ``Data/Scripts``, and the engine auto-discovers it **by class name** -
-exactly like Python Triggers, Actors, and Player Extensions. The rig then appears in the editor's **Cameras**
-tree, is configurable through ``get_parameters`` / ``set_parameters``, supports orthographic projection, and
-follows objects through the attachment system, identical to a C++ rig.
+Camera attachments have full Python parity. Subclass
+``camera_extension_interface.CameraExtensionInterface`` in a script under ``Engine/Scripts`` or
+``Data/Scripts``, and the engine auto-discovers it **by class name** - exactly like Python Triggers,
+Actors, and Player Extensions. The camera attachment then appears in the editor's **Cameras** tree (as a
+``CameraRig`` scene object), is configurable through ``get_parameters`` / ``set_parameters``, supports
+orthographic projection, and follows objects through the attachment system, identical to a C++ camera
+attachment.
 
 The Python method names are the snake_case equivalents (``get_name``, ``get_parameters`` /
 ``set_parameters``, ``get_camera_variables`` - which fills the four vectors it is handed - ``get_projection``,

@@ -29,7 +29,7 @@ Scripts are loaded from two directories, following the engine-wide convention th
         vec3.py                          # helper type
         limonimp.py                      # sample trigger (MyTrigger)
         simple_guard_actor.py            # sample actor (SimpleGuardActor)
-        python_orthographic_camera_rig.py  # sample camera rig (PythonOrthographicCameraRig)
+        python_orthographic_camera_rig.py  # sample camera attachment (PythonOrthographicCameraRig)
         python_player_extension.py       # sample player extension (PythonPlayerExtension)
 
     Data/Scripts/                        # your game's scripts go here
@@ -49,12 +49,12 @@ When a world is loaded, the engine creates an isolated Python sub-interpreter fo
 * A class that subclasses **TriggerInterface** is registered as an :ref:`Action <implementAction>`.
 * A class that subclasses **PlayerExtensionInterface** is registered as a :ref:`Player Extension <implementPlayerExtension>`.
 * A class that subclasses **ActorInterface** is registered as an :ref:`AI Actor <implementAIActor>`.
-* A class that subclasses **CameraExtensionInterface** is registered as a :ref:`Camera Rig <implementCameraAttachment>`.
+* A class that subclasses **CameraExtensionInterface** is registered as a :ref:`Camera Attachment <implementCameraAttachment>`.
 
 Registration is automatic - there is no Python equivalent of the C++ ``registerAsTrigger`` entry point. The name the extension is registered under, and the name a map designer picks from in the editor, is the **Python class name** itself.
 
 .. note::
-    Registered camera *rigs* (``CameraExtensionInterface``) are auto-discovered the same way - a class subclassing it is registered as a :ref:`Camera Rig <implementCameraAttachment>`.
+    Registered camera *attachments* (``CameraExtensionInterface``) are auto-discovered the same way - a class subclassing it is registered as a :ref:`Camera Attachment <implementCameraAttachment>`.
 
 .. warning::
     Because every class in every module is inspected, keep one extension class per file (the samples follow this convention). Helper classes that do **not** subclass one of the extension interfaces are ignored, so they are safe to keep alongside.
@@ -101,7 +101,7 @@ The engine calls a fixed set of methods on each extension instance. The base cla
    * - ``CameraExtensionInterface``
      - ``get_name``, ``get_parameters``, ``set_parameters``, ``get_camera_variables``, ``get_projection``, ``is_dirty``, ``clear_dirty``, ``set_attachment_transform``
 
-All method names are ``snake_case`` to match the Python API binding. See :ref:`implementCameraAttachment` for camera rigs.
+All method names are ``snake_case`` to match the Python API binding. See :ref:`implementCameraAttachment` for camera attachments.
 
 Parameters
 ==========

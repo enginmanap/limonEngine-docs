@@ -14,7 +14,7 @@ Since Limon is focusing on learning, both on the game design side, but also on t
 
 
 .. note::
-    Any camera type is supported -first-person, third-person, top-down, orbital, isometric, or fixed camera, in both **perspective and orthographic** projection. Cameras are authored as :ref:`camera rigs <implementCameraAttachment>` (first-class scene objects); the engine ships a first-person default plus perspective and orthographic rig samples.
+    Any camera type is supported -first-person, third-person, top-down, orbital, isometric, or fixed camera, in both **perspective and orthographic** projection. Cameras are authored as :ref:`camera attachments <implementCameraAttachment>` (first-class ``CameraRig`` scene objects); the engine ships a first-person default plus perspective and orthographic attachment samples.
 
 High-Level Structure
 ====================
@@ -36,7 +36,7 @@ The diagram below traces the engine class by class, the way the original 0.6 ove
 
 The bands read top to bottom, updating the original 0.6 overview for 0.7:
 
-* **C++ API** -the five extension interfaces a C++ plugin implements (Action, AI Actor, Player Extension, Camera Rig, RenderMethod), plus the ``LimonAPI`` / ``GenericParameter`` surface they call. Detailed under `Five User Extension Points`_.
+* **C++ API** -the five extension interfaces a C++ plugin implements (Action, AI Actor, Player Extension, Camera Attachment, RenderMethod), plus the ``LimonAPI`` / ``GenericParameter`` surface they call. Detailed under `Five User Extension Points`_.
 * **Python API** -the four Python-capable interfaces (every gameplay extension) reach ``LimonAPI`` through ``pybind11`` and the per-world ``ScriptManager``. See :ref:`pythonApi`.
 * **Game Objects** -what a ``World`` owns. 0.7 adds ``Light``, ``Trigger``, the CPU/GPU particle emitters, and ``Player`` to the original set; the full list and attachment rules are under `Game Object Types`_.
 * **Shared Resources** -the reference-counted, deduplicated assets game objects point into instead of owning. A ``ModelAsset`` (imported via ``Assimp``) references its ``MeshAsset``, a ``MaterialAsset`` (which holds the ``TextureAsset`` set, also sourced from the import), and an ``AnimationAsset``. The shader ``GraphicsProgramAsset`` (replacing 0.6's ``GLSLProgram``) is bound by the renderer, not the mesh. Lifetime and loading: :ref:`AssetManagement`.
@@ -101,10 +101,11 @@ All five types are scanned from the same user dynamic library at engine launch.
    * - **AI Actor**
      - Per-simulation-step AI callbacks with pathfinding access.
        See :ref:`implementAIActor`.
-   * - **Camera Rig**
+   * - **Camera Attachment**
      - Per-frame camera control -returns the camera pose each frame and
        declares its projection (perspective or orthographic). A registered,
-       configurable scene object. See :ref:`implementCameraAttachment`.
+       configurable extension that the engine wraps in a ``CameraRig`` scene
+       object. See :ref:`implementCameraAttachment`.
    * - **RenderMethod**
      - Custom GPU rendering primitive -wired in the pipeline editor.
        See :ref:`RenderingPipeline`.
@@ -114,7 +115,7 @@ GenericParameter -Universal Data Contract
 
 ``LimonTypes::GenericParameter`` is the single data type flowing through every layer of the engine. It is the canonical representation of any named, typed value shared between the editor, C++ extensions, Python scripts, AI actors, trigger results, and RenderMethod configuration. One struct covers three concerns for an extension at once - **load** from disk, **serialize** to disk, and **edit** in the editor - so an extension describes its parameters once and gets all three. The editor automatically generates the appropriate ImGui widget for each parameter type -no separate editor code is required for any extension.
 
-All five extension points -Actions, Player Extensions, AI Actors, Camera Rigs, and RenderMethods -expose their configuration through this contract via ``getParameters()`` / ``setParameters()``.
+All five extension points -Actions, Player Extensions, AI Actors, Camera Attachments, and RenderMethods -expose their configuration through this contract via ``getParameters()`` / ``setParameters()``.
 
 **RequestParameterType** -controls which editor widget is rendered:
 
