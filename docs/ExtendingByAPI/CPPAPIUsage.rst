@@ -74,32 +74,34 @@ Used to indicate the semantic meaning of the parameter. Editor will render inter
 
 Possible values:
 
-* MODEL: Lists the models in the map. Uses variable type LONG, sets handle id.
-* ANIMATION: Lists the custon animations loaded in the map. Uses variable type LONG, sets handle id.
-* SWITCH: Renders tick box. Uses variable type BOOLEAN, sets is ticked.
-* FREE_TEXT: Renders input box. Uses variable type STRING. Sets the input text.
-* TRIGGER: Lists the trigger volumes in the map, and selector for "first enter", "enter", "exit". Uses variable type LONG_ARRAY, sets handle id, and selected trigger. for details refer to :ref:`Trigger Object Editor`
-* GUI_TEXT: Lists the GUI Text elements in the map. Uses variable type LONG, sets handle id
-* FREE_NUMBER: Renders input box for number. Uses variable type LONG. Sets the number entered.
-* COORDINATE: Used to pass 3D vectors. Editor doesn't handle this type.
-* TRANSFORM: Used to pass 4x4 Transformation matrix. Editor doesn't handle this type.
-* MULTI_SELECT: Renders combobox. In a request, same description and multi select parameters are grouped to build the combobox. First of this group is the selected object. Selected object should be repeated at its desired position. Ex: "apple, banana, apple, grape" values will render "banana, apple, grape" combobox with apple selected.
+* MODEL: Lists the models in the map. Uses value type LONG, sets world object ID.
+* ANIMATION: Lists the custom animations loaded in the map. Uses value type LONG, sets animation index. Stale indices (animation removed after save) are detected and reset on load.
+* SWITCH: Renders a checkbox. Uses value type BOOLEAN, sets whether it is ticked.
+* FREE_TEXT: Renders a text input box. Uses value type STRING. Sets the entered text.
+* TRIGGER: Lists the trigger volumes in the map with a selector for "First Enter", "Enter", or "Exit". Uses value type LONG_ARRAY; ``longValues[1]`` holds the trigger world object ID and ``longValues[2]`` holds the event (1=First Enter, 2=Enter, 3=Exit). Stale IDs (trigger removed after save) are detected and reset. For details see :ref:`Trigger Object Editor`.
+* GUI_TEXT: Lists the GUI Text elements in the map. Uses value type LONG, sets world object ID.
+* FREE_NUMBER: Renders a number input. Uses value type LONG (integer drag) or DOUBLE (decimal input box, full double precision). Set *valueType* explicitly to choose.
+* COORDINATE: Renders three drag-float fields for X, Y, Z. Uses value type VEC4; the ``w`` component is not edited.
+* TRANSFORM: Renders nine drag-float fields for position (X/Y/Z), rotation in degrees (X/Y/Z), and scale (X/Y/Z). Uses value type MAT4; composes and decomposes the matrix automatically.
+* MULTI_SELECT: Renders a combobox. Parameters sharing the same description and MULTI_SELECT type are grouped into one combo. The first entry holds the currently selected string value; subsequent entries are the available options. Use ``LimonAPI::buildMultiSelect()`` to construct this group correctly.
+* LIGHT: Lists the lights in the map. Uses value type LONG, sets world object ID. Stale IDs are detected and reset.
+* SOUND: Lists the sounds in the map. Uses value type LONG, sets world object ID. Stale IDs are detected and reset.
+* CAMERA_RIG: Lists the camera rigs in the map. Uses value type LONG, sets world object ID. Stale IDs are detected and reset.
 
 ValueTypes Enum
 ===============
 
-Used to determine how to handle Value union. *valueType* variable keeps the value.
+Used to determine how to handle the Value union. The *valueType* variable keeps the value. In most cases the correct value type is implied by the request type — see the list above.
 
 Possible values:
 
-* STRING
-* DOUBLE
-* LONG
-* LONG_ARRAY
-* FLOAT_ARRAY
-* BOOLEAN
-* VEC4
-* MAT4
+* STRING: Used by FREE_TEXT and MULTI_SELECT.
+* DOUBLE: Used by FREE_NUMBER for full-precision decimal values.
+* LONG: Used by MODEL, ANIMATION, GUI_TEXT, LIGHT, SOUND, CAMERA_RIG, and FREE_NUMBER for integer values.
+* LONG_ARRAY: Used by TRIGGER. ``longValues[0]`` is the count (always 3), ``longValues[1]`` is the trigger ID, ``longValues[2]`` is the event selector.
+* BOOLEAN: Used by SWITCH.
+* VEC4: Used by COORDINATE. Fields ``x``, ``y``, ``z`` are edited; ``w`` is left unchanged.
+* MAT4: Used by TRANSFORM. Edited as decomposed position/rotation/scale and recomposed automatically.
 
 Description String
 ==================

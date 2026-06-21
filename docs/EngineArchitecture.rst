@@ -119,11 +119,11 @@ All five extension points -Actions, Player Extensions, AI Actors, Camera Attachm
 
 **RequestParameterType** -controls which editor widget is rendered:
 
-    ``MODEL``, ``ANIMATION``, ``SWITCH``, ``FREE_TEXT``, ``TRIGGER``, ``GUI_TEXT``, ``FREE_NUMBER``, ``COORDINATE``, ``TRANSFORM``, ``MULTI_SELECT``
+    ``MODEL``, ``ANIMATION``, ``SWITCH``, ``FREE_TEXT``, ``TRIGGER``, ``GUI_TEXT``, ``FREE_NUMBER``, ``COORDINATE``, ``TRANSFORM``, ``MULTI_SELECT``, ``LIGHT``, ``SOUND``, ``CAMERA_RIG``
 
 **ValueType** -describes the stored value:
 
-    ``STRING``, ``DOUBLE``, ``LONG``, ``LONG_ARRAY``, ``FLOAT_ARRAY``, ``BOOLEAN``, ``VEC4``, ``MAT4``
+    ``STRING``, ``DOUBLE``, ``LONG``, ``LONG_ARRAY``, ``BOOLEAN``, ``VEC4``, ``MAT4``
 
 For full documentation of GenericParameter usage in extensions, see :ref:`CPPAPIUsage`.
 
