@@ -76,10 +76,10 @@ Your extension class must subclass the matching **pure-Python base class** shipp
     class MyExtension(PlayerExtensionInterface):
         ...
 
-Discovery matches by **class identity** against these base classes (``TriggerInterface`` in ``trigger_interface.py``, ``PlayerExtensionInterface`` in ``player_extension_interface.py``, ``ActorInterface`` in ``actor_interface.py``). A subclass of the unrelated C++ binding type - ``limon.TriggerInterface``, ``limon.PlayerExtensionInterface``, ``limon.ActorInterface`` - is **not** discovered and will silently fail to register. Always subclass the local base.
+Discovery matches by **class identity** against these base classes (``TriggerInterface`` in ``trigger_interface.py``, ``PlayerExtensionInterface`` in ``player_extension_interface.py``, ``ActorInterface`` in ``actor_interface.py``).
 
-.. note::
-    Earlier engine versions matched the base class by *name*, which made subclassing the ``limon.*`` binding types appear to work. That is no longer supported: matching is now by identity, the pure-Python bases are the only valid parents, and using them also avoids an interpreter-shutdown crash the binding types could trigger. You still ``import limon`` when you need its value types/enums - just don't use it as a base class.
+.. warning::
+    Do not use ``dir(limon)`` to discover extension base classes. The ``limon`` module exposes internal C++ binding types such as ``limon.TriggerInterface`` that are not intended for user extension — subclassing them will silently fail to register, and can trigger an interpreter-shutdown crash. Only use the documented pure-Python base classes from ``Engine/Scripts``. You still ``import limon`` when you need its value types and enums.
 
 Required methods per extension type
 ===================================

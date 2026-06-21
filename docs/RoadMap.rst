@@ -45,6 +45,7 @@ Planned for 0.8
 #. GUI system extension -proper layout engine, input widgets, etc.
 #. Editor updates -undo/redo, usability improvements.
 #. Reference search in editor -e.g. search by animation, returning all objects referencing that animation, to help game development troubleshooting.
+#. Improve animation system with masking and blend trees.
 #. Projected decals (Optional).
 
 Before 1.0
@@ -87,10 +88,6 @@ The following limitations are confirmed in version 0.7:
 **Animation**
 
 * Skeletal animation blending is two-animation crossfade only. Blend trees and state machines are not supported.
-
-**Camera**
-
-* Software occlusion culling (SDOC) under an orthographic camera is a work in progress; perspective is fully supported.
 
 **Input**
 

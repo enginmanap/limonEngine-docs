@@ -154,7 +154,7 @@ _____________
 
 Actors can also be written in Python by subclassing ``ActorInterface`` from ``actor_interface.py`` (see :ref:`PythonAPIUsage` for how scripts are discovered and the conventions they must follow). The actor type is registered under the **class name**, so a Python ``class PythonCowboyEnemy(ActorInterface)`` appears in the editor as the actor ``PythonCowboyEnemy``. Method and field names use Python casing: ``play``, ``interaction``, ``get_parameters``, ``set_parameters``, ``get_name``, and the ``ActorInformation`` passed to ``play`` exposes the same fields in snake_case (``can_see_player_directly``, ``player_distance``, ``cosine_between_player``, ``route_to_request``, ``route_ready`` ...).
 
-The Python base provides the actor-state helpers that C++ actors get as members/methods. They are valid from the first ``play()`` / ``interaction()`` call onward (the engine binds the model after load):
+The Python base provides the actor-state helpers that C++ actors get as members/methods. They are valid from construction onward — the model is attached before the actor is created:
 
 * ``self.model_id`` / ``self.get_model_id()`` - world-object ID of the model this actor drives. It is **distinct** from ``self.actor_id`` / ``self.get_world_id()`` (the actor's own ID). Pass ``model_id`` to every model-targeted API call (animations, translate, orientation, transform queries).
 * ``self.get_position()`` - the model's world position as a ``Vec3`` (mirror of C++ ``getPosition()``).
