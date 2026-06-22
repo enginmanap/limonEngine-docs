@@ -132,29 +132,20 @@ Camera rigs are ordinary scene objects, so they are created, edited, and activat
 
 **1. Add a rig.** In the main editor panel, open **Add Camera Rig**, pick a registered rig type, and add it.
 
-.. figure:: ##ENGIN_SS
-   :alt: The Add Camera Rig panel
-
-   The **Add Camera Rig** panel: choose a registered rig type and add it to the scene.
+The **Add Camera Rig** panel: choose a registered rig type and add it to the scene.
 
 **2. Edit it.** The new rig appears in the object tree under **Cameras**. Select it to open its properties:
 its parameters (rendered from ``get_parameters``) are edited live - changes take effect immediately while
 playing - and an **Activate / Deactivate** button binds it to (or releases it from) the player camera.
 
-.. figure:: ##ENGIN_SS
-   :alt: A camera rig selected in the Cameras tree with its properties
-
-   A camera rig under the **Cameras** tree node, showing its editable parameters and the Activate button.
+A camera rig under the **Cameras** tree node, showing its editable parameters and the Activate button.
 
 **3. (Optional) Attach it.** To make it follow an object, attach the rig to that object using the standard
 attach controls.
 
 **4. See it.** With an orthographic rig active, the scene renders through the orthographic projection.
 
-.. figure:: ##ENGIN_SS
-   :alt: The scene rendered through an active orthographic camera rig
-
-   The same scene viewed through an active orthographic camera rig.
+The same scene viewed through an active orthographic camera rig.
 
 Saving the world persists the rig (and which one is active) as a ``<CameraRig>`` block; loading recreates it.
 

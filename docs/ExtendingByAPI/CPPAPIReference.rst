@@ -94,9 +94,9 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`applyForceToPlayer(const LimonAPI::Vec4 &forceAmount)<LimonAPI-applyForceToPlayer>`                                                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| :del:`bool`                                   | :del:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)` â€” :ref:`Removed<LimonAPI-attachSoundToObjectAndPlay>`                                                                                                                                              |
+| :del:`bool`                                   | :del:`attachSoundToObjectAndPlay(uint32_t objectWorldID, const std::string &soundPath, bool looped = true)` — :ref:`Removed<LimonAPI-attachSoundToObjectAndPlay>`                                                                                                                                              |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| :del:`bool`                                   | :del:`detachSoundFromObject(uint32_t objectWorldID)` â€” :ref:`Removed<LimonAPI-detachSoundFromObject>`                                                                                                                                                                                                          |
+| :del:`bool`                                   | :del:`detachSoundFromObject(uint32_t objectWorldID)` — :ref:`Removed<LimonAPI-detachSoundFromObject>`                                                                                                                                                                                                          |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f, LimonTypes::AudioChannel channel = LimonTypes::AudioChannel::SFX)<LimonAPI-playSound>`                                 |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -828,7 +828,7 @@ Sound
 .. _LimonAPI-playSound:
 
 uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f, LimonTypes::AudioChannel channel = LimonTypes::AudioChannel::SFX)
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Creates and plays a sound at a world position. Returns the sound ID used to control playback. Returns 0 on failure.
 
@@ -1389,8 +1389,8 @@ Returns:
 
 .. _LimonAPI-getOptions:
 
-const OptionsUtil::Options *getOptions()
-----------------------------------------
+const OptionsUtil::Options \*getOptions()
+-----------------------------------------
 
 Returns a pointer to the current options.
 

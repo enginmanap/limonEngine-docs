@@ -107,10 +107,6 @@ html_theme_options = {
     'navigation_depth': 2,
 }
 
-html_meta = {
-    "google-site-verification": "ikOdY06KW4ohpmWpTuGh43nUfc-Ya-GtU8-8vv-zTHI"
-}
-
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 

@@ -72,7 +72,7 @@ If an object is already selected, "Copy position offsets" settings and "Copy Sel
 
 Dynamic objects physical representations are simplified automatically. For inanimate models, the simplified representation will be a convex hull. This means the cavities, crannies etc. will not be calculated for them. For animated models, each vertex will be assigned the bone that has the most weight on it, and for each bone a convex hull will be created. It means separate members of the model will be calculates as such.
 
-Static object have a full mesh representing physical object. It is possible to replace this with a simplified mesh. To do so, bake meshes with names prefixed with \"UCX_\". They will be used for physics.
+Static object have a full mesh representing physical object. It is possible to replace this with a simplified mesh. To do so, bake meshes with names prefixed with \"UCX\_\". They will be used for physics.
 
 .. note::
     Models with animations, both from the asset itself and custom using the editor are considered "kinematic" It means the object is allowed to move, but the movement is not governed by physics engine. Those types of objects can't be moved by physical interactions like pushing or pulling, but they can effect physical objects.
@@ -248,7 +248,7 @@ The map will be saved at the path when save world is clicked, overriding if it a
 Limon Auto generates a walking grid for path finding, used by AI Actors. Generating such data takes minutes on big maps, so saving it with map is a must for load speed of a map.
 There are 2 types of saving supported for this grid, binary and XML. XML should be avoided by game developers, it is only useful for engine developers. XML format can take up to 2GB of memory. Binary format is the go-to format.
 
-Convert models to binary button scans all the models used in the map, and converts used assets to "*.limonmdel" files. This files use less ram, faster to load and not reversable, making them suitable for game releases. Map itself will be updated to use them if this button is pressed.
+Convert models to binary button scans all the models used in the map, and converts used assets to "\*.limonmdel" files. This files use less ram, faster to load and not reversable, making them suitable for game releases. Map itself will be updated to use them if this button is pressed.
 
 .. warning::
     It is worth repeating. The save button overrides if there is a file with same name. Please pay attention.
