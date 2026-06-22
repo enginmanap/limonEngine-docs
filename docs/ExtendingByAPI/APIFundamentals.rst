@@ -63,7 +63,10 @@ Sound
 
 The audio backend is OpenAL with a dedicated audio thread. Supported formats are OGG and WAV.
 
-Two methods place sounds in the world - they differ in how the 3D position is interpreted:
+Placing and Controlling Sounds
+------------------------------
+
+``playSound`` is the primary way to create a sound from an extension. It returns a sound world-object ID used for all subsequent control calls.
 
 .. list-table::
    :header-rows: 1
@@ -71,18 +74,20 @@ Two methods place sounds in the world - they differ in how the 3D position is in
 
    * - Method
      - Description
-   * - ``attachSoundToObjectAndPlay(objectID, soundPath, looped)``
-     - Attaches sound to a world object. The sound follows the object's position automatically every frame. Use for footsteps, engines, or any sound that should move with geometry. (:ref:`C++ <LimonAPI-attachSoundToObjectAndPlay>` | :ref:`Python <pythonApi-attach_sound_to_object_and_play>`)
-   * - ``playSound(soundPath, position, positionRelative, looped)``
-     - Plays a sound at a fixed world position. Returns a sound ID for subsequent control. See note on ``positionRelative`` below. (:ref:`C++ <LimonAPI-playSound>` | :ref:`Python <pythonApi-play_sound>`)
-   * - ``detachSoundFromObject(objectID)``
-     - Stops and detaches the sound from the object. (:ref:`C++ <LimonAPI-detachSoundFromObject>` | :ref:`Python <pythonApi-detach_sound_from_object>`)
+   * - ``playSound(soundPath, position, positionRelative, looped, referenceDistance=2.0, maxDistance=50.0, channel=SFX)``
+     - Create and play a sound. Returns a sound world-object ID, or 0 on failure. (:ref:`C++ <LimonAPI-playSound>` | :ref:`Python <pythonApi-play_sound>`)
    * - ``stopSound(soundID)``
-     - Stop a playing sound by ID. (:ref:`C++ <LimonAPI-stopSound>` | :ref:`Python <pythonApi-stop_sound>`)
+     - Stop and remove the sound from the world. (:ref:`C++ <LimonAPI-stopSound>` | :ref:`Python <pythonApi-stop_sound>`)
+   * - ``pauseSound(soundID)``
+     - Pause a playing sound. Can be resumed from the same position. (:ref:`C++ <LimonAPI-pauseSound>` | :ref:`Python <pythonApi-pause_sound>`)
+   * - ``resumeSound(soundID)``
+     - Resume a paused sound. (:ref:`C++ <LimonAPI-resumeSound>` | :ref:`Python <pythonApi-resume_sound>`)
    * - ``setSoundVolume(soundID, volume)``
-     - Set volume of a sound by ID. (:ref:`C++ <LimonAPI-setSoundVolume>` | :ref:`Python <pythonApi-set_sound_volume>`)
+     - Set per-sound gain. Effective gain = this × channel volume × master volume. (:ref:`C++ <LimonAPI-setSoundVolume>` | :ref:`Python <pythonApi-set_sound_volume>`)
+   * - ``setSoundLooped(soundID, looped)``
+     - Change loop state. Can transition a looping sound to one-shot after the current cycle. (:ref:`C++ <LimonAPI-setSoundLooped>` | :ref:`Python <pythonApi-set_sound_looped>`)
    * - ``isSoundPlaying(soundID)``
-     - Returns ``True`` if a sound is currently playing. (:ref:`C++ <LimonAPI-isSoundPlaying>` | :ref:`Python <pythonApi-is_sound_playing>`)
+     - Returns ``True`` if currently playing or finishing a non-looped playthrough. (:ref:`C++ <LimonAPI-isSoundPlaying>` | :ref:`Python <pythonApi-is_sound_playing>`)
 
 The ``positionRelative`` Parameter
 -----------------------------------
@@ -91,6 +96,104 @@ The ``positionRelative`` Parameter
 
 * ``positionRelative = False`` - the position is a **world-space** coordinate. The sound stays fixed at that location regardless of where the player moves. Use for ambient sounds tied to geometry.
 * ``positionRelative = True`` - the position is **relative to the player**. The sound moves with the player and is always heard at the same relative offset. Use for UI feedback sounds, HUD beeps, or any sound that should follow the player.
+
+Attaching a Sound to a Moving Object
+-------------------------------------
+
+Sound is a first-class world object and participates in the standard attachment system. To make a sound follow a model or bone, create it with ``playSound`` and then attach it:
+
+.. code-block:: cpp
+
+   uint32_t soundID = limonAPI->playSound("footstep.wav", glm::vec3(0,0,0), false, true);
+   limonAPI->attachObjectToObject(soundID, modelID);
+
+The sound follows the model's transform every frame. To stop it, call ``stopSound(soundID)`` — this removes the sound from the world. Multiple sounds can be attached to the same model by attaching multiple sound world objects.
+
+Audio Channels
+--------------
+
+Every sound is mixed on one of five channels. The effective gain of a sound is:
+**per-sound gain × channel volume × master volume**.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 25 15 45
+
+   * - Channel
+     - Option name
+     - ``playSound``
+     - Description
+   * - ``MASTER``
+     - ``soundVolumeMaster``
+     - **invalid**
+     - Global volume multiplier applied to all channels. Not an assignable channel — passing it to ``playSound`` returns 0.
+   * - ``MUSIC``
+     - ``soundVolumeMusic``
+     - **invalid**
+     - Dedicated music channel. Managed exclusively by ``setMusic()`` / ``stopMusic()``. Passing it to ``playSound`` returns 0.
+   * - ``SFX``
+     - ``soundVolumeSFX``
+     - default
+     - Sound effects. Default channel for sounds played via ``playSound()``.
+   * - ``SPEECH``
+     - ``soundVolumeSpeech``
+     - valid
+     - Speech and voice-over.
+   * - ``AMBIENT``
+     - ``soundVolumeAmbient``
+     - valid
+     - Environmental / ambient sounds.
+
+Channel volumes are global options, not API calls. Change them via ``getOptions()`` / ``saveOptions()`` using the option names above. See :ref:`OptionsReference` for the defaults.
+
+.. note::
+   Only mono audio files are spatialized by OpenAL. Stereo files play at a fixed volume regardless of position — ``positionRelative``, ``referenceDistance``, and ``maxDistance`` have no spatial effect on stereo sources. Use mono audio for any sound that needs 3D positioning.
+
+.. note::
+   The sound attenuation **model** (the mathematical curve — linear, inverse, etc.) is world-level and configured under World Properties in the editor. OpenAL does not support per-sound attenuation models. The per-sound ``referenceDistance`` and ``maxDistance`` parameters control the distances at which full volume and full attenuation are reached within whatever model the world uses.
+
+Music API
+---------
+
+Each level has a single dedicated music track playing on the MUSIC channel, looped by default. Set in the editor under World Properties, or switched at runtime:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 55 45
+
+   * - Method
+     - Description
+   * - ``setMusic(musicPath, fadeSeconds=0.0, looped=True)``
+     - Switch level music. ``fadeSeconds=0``: immediate switch. ``fadeSeconds>0``: crossfade — outgoing track fades out while the new one fades in. Pass empty string to clear music. (:ref:`C++ <LimonAPI-setMusic>` | :ref:`Python <pythonApi-set_music>`)
+   * - ``stopMusic(fadeSeconds=0.0)``
+     - Stop level music with optional fade-out. Returns ``True`` if music was playing. (:ref:`C++ <LimonAPI-stopMusic>` | :ref:`Python <pythonApi-stop_music>`)
+   * - ``getMusicName()``
+     - Returns the current music asset path, or empty string if no music is set. (:ref:`C++ <LimonAPI-getMusicName>` | :ref:`Python <pythonApi-get_music_name>`)
+   * - ``isMusicPlaying()``
+     - Returns ``True`` if level music is currently playing. (:ref:`C++ <LimonAPI-isMusicPlaying>` | :ref:`Python <pythonApi-is_music_playing>`)
+
+Named Variables
+===============
+
+The engine provides a world-scoped variable store for communicating state between extensions without direct coupling. Any extension can read or write a variable by name through the same API instance.
+
+.. code-block:: cpp
+
+   // Writer (e.g. an AI Actor that spotted the player)
+   limonAPI->getVariable("alerted").value.boolValue = true;
+   limonAPI->getVariable("alerted").valueType = LimonTypes::GenericParameter::ValueTypes::BOOLEAN;
+   limonAPI->getVariable("alerted").isSet = true;
+
+   // Reader (e.g. a Trigger that reacts to the alert)
+   auto& v = limonAPI->getVariable("alerted");
+   if(v.isSet && v.value.boolValue) { ... }
+
+**C++**: ``getVariable(name)`` returns a **mutable reference** directly into the store. Assigning to the returned reference is the setter — there is no separate ``setVariable``.
+
+**Python**: ``get_variable(name)`` and ``set_variable(name, value)`` are separate methods.
+
+.. warning::
+   Named variables are **not saved with the world**. They are runtime-only and reset to empty on every world load. Do not use them to carry state that must survive a level transition.
 
 Multi-Interpreter Python
 ========================

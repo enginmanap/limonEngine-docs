@@ -4,15 +4,16 @@
 Engine Options Reference
 ========================
 
-Engine-wide options are stored in ``./Engine/Options.xml`` and loaded at startup.
-Each option is an ``<Parameter>`` entry with a ``Description`` (the option name),
-a ``Value`` and a ``valueType``. Options are global and persist across levels and
-sessions; they can also be read and modified at runtime through the API
-(:ref:`get_options<pythonApi-get_options>` / ``save_options``).
+Engine options are loaded from two files at startup:
 
-The values below are the defaults shipped with the engine. Unless noted, changing
-an option takes effect the next time the engine starts; audio channel volumes are
-applied live.
+* ``./Engine/Options.xml`` — engine defaults, shipped with the engine. Never overwritten by the engine at runtime.
+* ``./Data/Options.xml`` — user overrides. Optional; if absent, engine defaults are used as-is. Values here take precedence over any matching entry in the engine defaults file.
+
+Each option is a ``<Parameter>`` entry with a ``Description`` (the option name), a ``Value``, and a ``valueType``. Options are global and persist across levels and sessions; they can also be read and modified at runtime through the API (:ref:`get_options<pythonApi-get_options>` / :ref:`save_options<pythonApi-save_options>`).
+
+Calling ``save_options()`` / ``saveOptions()`` writes the current in-memory options to ``./Data/Options.xml`` only — engine defaults are never touched. This means custom values survive engine restarts without risk of corrupting the shipped defaults.
+
+The values below are the defaults shipped with the engine. Unless noted, changing an option takes effect the next time the engine starts; audio channel volumes are applied live.
 
 .. note::
    ``valueType`` values map to: ``Long`` (integer), ``Double`` (floating point),
@@ -74,7 +75,7 @@ Display
 Audio
 =====
 
-Audio is mixed on four channels (buses). The effective gain of a sound is
+Audio is mixed on five channels (buses). The effective gain of a sound is
 ``per-sound gain × channel volume × master volume``. These options are the channel
 volumes; see :ref:`Audio Channels<pythonApi-audio_channels>` in the Python API
 reference. Changes are applied to the mixer immediately.
@@ -103,6 +104,10 @@ reference. Changes are applied to the mixer immediately.
      - Double
      - ``1.0``
      - Speech/dialogue channel volume, normalized 0.0..1.0.
+   * - ``soundVolumeAmbient``
+     - Double
+     - ``1.0``
+     - Ambient/environmental sound channel volume, normalized 0.0..1.0.
 
 Player Movement
 ===============

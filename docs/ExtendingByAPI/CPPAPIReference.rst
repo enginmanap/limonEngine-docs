@@ -98,7 +98,7 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | :del:`bool`                                   | :del:`detachSoundFromObject(uint32_t objectWorldID)` â€” :ref:`Removed<LimonAPI-detachSoundFromObject>`                                                                                                                                                                                                          |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``uint32_t``                                  | :ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f)<LimonAPI-playSound>`                                                                                                   |
+| ``uint32_t``                                  | :ref:`playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f, LimonTypes::AudioChannel channel = LimonTypes::AudioChannel::SFX)<LimonAPI-playSound>`                                 |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`stopSound(uint32_t soundID)<LimonAPI-stopSound>`                                                                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -827,8 +827,8 @@ Sound
 
 .. _LimonAPI-playSound:
 
-uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f)
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+uint32_t playSound(const std::string &soundPath, const glm::vec3 &position, bool positionRelative = false, bool looped = false, float referenceDistance = 2.0f, float maxDistance = 50.0f, LimonTypes::AudioChannel channel = LimonTypes::AudioChannel::SFX)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Creates and plays a sound at a world position. Returns the sound ID used to control playback. Returns 0 on failure.
 
@@ -840,6 +840,7 @@ Parameters:
 #. bool looped: Play once or play in a loop. Defaults to false.
 #. float referenceDistance: Distance at which the sound plays at full volume. Below this distance gain is clamped to maximum. Defaults to 2.0.
 #. float maxDistance: Distance at which the sound is fully attenuated and becomes inaudible. Defaults to 50.0.
+#. LimonTypes::AudioChannel channel: The audio channel (bus) to play this sound on. Defaults to ``SFX``. Valid values: ``SFX``, ``SPEECH``, ``AMBIENT``. Passing ``MASTER`` or ``MUSIC`` returns 0 — ``MASTER`` is a global volume multiplier, not an assignable channel; ``MUSIC`` is controlled exclusively through :ref:`setMusic<LimonAPI-setMusic>` / :ref:`stopMusic<LimonAPI-stopMusic>`. See :ref:`Audio Channels<LimonAPI-audioChannels>` for how channel volumes affect the effective output gain.
 
 .. note::
     Only mono audio files are spatialized by OpenAL. Stereo files play at a fixed volume regardless of position.
@@ -960,9 +961,38 @@ Returns true if level music is currently playing.
 Audio Channels
 ==============
 
-Every sound is mixed on one of four channels (buses): ``MASTER``, ``MUSIC``, ``SFX`` and ``SPEECH``. The effective output gain of a sound is ``per-sound gain × channel volume × master volume``.
+Every sound is mixed on one of five channels (buses). The effective output gain of a sound is ``per-sound gain × channel volume × master volume``.
 
-Channel volumes are not set through dedicated API calls. They are global, persisted options — change them through the options API (:ref:`getOptions<LimonAPI-getOptions>` / ``saveOptions``) using the option names ``soundVolumeMaster``, ``soundVolumeMusic``, ``soundVolumeSFX`` and ``soundVolumeSpeech`` (each normalized 0.0..1.0, default 1.0). The engine reads these options and applies any change to the audio mixer automatically, so player audio settings live in one place and persist across levels and sessions.
+.. list-table::
+   :header-rows: 1
+   :widths: 15 25 15 45
+
+   * - Channel
+     - Option name
+     - ``playSound``
+     - Description
+   * - ``MASTER``
+     - ``soundVolumeMaster``
+     - **invalid**
+     - Global volume multiplier applied to all channels. Not an assignable channel — passing it to ``playSound`` returns 0.
+   * - ``MUSIC``
+     - ``soundVolumeMusic``
+     - **invalid**
+     - Dedicated music channel. Managed exclusively by :ref:`setMusic<LimonAPI-setMusic>` / :ref:`stopMusic<LimonAPI-stopMusic>`. Passing it to ``playSound`` returns 0.
+   * - ``SFX``
+     - ``soundVolumeSFX``
+     - default
+     - Sound effects. Default channel for sounds played via ``playSound``.
+   * - ``SPEECH``
+     - ``soundVolumeSpeech``
+     - valid
+     - Speech and voice-over.
+   * - ``AMBIENT``
+     - ``soundVolumeAmbient``
+     - valid
+     - Environmental / ambient sounds.
+
+Channel volumes are not set through dedicated API calls. They are global, persisted options — change them through the options API (:ref:`getOptions<LimonAPI-getOptions>` / ``saveOptions``) using the option names in the table above (each normalized 0.0..1.0, default 1.0). The engine reads these options and applies any change to the audio mixer automatically, so player audio settings live in one place and persist across levels and sessions.
 
 Player
 ======

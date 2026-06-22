@@ -1068,7 +1068,8 @@ play_sound
 
     def play_sound(sound_path: str, position: Vec4, position_relative: bool = False,
                    looped: bool = False, reference_distance: float = 2.0,
-                   max_distance: float = 50.0) -> int:
+                   max_distance: float = 50.0,
+                   channel: limon.AudioChannel = limon.AudioChannel.SFX) -> int:
         """
         Play a non-attached sound at a world position.
 
@@ -1081,6 +1082,12 @@ play_sound
                 Below this distance gain is clamped to maximum. Defaults to 2.0.
             max_distance: Distance at which the sound is fully attenuated and inaudible.
                 Defaults to 50.0.
+            channel: Audio channel (bus) to route the sound to. Defaults to
+                limon.AudioChannel.SFX. Valid values: SFX, SPEECH, AMBIENT. Passing
+                MASTER or MUSIC returns 0 — MASTER is a global volume multiplier, not
+                an assignable channel; MUSIC is controlled exclusively through set_music /
+                stop_music. See Audio Channels below for how channel volumes affect the
+                effective gain.
 
         Returns:
             int: Sound ID for use with stop_sound, pause_sound, etc., or 0 on failure
@@ -1289,15 +1296,42 @@ is_music_playing
 Audio Channels
 ~~~~~~~~~~~~~~
 
-Every sound is mixed on one of four channels (buses): ``MASTER``, ``MUSIC``,
-``SFX`` and ``SPEECH``. The effective output gain of a sound is
-``per-sound gain × channel volume × master volume``.
+Every sound is mixed on one of five channels (buses). The effective output gain of
+a sound is ``per-sound gain × channel volume × master volume``.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 25 15 45
+
+   * - Channel
+     - Option name
+     - ``play_sound``
+     - Description
+   * - ``MASTER``
+     - ``soundVolumeMaster``
+     - **invalid**
+     - Global volume multiplier applied to all channels. Not an assignable channel — passing it to ``play_sound`` returns 0.
+   * - ``MUSIC``
+     - ``soundVolumeMusic``
+     - **invalid**
+     - Dedicated music channel. Managed exclusively by ``set_music`` / ``stop_music``. Passing it to ``play_sound`` returns 0.
+   * - ``SFX``
+     - ``soundVolumeSFX``
+     - default
+     - Sound effects. Default channel for sounds played via ``play_sound``.
+   * - ``SPEECH``
+     - ``soundVolumeSpeech``
+     - valid
+     - Speech and voice-over.
+   * - ``AMBIENT``
+     - ``soundVolumeAmbient``
+     - valid
+     - Environmental / ambient sounds.
 
 Channel volumes are **not** set through dedicated API calls — they are global,
 persisted options. Change them through the options API
 (:ref:`get_options<pythonApi-get_options>` / ``save_options``) using the option
-names ``soundVolumeMaster``, ``soundVolumeMusic``, ``soundVolumeSFX`` and
-``soundVolumeSpeech`` (each normalized 0.0..1.0, default 1.0). The engine reads
+names in the table above (each normalized 0.0..1.0, default 1.0). The engine reads
 these options and applies any change to the audio mixer automatically. This keeps
 player audio settings in one place and persisted across levels and sessions.
 
@@ -2003,13 +2037,35 @@ get_variable
 
     def get_variable(variable_name: str) -> GenericParameter:
         """
-        Get (or create) a script variable by name. Returns a reference - mutate it in place.
+        Get (or create) a script variable by name. Returns a copy of the current value.
+        Use set_variable to write a new value back.
 
         Args:
             variable_name: Name of the variable
 
         Returns:
-            GenericParameter: Reference to the variable's GenericParameter
+            GenericParameter: Current value of the variable (0-initialized if never set)
+        """
+
+set_variable
+^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_variable(variable_name: str, value: GenericParameter) -> None:
+        """
+        Write a value to the named variable in the global variable store.
+
+        Unlike the C++ API (where getVariable returns a mutable reference that acts as the
+        setter), the Python binding provides separate get_variable and set_variable methods.
+
+        Args:
+            variable_name: Name of the variable to set
+            value: GenericParameter value to store
+
+        Note:
+            Variables are not saved with the world. They exist only for the lifetime of the
+            current world session and are reset on every world load or world switch.
         """
 
 Logging

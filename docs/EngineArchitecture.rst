@@ -172,8 +172,10 @@ Models carry attachment trees. The following types can attach to a model root or
 * **CPU Particle** -e.g. attach to a foot bone for ground dust
 * **GPU Particle**
 * **Light** -e.g. attach to a hand bone for a held torch
+* **Sound** -follows the parent transform for 3D positional audio that moves with geometry
+* **Camera Rig** -the standard way to make a camera follow an object or bone; attach the rig to the target and the engine feeds the resulting transform to the Camera Attachment each frame
 
-The Player has one model attachment point. The attached model is the root of a normal attachment tree -it can carry further models, particles, lights, and triggers.
+The Player has one model attachment point. The attached model is the root of a normal attachment tree -it can carry further models, particles, lights, sounds, triggers, and camera rigs.
 
 GUI elements and Skybox cannot be attached as children.
 
