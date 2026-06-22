@@ -38,7 +38,7 @@ The bands read top to bottom, updating the original 0.6 overview for 0.7:
 
 * **C++ API** -the five extension interfaces a C++ plugin implements (Action, AI Actor, Player Extension, Camera Attachment, RenderMethod), plus the ``LimonAPI`` / ``GenericParameter`` surface they call. Detailed under `Five User Extension Points`_.
 * **Python API** -the four Python-capable interfaces (every gameplay extension) reach ``LimonAPI`` through ``pybind11`` and the per-world ``ScriptManager``. See :ref:`pythonApi`.
-* **Game Objects** -what a ``World`` owns. 0.7 adds ``Light``, ``Trigger``, the CPU/GPU particle emitters, and ``Player`` to the original set; the full list and attachment rules are under `Game Object Types`_.
+* **Game Objects** -what a ``World`` owns. 0.7 adds ``Light``, ``Trigger``, the CPU/GPU particle emitters, ``Player``, ``Sound``, and ``Camera Rig`` to the original set; the full list and attachment rules are under `Game Object Types`_.
 * **Shared Resources** -the reference-counted, deduplicated assets game objects point into instead of owning. A ``ModelAsset`` (imported via ``Assimp``) references its ``MeshAsset``, a ``MaterialAsset`` (which holds the ``TextureAsset`` set, also sourced from the import), and an ``AnimationAsset``. The shader ``GraphicsProgramAsset`` (replacing 0.6's ``GLSLProgram``) is bound by the renderer, not the mesh. Lifetime and loading: :ref:`AssetManagement`.
 * **Rendering** -``GraphicsPipeline`` drives ``VisibilityManager``, which fills a ``RenderList`` of survivors; ``RenderMethods`` then consume that ``RenderList`` and draw, binding ``GraphicsProgramAsset`` and issuing the calls through the abstract ``GraphicsInterface``. Full detail: :ref:`RenderingPipeline`.
 * **Managers** -``AssetManager`` manages every asset type. Most assets register with it directly; font textures are the exception - ``FontManager`` owns the per-``Face`` set of font ``TextureAsset``\ s and is itself managed by ``AssetManager``, so those are managed indirectly.
@@ -156,6 +156,10 @@ Every entity in a Limon world is a ``GameObject``. All types implement the base 
      - GPU-side particle emitter.
    * - **Light**
      - Directional or point light. Creatable and removable at runtime.
+   * - **Sound**
+     - 3D spatial audio source. A fully realized scene object -placeable and attachable in the editor. Follows parent transform for positional audio that moves with geometry.
+   * - **Camera Rig**
+     - Owns and hosts a Camera Attachment behaviour. First-class scene object with transform and world ID. The standard way to make a camera follow an object or bone.
    * - **Skybox**
      - Environment backdrop.
    * - **Trigger Volume**

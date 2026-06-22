@@ -275,6 +275,10 @@ There are 3 radio buttons under the selected object Drop-down. These are "Transl
 
 Just under these settings, there is snap settings. It is used by gizmo. For details check :ref:`Gizmo Usage`.
 
+**On Top (shortcut: T)**
+
+The **On Top** checkbox, just below the snap settings, automatically places the object flush on the surface immediately beneath it. When checked, every time you move the object it drops down to rest on whatever is below it, so you can drag it horizontally across uneven terrain and it will follow the ground height continuously. The search range is limited: surfaces more than approximately 10 world units below the object will not be found.
+
 If the loaded model contains animations within, these animations are listed under the "Model animation properties", and the speed of this animation can be set using "Animation time scale". If a new animation as part of old one is needed, "Seperate selected animation by time" part can be used. It takes 2 floats as input, and a name. After Create section button is clicked, the animation will be listed just as others.
 
 Limon also supports loading animations from another file, specifically to support Mixamo.com animations. When a model is loaded, Limon checks if there is a "Mixamo" directory at the same path, and if it exists, try to loads the files in that directory as animations for model.

@@ -1,0 +1,422 @@
+# Limon Engine — Full Technical Reference
+
+> Open-source, LGPL-licensed, multi-platform 3D game engine (C++ and Python scripting) focused on ease of use and learning, targeting integrated GPU hardware. Version 0.7.
+
+This file supplements llms.txt with architectural detail, API contracts, known limitations, and implementation notes drawn from the engine's internal technical reference. It is intended for LLMs answering precise technical questions about Limon Engine's capabilities and constraints.
+
+## Vision and Scope
+
+Limon Engine is designed for experimentation and learning — not to compete with production engines like Godot or Unity. It is a platform for understanding how a 3D engine works from the inside. The feature set targets real-time 3D games with low-poly aesthetic and world sizes targeting 1 km × 1 km. The engine is a deliberate monolith using traditional OOP, not ECS. ECS is harder to reason about, debug, and develop, and games need many unique one-off behaviours — not ECS strengths.
+
+Target hardware: Intel Core i5-8400 / Intel UHD 630 iGPU / 1080p / 60 fps (Low settings). iGPU targeting directly motivates the SIMD software occlusion culling investment — draw call overhead is more expensive on iGPU than on discrete GPU.
+
+## Extension Points — Unified Contract
+
+All five extension types (Actions, Player Extensions, AI Actors, Camera Attachments, RenderMethods) are loaded from a single user dynamic library at launch and share GenericParameter as their universal data contract.
+
+GenericParameter serves three concerns simultaneously: load from disk, serialize to disk, and render editor widgets. An extension describes its parameters once and gets all three. The editor automatically generates the appropriate ImGui widget per RequestParameterType — no editor code required from extension authors.
+
+### RequestParameterType to widget mapping
+
+- MODEL → dropdown of map model objects → LONG (world object ID)
+- ANIMATION → dropdown of sequencer animations → LONG (animation index)
+- SWITCH → checkbox → BOOLEAN
+- FREE_TEXT → text input → STRING
+- TRIGGER → dropdown of trigger volumes + First Enter/Enter/Exit selector → LONG_ARRAY (ID at [1], event at [2])
+- GUI_TEXT → dropdown of GUI text elements → LONG (world object ID)
+- FREE_NUMBER → drag field or decimal input → LONG (integer) or DOUBLE (decimal, set valueType explicitly)
+- COORDINATE → three drag-float fields → VEC4 (w unused)
+- TRANSFORM → nine drag-float fields (position/rotation/scale) → MAT4 (composed/decomposed automatically)
+- MULTI_SELECT → combobox grouped by description+type → STRING (first: selected, rest: options). Build via buildMultiSelect().
+- LIGHT → dropdown of map lights → LONG (world object ID)
+- SOUND → dropdown of map sounds → LONG (world object ID)
+- CAMERA_RIG → dropdown of map camera rigs → LONG (world object ID)
+
+Stale ID detection: any type referencing a GameObject by ID detects dangling references on load (object removed after save) and resets the parameter rather than leaving a stale ID.
+
+### ValueType union
+
+- STRING: char[64] stringValue
+- LONG: single long longValue
+- LONG_ARRAY: long[16] longValues — index 0 is count, data starts at index 1, max 15 usable elements
+- FLOAT_ARRAY: float[16] floatValues — same convention
+- DOUBLE: double doubleValue
+- BOOLEAN: bool boolValue
+- VEC4: Vec4 vectorValue
+- MAT4: Mat4 matrixValue
+
+The isSet flag indicates whether a parameter has been assigned a value. The editor requires all parameters to be set before allowing a save. If a parameter's default value is already valid and doesn't require designer input, initialize isSet to true in the constructor.
+
+## Asset Manager
+
+Not a singleton by design — supports multiple instances for testing harnesses.
+
+### Multithreaded loading pipeline
+
+CPU layer: thread pool decompresses, parses, and converts assets in parallel. Completed assets pushed to a thread-safe queue. GPU layer: main thread consumes from the queue on a fixed per-frame budget — texture uploads, vertex buffer creation, and shader compilation are spread across frames. World signals ready only after all assets complete both layers. No partial asset state is visible to the scene. In the editor, a model can only be placed after loading is fully complete.
+
+### limonmodel format
+
+Near memory-direct layout — loading is read-and-map, not parse-and-transform. Contains vertex/index buffers, skeletal animation data, material information, and optionally embedded textures. Faster load times and smaller file size than raw Assimp-imported formats. Generated via the "Convert models to binary" button in the world editor. Works around raw asset redistribution restrictions.
+
+### Collision shapes as shared assets
+
+Both convex hull and triangle mesh collision shapes are generated at model import time and stored as part of the model asset. Shapes are shared across all instances via the asset manager — reference counted like meshes and textures. Runtime mass switching is cheap: shapes are already resident. Only Bullet re-registration is required.
+
+## GameObject Types
+
+- Model — static or animated mesh. Attachment root or bone attachment supported.
+- Model Group — collection of models managed as a unit.
+- Player — player controller. One model attachment point.
+- GUI Text — text display. Animatable via sequencer. Font, size, colour, position, rotation configurable.
+- GUI Button — wraps a LimonAPI call. Supports normal, hover, on-click, and disabled images.
+- GUI Image — image display. Full-screen option available.
+- CPU Particle — CPU-side particle emitter.
+- GPU Particle — GPU-side particle emitter. **Experimental.**
+- Light — directional or point. Creatable and removable at runtime.
+- Sound — 3D spatial audio source. A fully realized GameObject — placeable and attachable in the editor, not just an API call.
+- Camera Rig — owns and hosts a Camera Attachment behaviour. Has a transform, world ID, and scene tree node like any other object.
+- Skybox — environment backdrop.
+- Trigger Volume — spatial volume with attached Actions. Three events: First Enter, Enter, Exit.
+
+### Attachment rules
+
+Bone attachment means the child follows the bone transform through the full skeletal animation. These types can attach to a model root or a specific named bone: Model, Model Group, Trigger Volume, CPU Particle, GPU Particle, Light, Sound, Camera Rig. GUI elements and Skybox cannot be attached. Player has one model attachment point; that model's attachment tree is otherwise normal.
+
+Step-on sound is a model attribute (not an attachable Sound GameObject) — it fires at the contact point between the player's feet and the model surface, requiring knowledge of both objects simultaneously.
+
+### Flip model support
+
+Models can be flipped on X, Y, Z axes — any combination, editable in editor. Engine generates a flipped mesh asset in the background. No per-instance runtime cost — participates in instanced rendering identically to the original.
+
+### Scene graph API
+
+- attachObjectToObject(objectID, parentID) — child position is relative to parent
+- attachObjectToObjectAtWorldPosition(objectID, parentID) — attach while keeping current world position
+- getModelChildren(modelID) — returns vector of all child IDs
+- getObjectParent(objectID) — returns parent ID, 0 if none
+- getObjectByName(name) — searches models, GUI elements, and triggers
+
+## Rendering Pipeline
+
+### Node-based pipeline vs render graph
+
+Limon's pipeline editor is an explicit node-based pipeline, not a render graph. All configured passes execute every frame — no automatic pass culling. Pass culling would be unsound because RenderMethods have unrestricted graphics interface access and may have side effects beyond their declared outputs. No transient resource aliasing. This explicitness is intentional — it makes the pipeline easier to understand, debug, and learn from.
+
+RenderMethods are free to skip rendering partially or fully — they are not required to produce output every frame.
+
+The pipeline compiler packages per-stage requirements (blend state, FBO attachments) into structs passed to the graphics backend. The backend implements them using API-specific strategies (e.g. the OpenGL backend maintains an internal LRU for texture unit assignment).
+
+### Material system
+
+All materials uploaded as a UBO — material index passed per instance. Any shader declaring the material UBO is automatically detected via runtime reflection — no registration required.
+
+Material properties: diffuse colour (RGB), ambient colour (RGB), specular exponent (float), and five texture slots: diffuse, ambient, specular, normal, opacity.
+
+Per-model material editing is copy-on-write: editing globally writes to the shared material and affects all users; editing per-model creates a permanent copy assigned to that mesh while leaving the original unchanged. The new material appears in the global registry.
+
+### Culling pipeline
+
+Five stages run in order per camera each frame, with each camera's workload on a separate thread concurrently:
+
+0. **Tag filtering** — each camera and each scene object carries a tag; a pass specifies which camera tags render which object tags. Tags converted to uint128 hashes at pipeline load for zero-cost matching at runtime. The engine auto-tags objects as `animated`, `static`, `transparent`, and others — freely changeable in editor. Custom pipeline configurations target specific tags to enable per-tag shaders or dedicated passes.
+1. **Frustum culling** — objects outside the camera view volume are discarded. Applies to all scene geometry. Point lights are the exception (see below).
+2. **Size-based full skip** — objects below a configurable projected screen-space size threshold (`SkipRenderSize`) are discarded entirely. Objects closer than `SkipRenderDistance` or larger than `MaxSkipRenderSize` are exempt. This is a binary skip, applied before and independent of LOD selection.
+3. **Occlusion culling** — SIMD software depth buffer on the CPU (see below).
+4. **LOD selection** — LOD mesh chosen based on projected screen-space size and engine-wide `LodDistanceList`. Automatic 4-level LOD (3 simplifications + original) generated via meshoptimizer. Not configurable per model.
+
+### SIMD occlusion culling
+
+Based on a heavily modified SDOC library. SSE4.1 on x86, NEON on AArch64. Depth buffer based, AABB occludee testing. Default resolution 512×256, must be a multiple of 8 for SIMD alignment. SplitModelToMeshCount option: models with more meshes than this run occlusion tests per mesh rather than per model.
+
+### Point light culling
+
+Point lights use sphere-based culling instead of frustum culling. A frustum test would incorrectly cull point lights that are behind the camera but whose radius of influence still illuminates visible geometry. All other objects use standard frustum culling (step 2 above).
+
+
+## Animation System
+
+Skeletal animation with full bone hierarchy. GPU-side skinning via dedicated shader pass. Mixamo retargeting: engine checks for Mixamo/ directory at model path and loads files there as animations.
+
+### Animation blending
+
+Two animations can play simultaneously during a transition. Maximum two animations simultaneously — no blend trees, state machines, or additive layers.
+
+Blending interpolates translate, scale, and rotation separately:
+- Translation and Scale: linear interpolation
+- Rotation: SLERP (no candy-wrap artifact)
+
+Each animation's playback speed independently configurable. Start point of second animation relative to first is configurable. Crossfade duration configurable in milliseconds (default 100 ms).
+
+### animateModelByName vs animateModel
+
+animateModelByName(modelID, animationName, looped, soundPath) — preferred. References by stable name. animateModel(modelID, animationID, looped, soundPath) — DEPRECATED. Integer index is positional and depends on load order.
+
+### Transform animation sequencer
+
+Any GameObject's transform can be keyframed and saved as a named custom animation asset. GUI elements are animatable — Z translate controls alpha channel. 60 fps. Shared across objects and worlds — same animation applies to any number of models. Names must be unique (saving with an existing name overwrites).
+
+## Physics
+
+### Runtime mass switching
+
+setObjectMass(objectID, mass): mass=0 makes object static (switches to triangle mesh collider); mass>0 makes dynamic (switches to convex hull). Collision shape and physics registration updated automatically. No effect on animated (kinematic) models.
+
+### Physics API notes
+
+getObjectTransformation vs getObjectTransformationMatrix: For physical objects, prefer getObjectTransformationMatrix — collision shape offsets are baked into the matrix but not reflected in the decomposed TRS values from getObjectTransformation.
+
+disconnectObjectFromPhysics / reconnectObjectToPhysics — removes/restores physics simulation. Object still renders normally when disconnected.
+
+## Navigation System
+
+Grid is static for the lifetime of the loaded world. Single grid shared by all AI actors per world. Route requests are async (callback-based, simulation tick never blocked). Both routeToPlayer and routeToCustomPosition implemented.
+
+## AI System
+
+ActorInformation fields passed each simulation step: canSeePlayerDirectly, isPlayerLeft/Right/Up/Down/Front/Back, cosineBetweenPlayer (−1.0 to 1.0), playerDirection (vec3), playerDistance (meters), routeToRequest (waypoints), routeFound, routeReady (check before using route), playerDead, maximumRouteDistance (default 128 nodes ≈ 128 m).
+
+interactWithAI(AIID, interactionInformation) — send GenericParameter data to an AI actor.
+
+Models must have animations to be assigned an AI actor.
+
+## Audio System
+
+### Five audio channels
+
+Every sound is mixed on one of five channels. Effective gain = per-sound gain × channel volume × master volume.
+
+- MASTER (soundVolumeMaster) — multiplied into all channels
+- MUSIC (soundVolumeMusic) — used by setMusic/stopMusic, 2D positioned at listener
+- SFX (soundVolumeSFX) — default channel for playSound
+- SPEECH (soundVolumeSpeech)
+- AMBIENT (soundVolumeAmbient)
+
+Channel volumes are global Options (not dedicated API calls). Change via getOptions()/saveOptions() using the option names above. Applied live — no restart required.
+
+### Mono vs stereo
+
+Only mono audio files are spatialized by OpenAL. Stereo files play at fixed volume regardless of position — positionRelative, referenceDistance, and maxDistance have no spatial effect on stereo sources. Source mono audio for any sound that needs 3D positioning.
+
+### Attenuation model
+
+Attenuation model is world-level (OpenAL limitation). Configure under World Properties in the editor. Not per-sound.
+
+### Music API
+
+setMusic(musicPath, fadeSeconds=0.0, looped=true) — switch music with optional crossfade. fadeSeconds>0: outgoing track fades out while new one fades in. Pass empty string to clear. stopMusic(fadeSeconds=0.0) — stop with optional fade-out. getMusicName() / isMusicPlaying().
+
+### Sound attachment pattern
+
+Sound is a first-class world object. To attach to a model: playSound to create and get its ID, then attachObjectToObject(soundID, modelID). To stop: stopSound(soundID). Multiple sounds per object by attaching multiple Sound world objects. attachSoundToObjectAndPlay / detachSoundFromObject have been removed.
+
+## World Systems
+
+### Named variable system
+
+Allows user code components to communicate state (e.g. an NPC sets alerted=true, any other extension reads it). In C++, getVariable returns a mutable reference — mutating it sets the variable. In Python, get_variable and set_variable are separate methods. Variables are not saved with the world.
+
+### Timed events
+
+addTimedEvent(waitTime, useWallTime, callback, parameters) — useWallTime distinguishes real-world from in-game time. Returns a cancelable handle. cancelTimedEvent(handleId). Engine ticks at 1/60 second.
+
+### World transitions API
+
+- loadAndSwitchWorld — loads new world while old stays in memory
+- returnToWorld — loads if not loaded, then switches
+- loadAndRemove — releases old world before loading new. Clears return stack.
+- returnPreviousWorld — returns to previous world, releases current
+- quitGame — clears devices and exits
+
+## Camera System
+
+### Camera Rig and Camera Attachment
+
+Camera Rig: the GameObject. Normal scene object with transform, world ID, tree node, saved in world file. Camera Attachment: the behaviour, implemented in C++ or Python. Returns position, center (look-at), up, right vectors plus projection each frame.
+
+Only one Camera Rig is active at a time. When none is active, the player drives its own built-in first-person camera. Many rigs may exist in a world simultaneously.
+
+### Projection
+
+Returning ORTHOGRAPHIC from getProjection() is the only thing that makes a camera orthographic — pose, following, and configuration are otherwise identical to perspective. Camera type is fully decoupled from the render pipeline — switching perspective/orthographic at runtime requires no pipeline change. Cascaded shadow maps, occlusion culling, and all other systems work identically under both projections.
+
+Aspect ratio is supplied by the engine, not part of projection parameters. orthographicHalfHeight controls zoom for orthographic views.
+
+### Following an object
+
+Attach the Camera Rig to the target object using standard object attachment — no camera-specific target ID. The engine resolves the attached object's world transform and feeds it to setAttachmentTransform each frame before reading getCameraVariables. An unattached rig produces its own pose instead.
+
+The attachment transform is a starting point, not a constraint. The attachment has full LimonAPI access and can override it — for example, ThirdPersonCameraRig raycasts toward the desired position and pulls the camera in (down to full first-person) when a wall would block the view.
+
+### Bundled Camera Attachment samples
+
+- ObjectAttachedCameraRig — perspective follow camera. Composes local offset on attached object's transform. Parameters: local offset X/Y/Z.
+- OrthographicCameraRig — isometric/top-down orthographic. Follows player via getPlayerPosition (unattached). Parameters: offset X/Y/Z, zoom (orthographic half height), near/far planes.
+- ThirdPersonCameraRig — perspective third-person with collision-aware pullback via raycast. Activated at runtime by the western demo.
+- python_orthographic_camera_rig.py — Python equivalent of OrthographicCameraRig, under Engine/Scripts/.
+
+### Python Camera Attachments
+
+Subclass CameraExtensionInterface from camera_extension_interface.py. Auto-discovered by class name. Snake_case method names: get_name, get_parameters, set_parameters, get_camera_variables, get_projection, is_dirty, clear_dirty, set_attachment_transform. create_camera_rig / activate_camera_rig / deactivate_camera_rig available in Python API.
+
+## Input System
+
+Full SDL2 input event stream passed to Player Extensions each frame. Controllers, joysticks, and other SDL2-supported devices are handleable via Player Extension. simulateInput(inputStates) — simulate input events for testing or automation.
+
+## GUI System
+
+All GUI objects must belong to a layer. Larger level numbers render on top. Interactive GUI active in menu mode. GUI elements creatable, transformable, and removable at runtime. setGuiElementVisible — show/hide without removing. getGuiElementPosition / setGuiElementPosition — move without remove/recreate. Z translate controls alpha (via animation sequencer). GUI multi-line text backing the logger overlay is an internal type — not exposed as a placeable GameObject.
+
+## Python Scripting
+
+### Multi-interpreter model
+
+Each world instance gets an isolated Python sub-interpreter. When a world is unloaded, its interpreter is torn down — module-level state released. Scripts do not carry state across world loads unless persisted externally or via getVariable/setVariable.
+
+### Script directories
+
+- ./Engine/Scripts/ — built-in base interface classes and bundled samples. Engine-owned — do not put game scripts here.
+- ./Data/Scripts/ — user scripts. Optional, skipped if absent. Both directories are on the Python import path (Engine/Scripts first).
+
+### Auto-discovery
+
+On world load the engine scans both directories. Every .py file (except __init__.py) is imported. Each top-level class subclassing TriggerInterface, PlayerExtensionInterface, ActorInterface, or CameraExtensionInterface is registered automatically. The class name is the registered name shown in the editor. Keep one extension class per file — unrelated helper classes are ignored as long as they don't subclass an extension interface.
+
+### Python actor helpers (valid from constructor)
+
+self.model_id / self.get_model_id() — world-object ID of the model this actor drives. self.get_position() — model's world position as Vec3. self.get_front_vector() — model's forward direction as Vec3. Route requests: set flags on self.information_request inside play().
+
+## Editor
+
+### In-process model
+
+The editor runs inside the game process — no separate edit or play mode. Changes apply to the next frame in a live world. Built with Dear ImGui. Three main windows: object properties (left, visible when an object is selected), world properties (right), animation sequencer (bottom, visible only while creating an animation). All windows are draggable and resizable.
+
+### Player modes
+
+- **Physical** — normal gameplay with full physics.
+- **Debug** — identical movement to Physical but no physics interaction: can fly and walk through objects. Renders physics meshes, GUI borders, and the AI nav grid. Use for collision and pathfinding debugging.
+- **Editor** — built-in authoring editor.
+- **Menu** — menu interaction allowed; movement and screen rotation disabled; free mouse cursor.
+
+The launch-time player mode is set in World Properties. The default for shipped games should be Physical or Menu.
+
+### Object placement and selection
+
+Click-to-select is mode-split: the editor is in Object selection mode or GUI selection mode at any time (toggled via a button in the world properties panel). 3D objects and GUI elements cannot be selected simultaneously.
+
+Objects are placed from the world properties panel: Models, Trigger Volumes, Lights, GUI elements, Particles, and Camera Rigs. When adding a model, mass is set at placement time — 0 = static (full mesh collider), non-zero = dynamic (convex hull collider). Mass is editable after placement and triggers an automatic collision shape swap.
+
+Copy-with-offsets: when an object is selected, "Copy Selected Objects" appears with configurable per-axis offsets — used to place grids or walls by repeating with fixed spacing.
+
+### Gizmos
+
+Three modes: Translate, Rotate, Scale. Dragging an axis applies the transform on that axis; dragging the centre moves or scales freely. Translate mode also has plane-drag handles for two-axis movement. A snap setting on each object controls step size for all three modes (e.g. snap 0.25 in translate = movement in 0.25-unit steps).
+
+### World object tree and asset browser
+
+Both support text filtering with the same algorithm: filter string and all node names compared case-insensitively; a node matches if its name contains the filter string; matching nodes' ancestors are shown automatically (so a match stays visible inside its parent). A match does not propagate to children — only nodes that themselves match (or are ancestors of a match) appear.
+
+Asset browser: model assets show a dedicated preview rendered with the current world's directional light. Texture assets show a hover preview under the cursor — shared across material texture slots, skybox settings, and GUI image/button elements.
+
+### Material editing
+
+The material registry (in the world properties panel) lists every material in the world. Selecting and editing a material there is a global edit — all meshes using it are affected immediately. Per-mesh editing from the object editor offers two paths:
+
+- **Edit globally** — writes to the shared material; all users affected.
+- **Edit per-model** — creates a permanent copy assigned only to this mesh. The original is unchanged. The copy appears in the registry.
+
+Material properties: diffuse colour (RGB), ambient colour (RGB), specular exponent (float), and five texture slots: diffuse, ambient, specular, normal, opacity.
+
+### Animation sequencer
+
+Keyframes any GameObject's transform (translate, rotate, scale). For GUI elements, Z translate maps to alpha — enabling animated fade-in/out. Sections define a target transform and a duration in frames (60 fps). Multiple sections chain into a single animation asset. Saved as a named XML file; names must be unique (saving with an existing name overwrites). Applied animations run looped from map load by default; remove from the object to stop.
+
+### Per-object configuration
+
+**Model**: transform, mass, AI actor type and configurable parameters (only shown when the model has animations), Mixamo animation loading, step-on sound, flip axes (any combination of X/Y/Z), custom animation assignment, physics disconnect. **On Top** toggle (shortcut T): when checked, every move triggers a downward convex sweep test using the object's collision shape. The sweep starts +1 Y above the object's physics origin and extends −10 Y from that start point (total range: 1 unit above to 9 units below the origin). The object's AABB bottom is placed flush on the first surface found. Allows dragging an object across uneven terrain while it continuously follows the ground height. Surfaces more than ~10 world units below will not be found. Session-level state — not saved as an object property.
+
+**Trigger Volume**: three trigger slots — First Enter (fires once, the very first time the player enters), Enter (fires every subsequent entry), Exit (fires on leaving). All slots are optional. Each selects a registered Action type and its configurable parameters.
+
+**Player**: launch-time player mode, Player Extension type (auto-populated from registered extensions via `getExtensionNames()` — no manual name entry; invalid names impossible). Extension parameters appear directly beneath the dropdown and are saved with the world.
+
+**Camera Rig**: Camera Attachment type selection; live-editable parameters; Activate/Deactivate button to bind or release the rig from the player camera; attachment to world objects via standard attach controls.
+
+### World properties
+
+- **OnLoad actions**: multiple Actions triggered when the world loads. Each selects a registered Action type and its parameters.
+- **Music**: pick a sound asset from the asset browser; Change Music / Clear Music. Runtime crossfading is done via the `setMusic` API (not the editor) because the editor runs with audio paused.
+- **Skybox**: two-step — pick the directory, then select the 6 face images.
+- **Loading image**: optional image shown during world load.
+- **ESC key behaviour**: Quit Game (exits immediately), Return Previous (loads the previous world from the engine's world stack — no-op if none), or Load World (type a path; loads and switches to that world).
+
+### Release preparation
+
+- **Convert models to binary**: scans all models referenced in the world, converts to `.limonmodel`, and updates the world file paths automatically. Run before shipping.
+- **Generate navigation grid**: flood fill from the first AI actor's location. Must be run before saving the grid.
+- **Save navigation grid as binary**: fast-load format — recommended for shipped games.
+- **Save navigation grid as XML**: human-readable, for engine debugging only. Can require up to 2 GB of memory on large maps.
+
+No undo/redo — planned for 0.8.
+
+## Options System
+
+Options are live-referenced, not cached at load. Extensions reading an option via getOptions() get the current value at call time. Whether a change takes effect immediately or requires a subsystem reload depends on how that system uses the option — some read once at setup (e.g. pipeline load), in which case a reload of that system (not a full engine restart) is needed. getOptions() returns a pointer to merged options. saveOptions() persists to ./Data/Options.xml only — engine defaults never overwritten.
+
+## Known Limitations in 0.7
+
+- Skeletal animation blending: two animations simultaneously only — no blend trees, state machines, or additive layers.
+- Navigation grid: not generated if world contains no AI actors. Static for world lifetime — dynamic geometry changes not reflected at runtime (planned for 0.8). Areas unreachable from first AI actor silently excluded.
+- AI pathfinding: assumes actor collision size and mobility match the player — flying and swimming actors not supported natively.
+- GPU Particle: experimental.
+- Stereo audio: not spatialized by OpenAL. Source mono audio for 3D positioning.
+- LOD: engine-wide settings only — not configurable per model. Aggressive settings can produce visible mesh pop-in.
+- Raspberry Pi 4/5: upstream Mesa driver bug causes visual artefact — ticket open on public Mesa tracker.
+- No height map terrain support.
+- No time dilation.
+- No networking.
+- No mobile platform builds (Android / iOS).
+- Model scaling imported from source file — no heuristic correction. Fix scale in source tool or editor.
+- limonmodel load time benchmarks not yet published.
+- Editor: no undo/redo (planned for 0.8). Directory listings require manual refresh — automatic cross-platform filesystem events not yet implemented.
+
+## Planned Future Work
+
+### 0.8
+
+- Navigation reimplementation: switch to dynamic navmesh generation and steering.
+- GUI system extension: proper layout engine, input widgets, and related improvements.
+- Editor improvements: undo/redo, reference search by asset (e.g. find all objects using a given animation).
+- Projected decals.
+
+### Before 1.0
+
+- Options configurable via editor GUI.
+- Stair support.
+- Auto-align objects.
+- Spot lights.
+- Opacity handling improvements.
+
+### Possible future additions
+
+- Vulkan backend.
+- Android support.
+- Emscripten / WebAssembly support.
+
+## Key Documentation
+
+- [Engine Architecture](EngineArchitecture.html): System overview, game object types, extension points, GenericParameter contract, physics, platform support.
+- [Rendering Pipeline](RenderingPipeline.html): Visual pipeline editor, RenderMethod extension point, occlusion culling, LOD, shadows, SSAO, configuration options.
+- [Supporting Systems](SupportingSystems.html): Navigation/pathfinding, particle system, debug line draw, Tracy profiler.
+- [C++ API Reference](ExtendingByAPI/CPPAPIReference.html): Full LimonAPI method signatures.
+- [Python API Reference](ExtendingByAPI/pythonApi.html): Python scripting API.
+- [Options Reference](OptionsReference.html): All engine options — display, rendering, shadows, SSAO, culling, LOD, player, audio, debug/profiling.
+- [Implement AI Actor](ExtendingByAPI/implementAIActor.html): ActorInformation struct, InformationRequest, async pathfinding.
+- [Implement Camera Attachment](ExtendingByAPI/implementCameraAttachment.html): Full interface contract, projection, setAttachmentTransform.
+- [Implement Action](ExtendingByAPI/implementAction.html): Trigger, GUI button, and map-load callbacks.
+- [Implement Player Extension](ExtendingByAPI/implementPlayerExtension.html): Per-frame input and movement control.
+- [API Fundamentals](ExtendingByAPI/APIFundamentals.html): GenericParameter in depth, plugin structure.
+- [Python API Usage](ExtendingByAPI/PythonAPIUsage.html): Python scripting, discovery model, per-world interpreter.
+- [Asset Management](AssetManagement.html): limonmodel format, multithreaded loading, world transitions, cross-world sharing.
+- [Getting Started](GettingStarted.html): Prebuilt binaries, build instructions, dependencies.
+- [Roadmap](RoadMap.html): Planned features and release targets.
