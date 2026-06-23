@@ -268,22 +268,30 @@ Culling, LOD and Occlusion
      - Double
      - ``3``
      - On-screen size above which an object is never skipped (avoids jarring wall/ground pop).
+   * - ``occlusion.enabled``
+     - Boolean
+     - ``True``
+     - Enable software occlusion culling for the player camera. Can be toggled at runtime from the editor.
    * - ``SplitModelToMeshCount``
      - Long
      - ``10``
      - Models with more meshes than this get occlusion tested per mesh instead of per model.
-   * - ``SoftwareOcclusionRenderWidth``
+   * - ``occlusion.renderWidth``
      - Long
      - ``512``
      - Software-rasterized depth buffer width (must be a multiple of 8).
-   * - ``SoftwareOcclusionRenderHeight``
+   * - ``occlusion.renderHeight``
      - Long
      - ``256``
      - Software-rasterized depth buffer height (must be a multiple of 8).
-   * - ``SoftwareOcclusionOccluderSize``
+   * - ``occlusion.occluderSizePerspective``
      - Double
-     - ``0.5``
-     - On-screen size threshold for an object to be treated as an occluder (1 = full coverage).
+     - ``0.1``
+     - On-screen size threshold for an object to be treated as an occluder for perspective cameras (1 = full coverage).
+   * - ``occlusion.occluderSizeOrthographic``
+     - Double
+     - ``0.01``
+     - Same threshold for orthographic (shadow) cameras; optimal value is much lower than for perspective.
 
 Debugging and Profiling
 =======================
@@ -312,11 +320,11 @@ Debugging and Profiling
      - Boolean
      - ``True``
      - Enable the built-in profiler server.
-   * - ``SoftwareOcclusionRenderDump``
+   * - ``occlusion.renderDump``
      - Boolean
      - ``False``
      - Dump the software-rasterized depth buffer to a PPM file (debug only).
-   * - ``SoftwareOcclusionRenderDumpFrequency``
+   * - ``occlusion.renderDumpFrequency``
      - Long
      - ``300``
      - How often (in frames) to dump the software depth buffer when dumping is enabled.
