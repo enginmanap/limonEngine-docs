@@ -35,13 +35,13 @@ General
      - String
      - ``../dataLocal/``
      - Root directory the engine loads game data and assets from.
-   * - ``GraphicsBackend``
+   * - ``render_backend``
      - String
      - ``libOpenGLGraphicsBackend``
      - Graphics backend library to load (e.g. OpenGL or OpenGL ES).
-   * - ``StartingRenderPipeline``
+   * - ``render_pipeline``
      - String
-     - ``./Engine/forward_=renderPipeline.xml``
+     - ``./Engine/forward_renderPipeline.xml``
      - Render pipeline definition loaded at startup.
 
 Display
@@ -55,19 +55,19 @@ Display
      - Type
      - Default
      - Description
-   * - ``screenWidth``
+   * - ``display_width``
      - Long
      - ``2560``
      - Game window width in pixels.
-   * - ``screenHeight``
+   * - ``display_height``
      - Long
      - ``1440``
      - Game window height in pixels.
-   * - ``fullScreen``
+   * - ``display_fullScreen``
      - Boolean
      - ``False``
      - Launch in fullscreen.
-   * - ``TextureFiltering``
+   * - ``render_textureFiltering``
      - String
      - ``Trilinear``
      - Texture filtering mode: ``Nearest``, ``Bilinear`` or ``Trilinear``.
@@ -88,23 +88,23 @@ reference. Changes are applied to the mixer immediately.
      - Type
      - Default
      - Description
-   * - ``soundVolumeMaster``
+   * - ``audio_volumeMaster``
      - Double
      - ``1.0``
      - Master channel volume, normalized 0.0..1.0. Multiplies every sound.
-   * - ``soundVolumeMusic``
+   * - ``audio_volumeMusic``
      - Double
      - ``1.0``
      - Music channel volume, normalized 0.0..1.0.
-   * - ``soundVolumeSFX``
+   * - ``audio_volumeSFX``
      - Double
      - ``1.0``
      - Sound-effects channel volume, normalized 0.0..1.0.
-   * - ``soundVolumeSpeech``
+   * - ``audio_volumeSpeech``
      - Double
      - ``1.0``
      - Speech/dialogue channel volume, normalized 0.0..1.0.
-   * - ``soundVolumeAmbient``
+   * - ``audio_volumeAmbient``
      - Double
      - ``1.0``
      - Ambient/environmental sound channel volume, normalized 0.0..1.0.
@@ -120,27 +120,27 @@ Player Movement
      - Type
      - Default
      - Description
-   * - ``walkSpeed``
+   * - ``player_walkSpeed``
      - Vec4
      - ``(8, 0, 8)``
      - Player walk speed.
-   * - ``runSpeed``
+   * - ``player_runSpeed``
      - Vec4
      - ``(12, 0, 12)``
      - Player run speed.
-   * - ``moveSpeed``
+   * - ``player_moveSpeed``
      - Vec4
      - ``(8, 0, 8)``
      - General movement speed.
-   * - ``freeMovementSpeed``
+   * - ``player_freeMovementSpeed``
      - Vec4
      - ``(0.5, 0.5, 0.5)``
      - Free-camera (editor / debug) movement speed.
-   * - ``lookAroundSpeed``
+   * - ``player_lookAroundSpeed``
      - Double
      - ``-6.5``
      - Mouse look sensitivity.
-   * - ``jumpFactor``
+   * - ``player_jumpFactor``
      - Double
      - ``7.0``
      - Jump impulse factor.
@@ -156,55 +156,55 @@ Lighting and Shadows
      - Type
      - Default
      - Description
-   * - ``maximumLights``
+   * - ``performance_maximumLights``
      - Long
      - ``4``
      - Maximum number of simultaneous dynamic lights.
-   * - ``shadowMapDirectionalSize``
+   * - ``shadow_mapDirectionalSize``
      - Long
      - ``2048``
      - Directional light shadow map resolution.
-   * - ``shadowMapPointWidth``
+   * - ``shadow_mapPointWidth``
      - Long
      - ``512``
      - Point light shadow map width.
-   * - ``shadowMapPointHeight``
+   * - ``shadow_mapPointHeight``
      - Long
      - ``512``
      - Point light shadow map height.
-   * - ``PointShadowSampleCount``
+   * - ``shadow_pointSampleCount``
      - Long
      - ``20``
      - PCF sample count for point light shadows.
-   * - ``DirectionalShadowSampleCount``
+   * - ``shadow_directionalSampleCount``
      - Long
      - ``8``
      - PCF sample count for directional light shadows.
-   * - ``CascadeCount``
+   * - ``shadow_cascadeCount``
      - Long
      - ``4``
      - Number of cascaded shadow map cascades.
-   * - ``CascadeLimitList``
+   * - ``shadow_cascadeLimitList``
      - FloatArray
      - ``5.0, 20.0, 50.0, 150.0, 250.0``
      - View-space distance splits between shadow cascades.
-   * - ``CascadeStaggerOffsets``
+   * - ``shadow_cascadeStaggerOffsets``
      - LongArray
      - ``4, 1, 2, 4``
      - Per-cascade frame offset for staggered shadow updates (cascade 0 updates every frame).
-   * - ``CascadeStaggerIntervals``
+   * - ``shadow_cascadeStaggerIntervals``
      - LongArray
      - ``4, 2, 4, 8``
      - Per-cascade update interval in frames. Larger values improve framerate but delay shadow updates.
-   * - ``lightOrthogonalProjectionBackOff``
+   * - ``shadow_directionalProjectionBackOff``
      - Double
      - ``-5000``
      - Back-off distance for the directional light orthographic projection.
-   * - ``lightPointNearPlane``
+   * - ``shadow_pointNearPlane``
      - Double
      - ``0.1``
      - Near plane for point light shadow projection.
-   * - ``lightPointFarPlane``
+   * - ``shadow_pointFarPlane``
      - Double
      - ``100``
      - Far plane for point light shadow projection.
@@ -220,19 +220,19 @@ Ambient Occlusion (SSAO)
      - Type
      - Default
      - Description
-   * - ``SSAOWidth``
+   * - ``ssao_width``
      - Long
      - ``2560``
      - SSAO buffer width.
-   * - ``SSAOHeight``
+   * - ``ssao_height``
      - Long
      - ``1440``
      - SSAO buffer height.
-   * - ``SSAOSampleCount``
+   * - ``ssao_sampleCount``
      - Long
      - ``9``
      - SSAO kernel sample count.
-   * - ``SSAOBlurRadius``
+   * - ``ssao_blurRadius``
      - Long
      - ``1``
      - SSAO blur radius.
@@ -248,27 +248,27 @@ Culling, LOD and Occlusion
      - Type
      - Default
      - Description
-   * - ``multiThreadedCulling``
+   * - ``performance_multiThreadedCulling``
      - Boolean
      - ``True``
      - Run visibility culling on worker threads.
-   * - ``LodDistanceList``
+   * - ``LOD_distanceList``
      - LongArray
      - ``5, 10, 25, 150, 250``
      - Distance thresholds selecting LOD level (3 LODs are generated per model, so 4 levels).
-   * - ``SkipRenderDistance``
+   * - ``LOD_skipRenderDistance``
      - Double
      - ``50.0``
-     - Distance at which the engine may start skipping rendering of an object (with ``SkipRenderSize``).
-   * - ``SkipRenderSize``
+     - Distance at which the engine may start skipping rendering of an object (with ``LOD_skipRenderSize``).
+   * - ``LOD_skipRenderSize``
      - Double
      - ``0.075``
-     - On-screen size (fraction) below which distant objects past ``SkipRenderDistance`` are skipped.
-   * - ``MaxSkipRenderSize``
+     - On-screen size (fraction) below which distant objects past ``LOD_skipRenderDistance`` are skipped.
+   * - ``LOD_maxSkipRenderSize``
      - Double
      - ``3``
      - On-screen size above which an object is never skipped (avoids jarring wall/ground pop).
-   * - ``occlusion.enabled``
+   * - ``occlusion_enabled``
      - Boolean
      - ``True``
      - Enable software occlusion culling for the player camera. Can be toggled at runtime from the editor.
@@ -276,19 +276,19 @@ Culling, LOD and Occlusion
      - Long
      - ``10``
      - Models with more meshes than this get occlusion tested per mesh instead of per model.
-   * - ``occlusion.renderWidth``
+   * - ``occlusion_renderWidth``
      - Long
      - ``512``
      - Software-rasterized depth buffer width (must be a multiple of 8).
-   * - ``occlusion.renderHeight``
+   * - ``occlusion_renderHeight``
      - Long
      - ``256``
      - Software-rasterized depth buffer height (must be a multiple of 8).
-   * - ``occlusion.occluderSizePerspective``
+   * - ``occlusion_occluderSizePerspective``
      - Double
      - ``0.1``
      - On-screen size threshold for an object to be treated as an occluder for perspective cameras (1 = full coverage).
-   * - ``occlusion.occluderSizeOrthographic``
+   * - ``occlusion_occluderSizeOrthographic``
      - Double
      - ``0.01``
      - Same threshold for orthographic (shadow) cameras; optimal value is much lower than for perspective.
@@ -304,27 +304,27 @@ Debugging and Profiling
      - Type
      - Default
      - Description
-   * - ``renderInformations``
+   * - ``debug_renderInformations``
      - Boolean
      - ``True``
      - Show the on-screen logger overlay and tris/lines/FPS counters.
-   * - ``DebugDrawLines``
+   * - ``debug_drawLines``
      - Boolean
      - ``False``
      - Draw debug lines.
-   * - ``debugDrawBufferSize``
+   * - ``debug_drawBufferSize``
      - Long
      - ``1000``
      - Vertex buffer size for debug line drawing.
-   * - ``Profiler.EnableServer``
+   * - ``profiler_enableServer``
      - Boolean
      - ``True``
      - Enable the built-in profiler server.
-   * - ``occlusion.renderDump``
+   * - ``occlusion_renderDump``
      - Boolean
      - ``False``
      - Dump the software-rasterized depth buffer to a PPM file (debug only).
-   * - ``occlusion.renderDumpFrequency``
+   * - ``occlusion_renderDumpFrequency``
      - Long
      - ``300``
      - How often (in frames) to dump the software depth buffer when dumping is enabled.
