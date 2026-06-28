@@ -104,14 +104,9 @@ Passed to :ref:`processInput <PlayerExtensionInterface-processInput>` each frame
 InputStates Class Usage
 _______________________
 
-InputStates is a thin wrapper around SDL2 input events. It has 4 main methods that can be used:
+Input is queried through ``InputStates`` using hash-keyed action names. Any binding — keyboard, mouse, or gamepad — maps to the same logical action, so plugin code never needs to know which physical key is pressed.
 
-#. getInputStatus: Allows checking if a key is down or up, for keys used by engine. 3 buttons of mouse is included.
-#. getInputEvents: Allows if a key state changed in last frame, for keys used by engine. 3 buttons of mouse is included.
-#. getRawKeyStates: Allows to check all key states for current frame.
-#. getMouseChange: Allows checking for relative or absolute position of the mouse, depending of the mode(Menu player uses absolute).
-
-Full list of supported keys can be checked from src/InputStates.h
+See :ref:`InputSystem` for the full API reference, the built-in action name table, how to define custom game actions in XML, and how to detect which input device the player is using.
 
 .. _PlayerExtensionInterface-enableDynamicDiscovery:
 

@@ -261,7 +261,46 @@ Subclass CameraExtensionInterface from camera_extension_interface.py. Auto-disco
 
 ## Input System
 
-Full SDL2 input event stream passed to Player Extensions each frame. Controllers, joysticks, and other SDL2-supported devices are handleable via Player Extension. simulateInput(inputStates) — simulate input events for testing or automation.
+The input system is built around named actions: string names hashed to `uint64_t` at compile time (`InputActions` namespace constants) or at XML load time (custom game actions). Plugins query by action hash — never by SDL scancode. This decouples game code from physical keys and allows bindings to be changed without recompiling anything.
+
+### Input kinds
+
+- **Digital** — `bool` state (`getInputStatus`) and a one-frame state-change event (`getInputEvents`).
+- **Analog** — `float` value accumulated per frame (`getAnalogValue`). Mouse motion delta and gamepad stick both write to the same analog store, so a single plugin code path handles either device.
+
+### Gamepad support
+
+Gamepad input is first-class, not a Player Extension concern. SDL GameController events are processed directly by `InputHandler` and written to the same action hash store as keyboard and mouse. Gamepad buttons bind to digital actions; analog axes bind to either digital actions (with a threshold) or analog actions (with a scale). The analog stick dead zone is configurable via the `gamepad_deadZone` option (default 0.1).
+
+### Binding sources (Engine/inputBindings.xml)
+
+`Engine/inputBindings.xml` maps physical inputs to named actions. If the file is absent the engine falls back to identical hard-coded defaults. Changes take effect on the next launch.
+
+Six source types:
+
+- `keyboard` — SDL key name (case-insensitive). Optional `analog_value` attribute makes the key contribute a fixed float to an analog action each frame it is held.
+- `mouse_button` — `LEFT`, `MIDDLE`, `RIGHT`, `X1`, `X2`, or numeric index for mice with more than five buttons.
+- `mouse_axis` — `X` or `Y`; delta normalised by `screenWidth / 2` or `screenHeight / 2`.
+- `mouse_wheel` — `UP`, `DOWN`, `LEFT`, `RIGHT`.
+- `gamepad_button` — `A`, `B`, `X`, `Y`, `LEFTSHOULDER`, `RIGHTSHOULDER`, `LEFTSTICK` / `L3`, `RIGHTSTICK` / `R3`, `BACK`, `START`, `GUIDE`, `DPAD_UP/DOWN/LEFT/RIGHT`, `MISC1`, `PADDLE1`–`PADDLE4`, `TOUCHPAD`.
+- `gamepad_axis` — `LEFT_X`, `LEFT_Y`, `RIGHT_X`, `RIGHT_Y`, `LEFT_TRIGGER`, `RIGHT_TRIGGER`. `threshold="±N"` makes it a digital binding; `scale="N"` makes it an analog binding. Both can be applied to the same axis in different actions.
+- `joystick_button` — raw SDL joystick button index for buttons outside the GameController mapping (flight sticks, racing wheels, proprietary extras).
+
+### Custom game actions
+
+Add any `<Action name="RELOAD">` to `inputBindings.xml` with the bindings you want. No engine recompile needed. Query in plugins with `HASH("RELOAD")` (C++ compile-time) or `limon.hash("RELOAD")` (Python runtime). The hash function is identical at compile time and at XML load time — the same integer is produced by all paths.
+
+### Active device detection
+
+`InputStates::getActiveDevice()` / `get_active_device()` returns `KEYBOARD_MOUSE` or `GAMEPAD`, reflecting which device last sent input. Switches on any input event above the dead zone. Useful for showing device-appropriate button prompts (`[Space]` vs `[A]`) without per-frame polling.
+
+### Look speed alignment
+
+Mouse delta and gamepad stick both write to `LOOK_X` / `LOOK_Y` through the same analog store and both pass through `player_lookAroundSpeed` in `Options.xml`. Values are expressed in the same unit (mouse pixel displacement normalised by `screenWidth / 2`), so a single `player_lookAroundSpeed` tuning applies equally to both devices.
+
+### Other InputStates API
+
+`getMouseChange(xPos, yPos, xChange, yChange)` — absolute and relative cursor position for cursor-mode UIs (menu players). `getTextInput()` / `get_text_input()` — UTF-8 string typed this frame (non-empty only when `TEXT_INPUT` action is set; driven by `SDL_EVENT_TEXT_INPUT`, not configurable via XML). `simulateInput(inputStates)` / `limon.simulate_input(states)` — inject synthetic input for testing or automation.
 
 ## GUI System
 

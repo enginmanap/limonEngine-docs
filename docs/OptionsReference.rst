@@ -139,7 +139,11 @@ Player Movement
    * - ``player_lookAroundSpeed``
      - Double
      - ``-6.5``
-     - Mouse look sensitivity.
+     - Look sensitivity. Applies equally to mouse and gamepad stick (both normalised to the same unit). See :ref:`InputSystem-look-speed`.
+   * - ``gamepad_deadZone``
+     - Double
+     - ``0.1``
+     - Gamepad analog axis dead zone. Stick values with absolute magnitude below this threshold produce no output.
    * - ``player_jumpFactor``
      - Double
      - ``7.0``

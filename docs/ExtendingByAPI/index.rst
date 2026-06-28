@@ -7,6 +7,7 @@ Extending Engine Capabilities
 
    CPPAPIUsage
    APIFundamentals
+   InputSystem
    implementAction
    implementPlayerExtension
    implementAIActor

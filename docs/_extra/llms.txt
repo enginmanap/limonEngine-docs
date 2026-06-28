@@ -2,7 +2,7 @@
 
 > Open-source, LGPL-licensed, multi-platform 3D game engine (C++ and Python scripting) focused on ease of use, targeting integrated GPU hardware.
 
-Limon Engine (v0.7) is a deliberately monolithic 3D game engine. It ships a built-in in-process level editor (Dear ImGui, no separate play mode), forward and deferred rendering pipelines, a node-based visual pipeline editor, CPU and GPU particle systems, 3D AI pathfinding, Bullet Physics, OpenAL audio, and a layered GUI system. Gameplay is extended via C++ plugins or Python scripts (pybind11) through five extension points: Actions, Player Extensions, AI Actors, Camera Attachments, and RenderMethods. All five types are loaded from a single user dynamic library at engine launch.
+Limon Engine (v0.7) is a deliberately monolithic 3D game engine. It ships a built-in in-process level editor (Dear ImGui, no separate play mode), forward and deferred rendering pipelines, a node-based visual pipeline editor, CPU and GPU particle systems, 3D AI pathfinding, Bullet Physics, OpenAL audio, a layered GUI system, and a fully XML-configurable input system with first-class keyboard/mouse and gamepad support. Gameplay is extended via C++ plugins or Python scripts (pybind11) through five extension points: Actions, Player Extensions, AI Actors, Camera Attachments, and RenderMethods. All five types are loaded from a single user dynamic library at engine launch.
 
 Supported platforms: Linux (primary), Windows, macOS (Apple Silicon), Raspberry Pi 4/5. The graphics backend is a swappable dynamic library — the engine ships OpenGL 3.3 and OpenGL ES 3.1. Custom backends (Vulkan, Metal, DirectX) are possible without modifying engine source.
 
@@ -66,6 +66,7 @@ For architectural detail, API contracts, known limitations, and implementation n
 - [C++ API Reference](ExtendingByAPI/CPPAPIReference.html): Full LimonAPI method signatures.
 - [Python API Reference](ExtendingByAPI/pythonApi.html): Python scripting API (pybind11 bridge to LimonAPI).
 - [Options Reference](OptionsReference.html): All engine options — display, rendering, shadows, SSAO, culling, LOD, player movement, audio volumes, debug/profiling. Options readable and writable at runtime via API.
+- [Input System](ExtendingByAPI/InputSystem.html): XML-configurable action/binding system (keyboard, mouse, gamepad, raw joystick), custom game actions queryable by name hash in C++ and Python, gamepad dead zone, look speed alignment, active device detection.
 
 ## Extension Points
 
