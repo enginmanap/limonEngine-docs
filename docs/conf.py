@@ -28,7 +28,12 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = []
+extensions = ['sphinx_sitemap']
+#sitemap extension configuration
+html_baseurl = 'https://limonengine.readthedocs.io/en/latest/'
+sitemap_show_lastmod = True
+sitemap_url_scheme = "{link}"
+#sitemap extension configuration end
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
