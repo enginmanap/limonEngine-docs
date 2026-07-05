@@ -66,6 +66,9 @@ The editor runs inside the game process — there is no separate play mode. Chan
 
 Skeletal animation with GPU-side skinning. Models, lights, particles, sounds, trigger volumes, and cameras can attach to specific named bones and follow them through the full skeletal animation.
 
+**Input**
+
+Action based input binding system. Fully configurable, allowing users to define custom actions, bind one or many inputs to it, and use it in their plugins. It supports both analog and digital input, keyboard, mouse and game controllers. All SDL3 input events can be used, so wheels, flight controllers etc. is also supported.
 **Platforms**
 
 Linux (primary), Windows, macOS (Apple Silicon), and Raspberry Pi 4/5. The graphics backend is a swappable dynamic library — the engine ships OpenGL 3.3 and OpenGL ES 3.1. Custom backends (Vulkan, Metal, DirectX) are possible without modifying engine source.

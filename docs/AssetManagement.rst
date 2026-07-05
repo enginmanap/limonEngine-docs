@@ -26,8 +26,8 @@ Asset Types
      - Assimp
      - Mixamo retargeting supported.
    * - Textures
-     - SDL2_image
-     - All formats supported by SDL2_image.
+     - SDL3_image
+     - All formats supported by SDL3_image.
    * - Audio
      - OpenAL
      - OGG and WAV.

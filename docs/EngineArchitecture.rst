@@ -44,7 +44,7 @@ The bands read top to bottom, updating the original 0.6 overview for 0.7:
 * **Managers** -``AssetManager`` manages every asset type. Most assets register with it directly; font textures are the exception - ``FontManager`` owns the per-``Face`` set of font ``TextureAsset``\ s and is itself managed by ``AssetManager``, so those are managed indirectly.
 * **Profiling and Debug** -cross-cutting instrumentation that ``World``, both APIs, and the render pipeline feed: Tracy / ``ProfilerSystem`` and the ``BulletDebugDrawer``.
 * **Graphics Backend** -``GraphicsInterface`` resolves to a swappable ``GraphicsBackends`` dynamic library (OpenGL 3.3 or OpenGL ES 3.1 - see `Platform Support`_), so the backend changes without touching engine code.
-* **Platform Abstraction Layer** -only ``SDL2`` (windowing, input, image loading) and ``OpenAL`` (audio) abstract the operating system directly. The other third-party libraries are wired where they are used rather than as an OS layer: ``Freetype`` rasterises font faces, ``Assimp`` imports models and materials, and ``Bullet`` runs physics for ``Model``, ``Player``, and ``Trigger``. Full list: `Third-Party Libraries`_.
+* **Platform Abstraction Layer** -only ``SDL3`` (windowing, input, image loading) and ``OpenAL`` (audio) abstract the operating system directly. The other third-party libraries are wired where they are used rather than as an OS layer: ``Freetype`` rasterises font faces, ``Assimp`` imports models and materials, and ``Bullet`` runs physics for ``Model``, ``Player``, and ``Trigger``. Full list: `Third-Party Libraries`_.
 
 Target Hardware
 ===============
@@ -221,7 +221,7 @@ Limon uses Bullet Physics. Collision shapes are generated automatically from mes
 Input
 -----
 
-Input is handled by SDL2. The full SDL2 input event stream is passed to Player Extensions each frame. Controllers, joysticks, and other SDL2-supported devices are handleable via Player Extension.
+Input is handled by SDL3 and exposed to gameplay code through a **named-action** system rather than raw device events. SDL3 keyboard, mouse, gamepad, and joystick events are translated into logical actions (``JUMP``, ``LOOK_X``, and so on) according to ``Engine/inputBindings.xml``, and every extension receives the resulting ``InputStates`` each frame. Plugins query actions by name hash, so game code is independent of which physical key, mouse button, or gamepad control is bound to an action. Keyboard, mouse, and gamepad/controller input are all natively supported and rebindable without recompiling; raw joystick buttons are available for devices outside SDL's GameController mapping. Full details: :ref:`InputSystem`.
 
 Sound
 -----
@@ -296,9 +296,9 @@ Third-Party Libraries
      - Asset import (models, animations)
    * - meshoptimizer
      - Automatic LOD mesh generation
-   * - SDL2
+   * - SDL3
      - Platform abstraction, input, windowing
-   * - SDL2_image
+   * - SDL3_image
      - Texture loading
    * - CityHash
      - String interning

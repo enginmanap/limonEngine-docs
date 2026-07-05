@@ -37,6 +37,7 @@ All items implemented.
 #. Debug line draw API -3D world-space coloured lines via ID-based buffer system.
 #. In-game logger overlay -transparent, toggleable, with C++ and Python API.
 #. Tracy profiling -embedded flame graph in editor, GPU zones from pipeline config, profileScope API.
+#. * Keyboard, mouse, and gamepad/controller input are all natively supported through the named-action input system and rebindable via ``Engine/inputBindings.xml``. Devices outside SDL's GameController mapping (flight sticks, racing wheels) are reachable through raw joystick button bindings. See :ref:`InputSystem`.
 
 Planned for 0.8
 ===============
@@ -88,14 +89,6 @@ The following limitations are confirmed in version 0.7:
 **Animation**
 
 * Skeletal animation blending is two-animation crossfade only. Blend trees and state machines are not supported.
-
-**Input**
-
-* Keyboard and mouse input are natively supported. Controllers and other devices require SDL2 passthrough via a Player Extension.
-
-**Player**
-
-* Player movement customisation beyond the options (jump factor, speeds) requires a custom Player Extension.
 
 **Missing Features**
 

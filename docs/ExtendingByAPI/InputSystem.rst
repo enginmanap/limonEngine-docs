@@ -59,7 +59,7 @@ These constants are defined in ``src/limonAPI/InputStates.h`` as ``constexpr uin
      - Right mouse button or gamepad RB.
    * - ``MOUSE_MOVE``
      - Digital
-     - Set for one frame whenever the mouse moves. **Engine-internal** — the engine sets this from ``SDL_MOUSEMOTION`` directly; adding an ``inputBindings.xml`` entry for it has no effect.
+     - Set for one frame whenever the mouse moves. **Engine-internal** — the engine sets this from ``SDL_EVENT_MOUSE_MOTION`` directly; adding an ``inputBindings.xml`` entry for it has no effect.
    * - ``MOUSE_WHEEL_UP``
      - Digital
      - Scroll wheel up.
@@ -80,7 +80,7 @@ These constants are defined in ``src/limonAPI/InputStates.h`` as ``constexpr uin
      - Super/GUI key held.
    * - ``TEXT_INPUT``
      - Digital
-     - Set for one frame when SDL delivers a text input event. **Engine-internal** — set automatically from ``SDL_TEXTINPUT``; not configurable via ``inputBindings.xml``. Use ``getTextInput()`` / ``get_text_input()`` to read the typed character(s).
+     - Set for one frame when SDL delivers a text input event. **Engine-internal** — set automatically from ``SDL_EVENT_TEXT_INPUT``; not configurable via ``inputBindings.xml``. Use ``getTextInput()`` / ``get_text_input()`` to read the typed character(s).
    * - ``NUMBER_1``
      - Digital
      - ``1`` key.
@@ -568,7 +568,7 @@ Key names are case-insensitive. Use them verbatim in the ``key`` attribute.
      - Slash
 
 .. note::
-   The complete SDL key name list is documented at https://wiki.libsdl.org/SDL2/SDL_Keycode.
+   The complete SDL key name list is documented at https://wiki.libsdl.org/SDL3/SDL_Keycode.
    SDL accepts key names case-insensitively, so ``"space"``, ``"Space"``, and ``"SPACE"`` are all valid.
 
 .. _InputSystem-ref-mouse:
@@ -713,7 +713,7 @@ Raw Joystick Buttons  (``source="joystick_button"  index="…"``)
 
 Raw SDL joystick button indices (0-based integers). Use for buttons not covered by the GameController mapping above — extra buttons on flight sticks, racing wheels, or proprietary peripherals.
 
-The index corresponds to SDL's internal joystick button numbering for the device, which may differ from the physical label printed on the hardware. Use a tool such as ``sdl2-jstest`` or SDL's ``ControllerMap`` utility to discover the raw indices for a specific device.
+The index corresponds to SDL's internal joystick button numbering for the device, which may differ from the physical label printed on the hardware. Use a tool such as SDL's ``testcontroller`` utility (or ``evtest`` / ``sdl2-jstest`` on Linux) to discover the raw indices for a specific device.
 
 .. note::
-   For standard gamepad buttons already covered by ``source="gamepad_button"`` (A, B, X, Y, …), SDL delivers both a ``SDL_CONTROLLERBUTTONDOWN`` event and a ``SDL_JOYBUTTONDOWN`` event for the same physical press. Binding the same button via both ``gamepad_button`` and ``joystick_button`` will fire the action twice per press.
+   For standard gamepad buttons already covered by ``source="gamepad_button"`` (A, B, X, Y, …), SDL delivers both a ``SDL_EVENT_GAMEPAD_BUTTON_DOWN`` event and a ``SDL_EVENT_JOYSTICK_BUTTON_DOWN`` event for the same physical press. Binding the same button via both ``gamepad_button`` and ``joystick_button`` will fire the action twice per press.

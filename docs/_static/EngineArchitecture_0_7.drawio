@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram id="limon07" name="LimonEngine 0.7 Architecture">
-    <mxGraphModel dx="4907" dy="2953" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="1300" math="0" shadow="0">
+    <mxGraphModel dx="2565" dy="2748" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -20,7 +20,7 @@
           <mxGeometry height="410" width="500" x="2590" y="710" as="geometry" />
         </mxCell>
         <mxCell id="b_mgr" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f2f2f2;strokeColor=#000000;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Managers" vertex="1">
-          <mxGeometry height="130" width="520" x="1370" y="700" as="geometry" />
+          <mxGeometry height="130" width="780" x="1110" y="700" as="geometry" />
         </mxCell>
         <mxCell id="b_dbg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f2f2f2;strokeColor=#000000;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=23;fontColor=#000000;dashed=0;" value="Profiling and Debug" vertex="1">
           <mxGeometry height="130" width="560" x="3230" y="-450" as="geometry" />
@@ -49,20 +49,20 @@
         <mxCell id="ScriptManager" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="ScriptManager" vertex="1">
           <mxGeometry height="50" width="180" x="2565" y="-720" as="geometry" />
         </mxCell>
-        <mxCell id="Action" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="&lt;div&gt;Action&lt;/div&gt;" vertex="1">
-          <mxGeometry height="54" width="190" x="1080" y="-730" as="geometry" />
+        <mxCell id="Action" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="PlayerExtension" vertex="1">
+          <mxGeometry height="54" width="190" x="1060" y="-730" as="geometry" />
         </mxCell>
-        <mxCell id="Actor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="AI Actor" vertex="1">
-          <mxGeometry height="54" width="190" x="1300" y="-730" as="geometry" />
+        <mxCell id="Actor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="CameraAttachment" vertex="1">
+          <mxGeometry height="54" width="220" x="1270" y="-730" as="geometry" />
         </mxCell>
-        <mxCell id="PlayerExt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="&lt;div&gt;PlayerExtension&lt;/div&gt;" vertex="1">
+        <mxCell id="PlayerExt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="&lt;div&gt;Action&lt;/div&gt;" vertex="1">
           <mxGeometry height="54" width="190" x="1510" y="-730" as="geometry" />
         </mxCell>
-        <mxCell id="CamAtt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="CameraAttachment" vertex="1">
-          <mxGeometry height="54" width="210" x="1720" y="-730" as="geometry" />
+        <mxCell id="CamAtt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="AI Actor" vertex="1">
+          <mxGeometry height="54" width="150" x="1720" y="-730" as="geometry" />
         </mxCell>
         <mxCell id="RMI" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="RenderMethod" vertex="1">
-          <mxGeometry height="54" width="190" x="1950" y="-730" as="geometry" />
+          <mxGeometry height="54" width="190" x="1890" y="-730" as="geometry" />
         </mxCell>
         <mxCell id="LimonAPI" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="LimonAPI + GenericParameter" vertex="1">
           <mxGeometry height="56" width="250" x="1465" y="-600" as="geometry" />
@@ -193,7 +193,7 @@
         <mxCell id="GraphicsBackends" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="GraphicsBackends  (OpenGL 3.3 / OpenGL ES 3.1)" vertex="1">
           <mxGeometry height="62" width="520" x="2485" y="1204" as="geometry" />
         </mxCell>
-        <mxCell id="SDL2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="SDL2" vertex="1">
+        <mxCell id="SDL3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="SDL3" vertex="1">
           <mxGeometry height="54" width="190" x="1480" y="1210" as="geometry" />
         </mxCell>
         <mxCell id="OpenAL" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="OpenAL" vertex="1">
@@ -230,7 +230,7 @@
         <mxCell id="e0" edge="1" parent="1" source="Action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1160" y="-640" />
+              <mxPoint x="1150" y="-640" />
               <mxPoint x="1540" y="-640" />
             </Array>
           </mxGeometry>
@@ -262,7 +262,7 @@
         <mxCell id="e4" edge="1" parent="1" source="RMI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="LimonAPI">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="2020" y="-640" />
+              <mxPoint x="1980" y="-640" />
               <mxPoint x="1620" y="-640" />
             </Array>
           </mxGeometry>
@@ -647,7 +647,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e62" edge="1" parent="1" source="AssetManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="SDL2">
+        <mxCell id="e62" edge="1" parent="1" source="AssetManager" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="SDL3">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1720" y="1070" />
@@ -737,7 +737,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e76" edge="1" parent="1" source="SDL2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="OS">
+        <mxCell id="e76" edge="1" parent="1" source="SDL3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#333333;strokeWidth=1.5;endArrow=block;endFill=1;jettySize=auto;fontSize=23;" target="OS">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1565" y="1371" />
@@ -821,6 +821,25 @@
         </mxCell>
         <mxCell id="Sound" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9ecae1;strokeColor=#08306b;strokeWidth=2;fontColor=#000000;fontSize=23;" value="Sound" vertex="1">
           <mxGeometry height="54" width="170" x="2650" y="-25" as="geometry" />
+        </mxCell>
+        <mxCell id="wEj368Fpt2aQmxTY5WJq-3" edge="1" parent="1" source="wEj368Fpt2aQmxTY5WJq-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="SDL3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1270" y="1070" />
+              <mxPoint x="1510" y="1070" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wEj368Fpt2aQmxTY5WJq-4" edge="1" parent="1" source="wEj368Fpt2aQmxTY5WJq-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Action">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="40" y="765" />
+              <mxPoint x="40" y="-703" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wEj368Fpt2aQmxTY5WJq-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;fontColor=#000000;fontSize=23;" value="InputManager" vertex="1">
+          <mxGeometry height="54" width="200" x="1170" y="738" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
