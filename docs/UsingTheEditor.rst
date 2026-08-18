@@ -50,6 +50,9 @@ It is also possible to create a ModelGroup.
     :align: center
 
 A directory tree of ./Data folder will be loaded, with directories that don't contain model files filtered out. For filtering based on  file name, the text box just above can be used.
+
+Once an asset is selected, a preview shows it from a slight angled overview, similar to a product photo, rather than a flat front view, since browsed assets can be any shape. Right-click and drag on the preview to orbit the camera around it.
+
 When mass is set to 0, the object will be marked "static" by physics system. This means the model will not be able to move, outside of the editor. It is the default setting, to be used for building the world. Any other value will mark the object as "dynamic", meaning the objects movements will be governed by physics engine.
 
 
@@ -282,6 +285,22 @@ The **On Top** checkbox, just below the snap settings, automatically places the 
 If the loaded model contains animations within, these animations are listed under the "Model animation properties", and the speed of this animation can be set using "Animation time scale". If a new animation as part of old one is needed, "Seperate selected animation by time" part can be used. It takes 2 floats as input, and a name. After Create section button is clicked, the animation will be listed just as others.
 
 Limon also supports loading animations from another file, specifically to support Mixamo.com animations. When a model is loaded, Limon checks if there is a "Mixamo" directory at the same path, and if it exists, try to loads the files in that directory as animations for model.
+
+**Expose Bone for attachment**
+
+.. figure:: _static/media/images/ObjectEditor/exposeBone.png
+    :align: center
+
+    The model preview with Active Animation, and bone overview
+
+For animated models, this section is where you pick which bone another object (a light, particle, sound, trigger volume, camera rig, or another model) will attach to. It shows a live preview of the model, animated on wall-clock time so it keeps playing even while the rest of the editor is paused, with the skeleton drawn on top as joints and connecting lines. Below the preview is a scrollable bone tree, so long skeletons don't take over the window.
+
+You can pick a bone two ways, and both stay in sync: click a joint directly in the preview image, or click its entry in the tree. Picking a bone from the image automatically expands and scrolls the tree to reveal the matching entry, so you always know where you are in the skeleton. Whichever bone is currently selected here is what the generic "Attach saved object to current" attachment button will target when attaching another object to this model.
+
+Right-click and drag on the preview image to orbit the camera around the model, useful for reaching a bone that's hidden behind the body from the default angle. The view resets to the default angle whenever you switch to a different model or animation.
+
+.. note::
+    The preview image is small, so nearby bones can be close together on screen. Clicking only registers within a small radius around each joint dot - if the wrong bone gets selected, use the tree list below the preview instead, since it always matches the image exactly.
 
 AI properties section has a list of available Actors. Game developers can write custom actors using API provided. Please check :ref:`implementAIActor` for details. If selected actor has settings exposed, they will be listed under actor type drop-down.
 

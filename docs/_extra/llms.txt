@@ -40,7 +40,7 @@ OpenAL backend. OGG and WAV supported. Sounds can attach to scene objects and bo
 
 ## Animation and Attachments
 
-Skeletal animation with GPU-side skinning. Models, lights, particles, sounds, trigger volumes, and cameras can attach to specific named bones and follow them through the full skeletal animation.
+Skeletal animation with GPU-side skinning. Models, lights, particles, sounds, trigger volumes, and cameras can attach to specific named bones and follow them through the full skeletal animation. The editor's per-model "Expose Bone for attachment" panel picks the target bone via a live animated preview with a skeleton overlay — click a joint in the image or the accompanying bone tree, which stay in sync and auto-scroll to whichever was picked. Right-click-drag orbits the preview camera around the model; the same orbit control is available on the asset-browser's Add-Object preview.
 
 ## Editor
 
