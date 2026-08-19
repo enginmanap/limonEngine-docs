@@ -153,7 +153,7 @@ Every entity in a Limon world is a ``GameObject``. All types implement the base 
    * - **CPU Particle**
      - CPU-side particle emitter.
    * - **GPU Particle**
-     - GPU-side particle emitter.
+     - GPU-side particle emitter. Experimental.
    * - **Light**
      - Directional or point light. Creatable and removable at runtime.
    * - **Sound**

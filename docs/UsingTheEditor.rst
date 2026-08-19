@@ -161,6 +161,18 @@ The layer of the button can be selected from the drop down.
 
 This Widget is not fully functional at 0.6 release. Please avoid until next release.
 
+Adding Particle Emitters
+_________________________
+
+.. ENGIN-SS: screenshot of the "Add Particle Emitter" panel open in the World Editor, with a texture selected and its preview showing.
+
+.. figure:: _static/media/images/WorldEditor/addParticleEmitter.png
+    :align: center
+
+A directory tree of texture assets is shown, filtered the same way as other asset pickers, with a preview of the selected texture. A name (no spaces) and a texture must both be set before "Add Particle Emitter" is enabled.
+
+Particle Emitter radius, Maximum particle count, Particle life time and Particle size only set the emitter's starting values - every one of them, and everything else about the emitter, can be changed afterwards from the object editor, see :ref:`Particle Emitter Object Settings`. The new emitter is placed 10 units in front of the camera, the same way Models, Lights and Sounds are placed - reposition it afterwards using the gizmo, same as any other object.
+
 Player Properties
 _________________
 
@@ -398,6 +410,36 @@ Position and Scale are used to set the Transform of the button.
 Trigger section allows to set the trigger to run when clicked.
 
 Just under these settings, there is snap settings. It is used by gizmo. For details check :ref:`Gizmo Usage`.
+
+.. _Particle Emitter Object Settings:
+
+Particle Emitter Object Settings
+_________________________________
+
+.. ENGIN-SS: screenshot of a selected particle emitter's object editor, with a few color keyframes set and the viewport showing the debug visualization (position marker, spawn box, velocity arrows, trajectory hull) around it.
+
+.. figure:: _static/media/images/ObjectEditor/particleEmitter.png
+    :align: center
+
+If the emitter is attached to another object, its world position is shown as read-only text above the settings, the same way it is for Sounds.
+
+**Enabled** turns emission on and off. **Active Particles** is a read-only count of how many particles are currently alive, out of **Maximum particle count**. Changing **Maximum particle count** resets the emitter - any currently alive particles are cleared and it starts fresh. **Life time** is how long each particle lives, in milliseconds. **Particles per ms** is read-only, it is simply Maximum particle count divided by Life time.
+
+**Continuous Emitting**, when checked, keeps replacing particles as they expire, so up to Maximum particle count stay alive at all times for as long as the emitter is enabled. When unchecked, the emitter creates a single burst of Maximum particle count particles in total (still spread out over time at Particles per ms) and then stops creating new ones, though the ones already alive keep living out their Life time.
+
+While selected, a small yellow cross marks the emitter's own position in the viewport.
+
+**Maximum Start Distances** is the half-extent of the box particles spawn at random positions within, centered on the emitter - shown in the viewport as a cyan wireframe box.
+
+**Size** is the width and height of each particle's billboard.
+
+Assuming 1 world unit is 1 meter, **Speed Offset** is a constant per-axis launch velocity in meters/second, and **Speed Multiplier** scales a random per-axis launch velocity between -1 and +1 meters/second on top of it - together they are shown in the viewport as green arrows, the minimum, average and maximum possible initial velocity. **Gravity** is a per-axis acceleration in meters/second², so real-world gravity is approximately -9.8 on the Y axis.
+
+Because these three together decide where particles can go, the viewport also shows an orange convex hull: the full volume particles can occupy from the moment they spawn to the moment they despawn, given the current Speed Offset, Speed Multiplier, Gravity and Life time. This hull only appears while the emitter is selected.
+
+**Color Multipliers Over Particle Age** is a list of keyframes, each multiplying the particle's rendered color by an RGBA value at a given age. The age is milliseconds since that particular particle was created, not the emitter's own age or the world clock - every particle replays this same list from its own spawn. Each keyframe in the list is shown as a color swatch next to its age; select one to edit its color and age, or use the buttons below the list to add or remove keyframes.
+
+**Remove** deletes the emitter.
 
 .. _Gizmo Usage:
 

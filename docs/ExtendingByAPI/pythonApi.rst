@@ -1463,12 +1463,13 @@ set_emitter_particle_speed
 
     def set_emitter_particle_speed(emitter_id: int, speed_multiplier: Vec4, speed_offset: Vec4) -> bool:
         """
-        Set the speed parameters for particles emitted by an emitter.
+        Set the speed parameters for particles emitted by an emitter. Both are in
+        meters/second, assuming 1 world unit is 1 meter.
 
         Args:
             emitter_id: ID of the particle emitter
-            speed_multiplier: Per-axis speed multiplier (Vec4)
-            speed_offset: Per-axis constant speed offset (Vec4)
+            speed_multiplier: Per-axis scale, in meters/second, applied to a random launch velocity between -1 and +1 (Vec4)
+            speed_offset: Per-axis constant velocity, in meters/second, added to every particle on spawn (Vec4)
 
         Returns:
             bool: True if the emitter was found and updated
@@ -1483,11 +1484,13 @@ set_emitter_particle_gravity
 
     def set_emitter_particle_gravity(emitter_id: int, gravity: Vec4) -> bool:
         """
-        Set the per-axis gravity applied to particles from an emitter.
+        Set the per-axis acceleration applied to particles from an emitter, in
+        meters/second^2, assuming 1 world unit is 1 meter (e.g. approximately -9.8
+        on Y for Earth-like gravity).
 
         Args:
             emitter_id: ID of the particle emitter
-            gravity: Per-axis gravity vector (Vec4)
+            gravity: Per-axis acceleration in meters/second^2 (Vec4)
 
         Returns:
             bool: True if the emitter was found and updated

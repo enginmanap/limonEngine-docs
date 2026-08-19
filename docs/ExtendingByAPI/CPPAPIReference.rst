@@ -1204,25 +1204,25 @@ Parameters:
 bool setEmitterParticleSpeed(uint32_t emitterID, const LimonTypes::Vec4 &speedMultiplier, const LimonTypes::Vec4 &speedOffset)
 ------------------------------------------------------------------------------------------------------------------------------
 
-Sets the speed parameters for particles spawned by the emitter. ``speedMultiplier`` scales the base velocity and ``speedOffset`` adds a constant velocity component. Returns false if the emitter ID is not found.
+Sets the speed parameters for particles spawned by the emitter. ``speedMultiplier`` scales a random per-axis launch velocity between -1 and +1, and ``speedOffset`` adds a constant velocity on top. Both are in meters/second, assuming 1 world unit is 1 meter. Returns false if the emitter ID is not found.
 
 Parameters:
 
 #. uint32_t emitterID: Handle ID of the emitter.
-#. const LimonTypes::Vec4 &speedMultiplier: Per-axis scale applied to the particle's initial velocity. W component ignored.
-#. const LimonTypes::Vec4 &speedOffset: Constant velocity added to every particle on spawn. W component ignored.
+#. const LimonTypes::Vec4 &speedMultiplier: Per-axis scale, in meters/second, applied to a random launch velocity between -1 and +1. W component ignored.
+#. const LimonTypes::Vec4 &speedOffset: Constant velocity, in meters/second, added to every particle on spawn. W component ignored.
 
 .. _LimonAPI-setEmitterParticleGravity:
 
 bool setEmitterParticleGravity(uint32_t emitterID, const LimonTypes::Vec4 &gravity)
 ------------------------------------------------------------------------------------
 
-Sets the gravity vector applied to particles spawned by the emitter each tick. Returns false if the emitter ID is not found.
+Sets the per-axis acceleration applied to particles spawned by the emitter. Returns false if the emitter ID is not found.
 
 Parameters:
 
 #. uint32_t emitterID: Handle ID of the emitter.
-#. const LimonTypes::Vec4 &gravity: Per-axis acceleration applied each frame. W component ignored.
+#. const LimonTypes::Vec4 &gravity: Per-axis acceleration in meters/second², assuming 1 world unit is 1 meter (e.g. approximately -9.8 on Y for Earth-like gravity). W component ignored.
 
 Lighting
 ========

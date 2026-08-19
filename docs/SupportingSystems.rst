@@ -50,7 +50,7 @@ Full details - including the three-layer occlusion culling architecture, LOD mes
 Particle System
 ===============
 
-Limon has two particle emitter types: **CPU Particle** and **GPU Particle**. Both are full GameObject types and can be attached to model bones at runtime, following the bone transform through skeletal animation.
+Limon has two particle emitter types: **CPU Particle** and **GPU Particle**. Both are full GameObject types and can be attached to model bones at runtime, following the bone transform through skeletal animation. **GPU Particle is experimental**
 
 Emitter Parameters
 ------------------
@@ -65,24 +65,24 @@ Emitter Parameters
    * - Emission mode
      - Enum
      - One-time or continuous. Changeable at runtime via ``enableParticleEmitter`` / ``disableParticleEmitter``.
-   * - Initial speed
+   * - Speed Multiplier
      - Vec3
-     - Per-particle initial velocity vector.
-   * - Initial direction
+     - Scales a random per-axis launch velocity between -1 and +1 meters/second (1 world unit = 1 meter).
+   * - Speed Offset
      - Vec3
-     - Per-particle initial direction vector.
+     - Constant per-axis launch velocity in meters/second, added on top of Speed Multiplier.
    * - Start position
      - AABB
      - Particles emitted from random positions within the bounding box.
-   * - Acceleration
+   * - Gravity
      - Vec3
-     - Applied to each particle every simulation tick.
+     - Per-axis acceleration in meters/second², e.g. approximately -9.8 on Y for Earth-like gravity.
    * - Texture
      - Asset ref
      - Custom texture per emitter.
-   * - Per-particle transform/blend
+   * - Color over lifetime
      - Time curve
-     - Time-based transform and blend per particle over its lifetime.
+     - RGBA color multiplier keyframes, keyed by milliseconds since each particle's own spawn.
 
 Particle API
 ------------
