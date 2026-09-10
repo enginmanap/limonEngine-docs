@@ -453,16 +453,16 @@ Debug and Profiling
      - Type
      - Default
      - Description
-   * - ``DebugDrawLines``
-     - Bool
+   * - ``debug_drawLines``
+     - Boolean
      - False
-     - Enable the debug line draw system globally.
-   * - ``debugDrawBufferSize``
+     - Draw the engine's own debug lines - shadow cascade frustums and ray cast results. Toggled at runtime with F4. It does not gate the debug line system as a whole: lines drawn through the API, and the editor's object visualisations such as a selected light's radius sphere, render regardless.
+   * - ``debug_drawBufferSize``
      - Long
      - 1000
-     - Maximum number of lines in a single debug buffer.
-   * - ``Profiler.EnableServer``
-     - Bool
+     - Vertex buffer capacity for debug line drawing. Accumulated lines are flushed to the GPU when it fills.
+   * - ``profiler_enableServer``
+     - Boolean
      - True
      - Enable the embedded Tracy profiling server (flame graph visible in editor).
 

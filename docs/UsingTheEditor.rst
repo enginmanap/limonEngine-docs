@@ -100,6 +100,8 @@ ____________________
 
 A model group can hold unlimited number of models, or other model groups. It is used to make operations on multiple objects easier. First part of Model Groups section is used to put a model to a model group. Second part is used to create a new model group with given name.
 
+.. _Adding Lights:
+
 Adding Lights
 _____________
 
@@ -108,6 +110,8 @@ _____________
 
 Limon Engine uses a custom forward renderer with full dynamic light calculation. Since these calculations are resource hungry, keeping the number of lights low is an important optimization. Limit for any given frame can be set using options.
 To make usage easier, only 1 directional light is allowed, and if it is set, that light is never disabled (assumed Moon/Sun). 1 directional +  (limit - 1) point lights may be active at any given time. Engine itself decides which ones to activate and deactivate using player position, so adding any number of  point lights is allowed.
+
+Which point lights are active is decided by each light's **Radius** - a light is only considered while the player can see the sphere it reaches. A new point light starts at radius 20; a smaller radius is cheaper to cull and gives sharper shadows, since the radius is also the shadow map's depth range. Everything else about a light is edited after it is added, from the object editor - see :ref:`Light Object Settings`.
 
 Adding GUI Elements
 ___________________
@@ -359,6 +363,111 @@ The logic of triggers is as follows:
     #. If player was not detected ever before, and *First Enter Trigger* is set, run it.
     #. If player was not detected ever before, but *First Enter Trigger* is not set, and *Enter Trigger* is set, run *Enter Trigger*.
     #. If player was detected before, if *Enter Trigger* is set, run *Enter Trigger*.
+
+.. _Light Object Settings:
+
+Light Object Settings
+_____________________
+
+.. figure:: _static/media/images/ObjectEditor/pointLightEditor.png
+    :align: center
+
+    Point light editor controls
+
+Selecting a light shows a panel grouped under separator headings. Point and directional lights show different groups, since a directional light has neither a position nor a falloff.
+
+**Color** is hue only - it is clamped to 0-1, and brightness comes from **Intensity**. The two used to be the same control, which made it impossible to brighten a warm light without washing it toward white.
+
+**Point Light**
+
+*Position* holds a precise drag and a crude slider, each a single three-component control. The precise drag is a fine-tune window of plus or minus 5 units around wherever the crude slider was last left, so set the rough position with the slider first, then refine with the drag. If the light is attached to another object, this group edits the local offset instead and shows the resulting world position as read-only text above it.
+
+*Light* holds the three properties that decide what the light is:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Setting
+     - Description
+   * - ``Color``
+     - The light's hue. Clamped to 0-1; brightness is Intensity.
+   * - ``Intensity``
+     - Brightness at the centre of the light. Values above 1 saturate rather than getting brighter, widening the fully lit core instead - there is no HDR stage, so 1 is as bright as a surface can render.
+   * - ``Radius``
+     - Where the light reaches exactly zero, in world units. This is also the culling distance and the shadow map's depth range, so it is the single number that decides how expensive the light is.
+
+*Attenuation* holds the shape of the falloff between the centre and the radius - **Edge Brightness**, **Falloff**, **Constant**, **Linear** and **Exponential**. These five interact, and are described under *How a point light falls off* below.
+
+.. note::
+    A newly added point light starts at ``Radius`` 20. Lights loaded from a map saved before these settings existed have no radius stored, so they come up at 20 as well. If an old map looks like its lights stop short, this is why - set the radius you actually want and re-save.
+
+**Directional Light**
+
+A directional light has no position, no radius and no attenuation. It lights everything in the world equally, from a direction.
+
+*Direction* is a single three-component drag, relative to the player. It is normalised after every edit, and its Y component is held at or below zero, since a directional light pointing upward lights nothing.
+
+*Light* holds **Color** and **Ambient**. Ambient is added to every object during shading regardless of facing or distance, so it is the cheapest way to keep shadowed areas from going pure black.
+
+Only one directional light is allowed per map, and it is never culled - see :ref:`Adding Lights`.
+
+**How a point light falls off**
+
+Brightness at distance ``d`` from a point light is::
+
+    L(d) = Intensity / (Constant + Linear*d + Exponential*d²)  ×  (1 - (d/Radius)^Falloff)²
+
+The first term is the classic inverse-square style attenuation curve. The second is a window that forces the result to exactly zero at the radius, so a light never pops off at its culling boundary - it lands on zero with zero slope.
+
+**Edge Brightness** is how bright the attenuation curve still is when it reaches the radius, as a fraction of the brightness at the centre. It is the control that decides whether a light reads as a lit room or as a spotlight:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Edge Brightness
+     - Brightness 1 unit from a light with Radius 2 and Intensity 1
+   * - ``1.0``
+     - No attenuation at all - the light is uniform out to the radius, and only Falloff shapes the edge.
+   * - ``0.5`` (default)
+     - 0.70 - an evenly lit room.
+   * - ``0.25``
+     - 0.50.
+   * - ``0.05``
+     - 0.15.
+   * - ``0.01``
+     - 0.03 - a small bright core with a long dim tail, like a candle flame.
+
+**Falloff** is the exponent of the window, and controls how much of the nominal radius actually carries light. At 1 the light rounds off early and is effectively gone well inside the radius; at 32 it holds the attenuation curve out almost to the boundary and then drops. The default is 4. It cannot be set below 1 - at 0 the window would be zero everywhere and the light would go completely black.
+
+**Constant**, **Linear** and **Exponential** are the shape of the attenuation curve, and they are not independent of each other. Requiring the curve to land on Edge Brightness exactly at the radius fixes their relationship::
+
+    Linear × Radius  +  Exponential × Radius²  =  Constant × (1/EdgeBrightness - 1)
+
+The editor keeps that equation true at all times, which means **editing one of them moves the others**, and you will see them move as you drag:
+
+* Editing **Constant** rescales Linear and Exponential proportionally. Constant is the divisor at distance zero, so it sets centre brightness - ``L(0) = Intensity / Constant``.
+* Editing **Linear** gives the rest of the budget to Exponential, and the other way round. Their drag maxima are the point at which one alone would consume the whole budget, so an unsolvable combination cannot be entered.
+* Editing **Radius** rescales Linear and Exponential, since their contribution is measured at the radius.
+* Editing **Edge Brightness** rescales Linear and Exponential onto the new budget.
+* Editing **Intensity** deliberately moves nothing. It is a pure multiplier.
+
+The practical consequence is that Linear and Exponential behave as a *mix* rather than as absolute values - what matters is their ratio to each other. More Exponential concentrates the light toward the centre. More Linear spreads it, though note that ``1/(1 + Linear × d)`` actually falls faster near the light than the quadratic term does, so neither term produces a flat, evenly lit pool on its own. That is what the window is for.
+
+.. note::
+    Because the panel re-solves the values you did not touch, the numbers on screen are always the numbers the renderer uses. Nothing is rewritten silently on the way to the GPU.
+
+**Light radius visualization**
+
+.. figure:: _static/media/images/ObjectEditor/pointLightSphere.png
+    :align: center
+
+    Light radius visualization
+
+While a point light is selected, a wireframe sphere is drawn at its position with the light's radius, in the same way a selected particle emitter shows its spawn box and trajectory hull. The sphere is three orthogonal great circles rather than a full mesh, which keeps it under 100 lines.
+
+This is the exact distance used for culling and for the shadow map depth range, so what you see is what the engine uses rather than an approximation of it. The sphere disappears when the light is deselected or the editor is closed. Directional lights have no radius and draw nothing.
 
 GUI Text Settings
 _________________

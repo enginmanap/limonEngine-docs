@@ -315,7 +315,7 @@ Debugging and Profiling
    * - ``debug_drawLines``
      - Boolean
      - ``False``
-     - Draw debug lines.
+     - Draw the engine's own debug lines - shadow cascade frustums and ray cast results. Toggled at runtime with F4. Lines drawn through the API and the editor's object visualisations are not affected by it and render regardless.
    * - ``debug_drawBufferSize``
      - Long
      - ``1000``

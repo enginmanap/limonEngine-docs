@@ -137,7 +137,9 @@ Debug Line Draw
    * - ``clearDebugLines(bufferID)``
      - Clear all lines in the buffer. (:ref:`C++ <LimonAPI-clearDebugLines>` | :ref:`Python <pythonApi-clear_debug_lines>`)
 
-Colour is linearly interpolated from ``fromColor`` to ``toColor`` along each line. The ``DebugDrawLines`` option must be enabled for lines to render.
+Colour is linearly interpolated from ``fromColor`` to ``toColor`` along each line.
+
+The engine draws its own editor visualisations through these same buffers - a selected particle emitter's spawn box and trajectory hull, and a selected point light's radius sphere. Those are drawn whenever the object is selected and do not depend on the ``debug_drawLines`` option; that option gates the engine's *own* producers such as the shadow cascade frustums and ray cast results, not the buffers a plugin fills.
 
 Profiling System
 ================
