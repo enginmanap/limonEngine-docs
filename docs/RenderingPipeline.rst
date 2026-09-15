@@ -196,9 +196,9 @@ Lighting
 --------
 
 * Directional light with cascaded shadow maps. Each cascade uses a tight-fitting, texel-snapped orthographic view derived from the player view frustum and the ``CascadeLimitList`` boundaries -no manual projection extents required. ``lightOrthogonalProjectionBackOff`` controls how far behind the camera the light origin is pulled to capture shadow casters behind the player. Staggered cascade rendering is optional (~10% performance gain).
-* Point lights with cube map shadow casting.
-* Ambient lighting.
-* Lights are creatable and removable at runtime via :ref:`addLight <LimonAPI-addLight>` / :ref:`removeLight <LimonAPI-removeLight>` (:ref:`Python: add_light <pythonApi-add_light>` / :ref:`remove_light <pythonApi-remove_light>`).
+* Point lights with cube map shadow casting. A point light is shaped by Intensity, Radius, Falloff, Edge Brightness and a constrained Constant/Linear/Exponential curve, and reaches exactly zero at its radius - that radius is also its culling distance and shadow depth range. See :ref:`Light Object Settings`.
+* Ambient lighting, per light. It is never shadowed. A point light's ambient falls off with distance and reaches zero at its radius; a directional light's reaches the whole world evenly.
+* Lights are creatable and removable at runtime via :ref:`addLightPoint <LimonAPI-addLightPoint>` / :ref:`addLightDirectional <LimonAPI-addLightDirectional>` / :ref:`removeLight <LimonAPI-removeLight>` (:ref:`Python: add_light_point <pythonApi-add_light_point>` / :ref:`add_light_directional <pythonApi-add_light_directional>` / :ref:`remove_light <pythonApi-remove_light>`). Only one directional light can exist; a second one is rejected.
 * No global illumination -direct lighting with shadow maps only.
 
 Configuration Reference

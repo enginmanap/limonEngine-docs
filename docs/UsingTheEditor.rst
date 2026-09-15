@@ -382,7 +382,7 @@ Selecting a light shows a panel grouped under separator headings. Point and dire
 
 *Position* holds a precise drag and a crude slider, each a single three-component control. The precise drag is a fine-tune window of plus or minus 5 units around wherever the crude slider was last left, so set the rough position with the slider first, then refine with the drag. If the light is attached to another object, this group edits the local offset instead and shows the resulting world position as read-only text above it.
 
-*Light* holds the three properties that decide what the light is:
+*Light* holds the properties that decide what the light is:
 
 .. list-table::
    :header-rows: 1
@@ -396,11 +396,15 @@ Selecting a light shows a panel grouped under separator headings. Point and dire
      - Brightness at the centre of the light. Values above 1 saturate rather than getting brighter, widening the fully lit core instead - there is no HDR stage, so 1 is as bright as a surface can render.
    * - ``Radius``
      - Where the light reaches exactly zero, in world units. This is also the culling distance and the shadow map's depth range, so it is the single number that decides how expensive the light is.
+   * - ``Ambient``
+     - Fill light, added regardless of which way a surface faces and never shadowed - it is what keeps shadowed areas from going pure black. It falls off with distance like the rest of the light and reaches zero at the radius.
 
 *Attenuation* holds the shape of the falloff between the centre and the radius - **Edge Brightness**, **Falloff**, **Constant**, **Linear** and **Exponential**. These five interact, and are described under *How a point light falls off* below.
 
 .. note::
     A newly added point light starts at ``Radius`` 20. Lights loaded from a map saved before these settings existed have no radius stored, so they come up at 20 as well. If an old map looks like its lights stop short, this is why - set the radius you actually want and re-save.
+
+    Constant cannot go below 0.01, and that floor is applied on load too: a saved light with a smaller Constant comes up at 0.01, with Linear and Exponential rebalanced to match. The editor has never allowed a smaller value, so this only affects lights set from script or maps edited by hand.
 
 **Directional Light**
 
@@ -408,7 +412,7 @@ A directional light has no position, no radius and no attenuation. It lights eve
 
 *Direction* is a single three-component drag, relative to the player. It is normalised after every edit, and its Y component is held at or below zero, since a directional light pointing upward lights nothing.
 
-*Light* holds **Color** and **Ambient**. Ambient is added to every object during shading regardless of facing or distance, so it is the cheapest way to keep shadowed areas from going pure black.
+*Light* holds **Color** and **Ambient**. Ambient is added to every object during shading regardless of facing, and is never shadowed, so it is the cheapest way to keep shadowed areas from going pure black. A directional light has no falloff, so unlike a point light's ambient it reaches the whole world evenly.
 
 Only one directional light is allowed per map, and it is never culled - see :ref:`Adding Lights`.
 
@@ -418,7 +422,7 @@ Brightness at distance ``d`` from a point light is::
 
     L(d) = Intensity / (Constant + Linear*d + Exponential*d²)  ×  (1 - (d/Radius)^Falloff)²
 
-The first term is the classic inverse-square style attenuation curve. The second is a window that forces the result to exactly zero at the radius, so a light never pops off at its culling boundary - it lands on zero with zero slope.
+The first term is the classic inverse-square style attenuation curve. The second is a window. ``1 - (d/Radius)^Falloff`` is exactly zero at the radius whatever Falloff is, which is what stops the light there. Squaring it makes the curve arrive at zero flat instead of at an angle, so there is no visible ring where the light ends and it never pops off at its culling boundary.
 
 **Edge Brightness** is how bright the attenuation curve still is when it reaches the radius, as a fraction of the brightness at the centre. It is the control that decides whether a light reads as a lit room or as a spotlight:
 
@@ -447,7 +451,7 @@ The first term is the classic inverse-square style attenuation curve. The second
 
 The editor keeps that equation true at all times, which means **editing one of them moves the others**, and you will see them move as you drag:
 
-* Editing **Constant** rescales Linear and Exponential proportionally. Constant is the divisor at distance zero, so it sets centre brightness - ``L(0) = Intensity / Constant``.
+* Editing **Constant** rescales Linear and Exponential proportionally. Constant is the divisor at distance zero, so it sets centre brightness - ``L(0) = Intensity / Constant`` - and it cannot go below 0.01.
 * Editing **Linear** gives the rest of the budget to Exponential, and the other way round. Their drag maxima are the point at which one alone would consume the whole budget, so an unsolvable combination cannot be entered.
 * Editing **Radius** rescales Linear and Exponential, since their contribution is measured at the radius.
 * Editing **Edge Brightness** rescales Linear and Exponential onto the new budget.
@@ -468,6 +472,12 @@ The practical consequence is that Linear and Exponential behave as a *mix* rathe
 While a point light is selected, a wireframe sphere is drawn at its position with the light's radius, in the same way a selected particle emitter shows its spawn box and trajectory hull. The sphere is three orthogonal great circles rather than a full mesh, which keeps it under 100 lines.
 
 This is the exact distance used for culling and for the shadow map depth range, so what you see is what the engine uses rather than an approximation of it. The sphere disappears when the light is deselected or the editor is closed. Directional lights have no radius and draw nothing.
+
+**Setting these using API**
+
+Everything on this panel is reachable from a trigger, actor or Python script, and a light can be created with its falloff already set rather than tuned afterwards. See :ref:`addLightPoint <LimonAPI-addLightPoint>`, :ref:`setLightPointParameters <LimonAPI-setLightPointParameters>`, :ref:`setLightPointAttenuation <LimonAPI-setLightPointAttenuation>` and :ref:`setLightAmbient <LimonAPI-setLightAmbient>` for C++, or :ref:`add_light_point <pythonApi-add_light_point>`, :ref:`set_light_point_parameters <pythonApi-set_light_point_parameters>`, :ref:`set_light_point_attenuation <pythonApi-set_light_point_attenuation>` and :ref:`set_light_ambient <pythonApi-set_light_ambient>` for Python.
+
+Because Constant, Linear and Exponential are constrained, the API takes Constant and Linear and solves Exponential, exactly as the panel does. If what you know instead is the Linear and Exponential you want, :ref:`solveLightPointAttenuation <LimonAPI-solveLightPointAttenuation>` (:ref:`Python <pythonApi-solve_light_point_attenuation>`) tells you which Constant produces them, without touching the light. It runs through the same code as the panel and the setter, so feeding its answer back gives exactly that result, and it flags when the request had to be clamped to the closest reachable values.
 
 GUI Text Settings
 _________________

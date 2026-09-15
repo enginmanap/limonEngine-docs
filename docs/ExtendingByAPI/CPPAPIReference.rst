@@ -152,7 +152,9 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setEmitterParticleGravity(uint32_t emitterID, const LimonTypes::Vec4 &gravity)<LimonAPI-setEmitterParticleGravity>`                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``uint32_t``                                  | :ref:`addLight(uint32_t lightType, const LimonAPI::Vec4& position, const LimonAPI::Vec4& color)<LimonAPI-addLight>`                                                                                                                                                                                            |
+| ``uint32_t``                                  | :ref:`addLightPoint(const LimonTypes::Vec4& position, const LimonTypes::Vec4& color, float intensity, float radius, float falloff, float edgeBrightness)<LimonAPI-addLightPoint>`                                                                                                                              |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`addLightDirectional(const LimonTypes::Vec4& direction, const LimonTypes::Vec4& color)<LimonAPI-addLightDirectional>`                                                                                                                                                                                     |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`removeLight(uint32_t lightID)<LimonAPI-removeLight>`                                                                                                                                                                                                                                                     |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -165,6 +167,22 @@ C++ API reference
 | ``LimonTypes::Vec4``                          | :ref:`getLightColor(uint32_t lightID)<LimonAPI-getLightColor>`                                                                                                                                                                                                                                                 |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setLightTranslate(uint32_t lightID, const LimonTypes::Vec4& position)<LimonAPI-setLightTranslate>`                                                                                                                                                                                                       |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`getLightType(uint32_t lightID)<LimonAPI-getLightType>`                                                                                                                                                                                                                                                   |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setLightPointParameters(uint32_t lightID, float intensity, float radius, float falloff, float edgeBrightness)<LimonAPI-setLightPointParameters>`                                                                                                                                                         |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getLightPointParameters(uint32_t lightID)<LimonAPI-getLightPointParameters>`                                                                                                                                                                                                                             |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setLightPointAttenuation(uint32_t lightID, float constant, float linear)<LimonAPI-setLightPointAttenuation>`                                                                                                                                                                                             |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getLightPointAttenuation(uint32_t lightID)<LimonAPI-getLightPointAttenuation>`                                                                                                                                                                                                                           |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`solveLightPointAttenuation(uint32_t lightID, float constant, float linear, float exponential)<LimonAPI-solveLightPointAttenuation>`                                                                                                                                                                      |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setLightAmbient(uint32_t lightID, const LimonTypes::Vec4& ambientColor)<LimonAPI-setLightAmbient>`                                                                                                                                                                                                       |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``LimonTypes::Vec4``                          | :ref:`getLightAmbient(uint32_t lightID)<LimonAPI-getLightAmbient>`                                                                                                                                                                                                                                             |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`loadAndSwitchWorld(const std::string& worldFileName)<LimonAPI-loadAndSwitchWorld>`                                                                                                                                                                                                                       |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -1227,23 +1245,37 @@ Parameters:
 Lighting
 ========
 
-.. _LimonAPI-addLight:
+.. _LimonAPI-addLightPoint:
 
-uint32_t addLight(uint32_t lightType, const LimonAPI::Vec4& position, const LimonAPI::Vec4& color)
----------------------------------------------------------------------------------------------------
+uint32_t addLightPoint(const LimonTypes::Vec4& position, const LimonTypes::Vec4& color, float intensity = 1.0f, float radius = 20.0f, float falloff = 4.0f, float edgeBrightness = 0.5f)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Creates and adds a new light to the world. Returns the new light's handle ID, or 0 on failure.
+Creates a point light and adds it to the world. Returns the new light's handle ID, or 0 on failure.
 
-``lightType`` values:
-
-* ``1`` - Directional light (position parameter is used as direction, normalized internally)
-* ``2`` - Point light
+The last four parameters are defaulted, so a two-argument call produces a light identical to one added from the editor. See :ref:`setLightPointParameters <LimonAPI-setLightPointParameters>` for what each one does.
 
 Parameters:
 
-#. uint32_t lightType: Type of light to create. 1 = directional, 2 = point.
-#. const LimonAPI::Vec4& position: World position for point lights; direction vector for directional lights. W component ignored.
-#. const LimonAPI::Vec4& color: RGB color of the light. Each component is clamped to [0, 1]. W component ignored.
+#. const LimonTypes::Vec4& position: World position of the light. W component ignored.
+#. const LimonTypes::Vec4& color: RGB color of the light. Each component is clamped to [0, 1]. W component ignored.
+#. float intensity: Brightness at the centre. Defaults to 1.0.
+#. float radius: Where the light reaches zero, in world units. Defaults to 20.0.
+#. float falloff: Edge window exponent, minimum 1. Defaults to 4.0.
+#. float edgeBrightness: Brightness at the radius as a fraction of the centre. Defaults to 0.5.
+
+.. _LimonAPI-addLightDirectional:
+
+uint32_t addLightDirectional(const LimonTypes::Vec4& direction, const LimonTypes::Vec4& color)
+----------------------------------------------------------------------------------------------
+
+Creates the world's directional light. Returns the new light's handle ID, or 0 on failure.
+
+Only one directional light can exist in a world, so this returns 0 and creates nothing if there already is one.
+
+Parameters:
+
+#. const LimonTypes::Vec4& direction: Direction the light shines toward, relative to the player. Normalized internally. W component ignored.
+#. const LimonTypes::Vec4& color: RGB color of the light. Each component is clamped to [0, 1]. W component ignored.
 
 .. _LimonAPI-removeLight:
 
@@ -1313,6 +1345,139 @@ Parameters:
 
 #. uint32_t lightID: Handle ID of the light
 #. const LimonTypes::Vec4& position: Target world-space position. W component will be ignored.
+
+.. _LimonAPI-getLightType:
+
+uint32_t getLightType(uint32_t lightID)
+----------------------------------------
+
+Returns 1 for a directional light, 2 for a point light, and 0 if no light with the given ID is found. Useful before calling any of the ``LightPoint`` methods, which do nothing on a directional light.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+
+.. _LimonAPI-setLightPointParameters:
+
+bool setLightPointParameters(uint32_t lightID, float intensity, float radius, float falloff, float edgeBrightness)
+-------------------------------------------------------------------------------------------------------------------
+
+Sets the four values that shape a point light's falloff, in one call. Returns false if no light with the given ID is found, or if it is a directional light - a directional light has no reach to shape.
+
+Editing these rebalances the light's Linear and Exponential attenuation onto the new budget, exactly as the editor does. See :ref:`setLightPointAttenuation <LimonAPI-setLightPointAttenuation>`.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+#. float intensity: Brightness at the centre. Above 1 it saturates rather than getting brighter, widening the fully lit core.
+#. float radius: Where the light reaches exactly zero, in world units. Also the culling distance and the shadow map depth range.
+#. float falloff: Exponent of the edge window, clamped to a minimum of 1. At 0 the window would be zero everywhere and the light would go black.
+#. float edgeBrightness: How bright the attenuation curve still is at the radius, as a fraction of the centre. 1.0 is no attenuation, 0.01 is a spotlight.
+
+.. _LimonAPI-getLightPointParameters:
+
+LimonTypes::Vec4 getLightPointParameters(uint32_t lightID)
+-----------------------------------------------------------
+
+Returns ``Vec4(intensity, radius, falloff, edgeBrightness)``. Returns zero Vec4 if no light with the given ID is found, or if it is a directional light. Zero is unambiguous here: a radius or falloff of 0 is never valid.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+
+.. _LimonAPI-setLightPointAttenuation:
+
+bool setLightPointAttenuation(uint32_t lightID, float constant, float linear)
+------------------------------------------------------------------------------
+
+Sets a point light's Constant and Linear attenuation. **Exponential is solved from them and cannot be set directly.** Returns false if no light with the given ID is found, or if it is a directional light.
+
+The three attenuation terms are not independent. Requiring the curve to reach ``edgeBrightness`` exactly at ``radius`` fixes their relationship::
+
+    Linear × radius  +  Exponential × radius²  =  Constant × (1/edgeBrightness − 1)
+
+One equation, three unknowns, so only two are ever free. Linear is clamped so the remaining budget cannot go negative. Read the result back with :ref:`getLightPointAttenuation <LimonAPI-getLightPointAttenuation>`, or work out the values in advance with :ref:`solveLightPointAttenuation <LimonAPI-solveLightPointAttenuation>`.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+#. float constant: The divisor at distance zero, so ``L(0) = intensity / constant``. Clamped to a minimum of 0.01.
+#. float linear: The linear term. Clamped to whatever the budget allows.
+
+.. _LimonAPI-getLightPointAttenuation:
+
+LimonTypes::Vec4 getLightPointAttenuation(uint32_t lightID)
+------------------------------------------------------------
+
+Returns ``Vec4(constant, linear, exponential)`` with w unused. Returns zero Vec4 if no light with the given ID is found, or if it is a directional light.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+
+.. _LimonAPI-solveLightPointAttenuation:
+
+LimonTypes::Vec4 solveLightPointAttenuation(uint32_t lightID, float constant, float linear, float exponential)
+----------------------------------------------------------------------------------------------------------------
+
+Works out a valid attenuation triple for a light's current radius and edge brightness, **without modifying the light**. Returns ``Vec4(constant, linear, exponential, exact)``, or zero Vec4 if no light with the given ID is found or it is a directional light. Feed the Constant and Linear it gives you into :ref:`setLightPointAttenuation <LimonAPI-setLightPointAttenuation>`.
+
+The typical question it answers: you know the Linear and Exponential you want, so what Constant makes the setter produce them? Pass ``-1`` for Constant and it tells you.
+
+The result is computed through the same rebalance the setter itself uses, so feeding it back reproduces it exactly. When a request cannot be met - the Constant it needs is below the 0.01 floor, Linear is more than the budget allows, or edge brightness is 1 so there is no budget at all - the closest reachable triple is returned and ``w`` is ``0``. ``w`` is ``1`` when every value you passed came back unchanged.
+
+**Pass a negative value for anything you want solved for you.** Zero is a real request, not a sentinel - a pure-quadratic light legitimately has Linear 0, so it has to stay expressible.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Passed negative
+     - What happens
+   * - nothing
+     - Constant is held, Linear and Exponential are rescaled proportionally onto the budget.
+   * - Exponential only
+     - Solved from the budget. If Linear already overshoots it, Linear is clamped and Exponential comes back 0.
+   * - Linear only
+     - Mirror of the above.
+   * - Constant only
+     - Derived as ``(Linear × radius + Exponential × radius²) / (1/edgeBrightness − 1)``.
+   * - Linear and Exponential
+     - The budget is split evenly between their two contributions.
+   * - Constant and one other
+     - Constant becomes 1, then the remaining one is solved.
+   * - all three
+     - The light's current attenuation is returned unchanged, with ``w`` 1.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+#. float constant: Desired constant term, or negative to have it solved
+#. float linear: Desired linear term, or negative to have it solved
+#. float exponential: Desired exponential term, or negative to have it solved
+
+.. _LimonAPI-setLightAmbient:
+
+bool setLightAmbient(uint32_t lightID, const LimonTypes::Vec4& ambientColor)
+------------------------------------------------------------------------------
+
+Sets a light's ambient fill colour, which is added during shading regardless of surface facing and is not shadowed - it is what keeps shadowed surfaces from going pure black. Works on both light types. For a point light it falls off with distance exactly like the rest of the light and reaches zero at the radius. Returns false if no light with the given ID is found.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
+#. const LimonTypes::Vec4& ambientColor: RGB colour to set. W component will be ignored.
+
+.. _LimonAPI-getLightAmbient:
+
+LimonTypes::Vec4 getLightAmbient(uint32_t lightID)
+----------------------------------------------------
+
+Returns the ambient colour of the light as Vec4 with w=1. Returns zero Vec4 if no light with the given ID is found.
+
+Parameters:
+
+#. uint32_t lightID: Handle ID of the light
 
 World Management
 ================

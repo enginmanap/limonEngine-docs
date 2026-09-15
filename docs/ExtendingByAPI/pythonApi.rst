@@ -1541,24 +1541,53 @@ ray_cast_first_hit
 Lighting
 ~~~~~~~~
 
-.. _pythonApi-add_light:
+.. _pythonApi-add_light_point:
 
-add_light
-^^^^^^^^^
+add_light_point
+^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-    def add_light(light_type: int, position: Vec4, color: Vec4) -> int:
+    def add_light_point(position: Vec4, color: Vec4,
+                        intensity: float = 1.0, radius: float = 20.0,
+                        falloff: float = 4.0, edge_brightness: float = 0.5) -> int:
         """
-        Add a new light to the scene.
+        Add a point light to the scene.
+
+        The four falloff values default to what a light added from the editor gets.
+        See set_light_point_parameters.
 
         Args:
-            light_type: Light type - 1 for directional, 2 for point
             position: World-space position of the light
             color: RGB color of the light (Vec4; w is ignored)
+            intensity: Brightness at the centre
+            radius: Where the light reaches zero, in world units
+            falloff: Edge window exponent, minimum 1
+            edge_brightness: Brightness at the radius as a fraction of the centre
 
         Returns:
             int: Light ID, or 0 on failure
+        """
+
+.. _pythonApi-add_light_directional:
+
+add_light_directional
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_light_directional(direction: Vec4, color: Vec4) -> int:
+        """
+        Add the world's directional light. Only one can exist, so this returns 0
+        and creates nothing if there already is one.
+
+        Args:
+            direction: Direction the light shines toward, relative to the player.
+                       Normalized internally (w is ignored)
+            color: RGB color of the light (Vec4; w is ignored)
+
+        Returns:
+            int: Light ID, or 0 on failure or if a directional light already exists
         """
 
 .. _pythonApi-remove_light:
@@ -1661,6 +1690,213 @@ set_light_translate
 
         Returns:
             bool: True if the light was found and updated
+        """
+
+
+.. _pythonApi-get_light_type:
+
+get_light_type
+^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_light_type(light_id: int) -> int:
+        """
+        Ask what kind of light this is. Worth calling before any light_point method,
+        since those do nothing on a directional light.
+
+        Args:
+            light_id: Handle ID of the light
+
+        Returns:
+            int: 1 for directional, 2 for point, 0 if not found
+        """
+
+.. _pythonApi-set_light_point_parameters:
+
+set_light_point_parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_light_point_parameters(light_id: int, intensity: float, radius: float,
+                                   falloff: float, edge_brightness: float) -> bool:
+        """
+        Set the four values that shape a point light's falloff, in one call.
+        Rebalances the light's linear and exponential attenuation onto the new budget,
+        exactly as the editor does.
+
+        Args:
+            light_id:        Handle ID of the light
+            intensity:       Brightness at the centre. Above 1 it saturates rather than
+                             getting brighter, widening the fully lit core
+            radius:          Where the light reaches exactly zero, in world units. Also
+                             the culling distance and the shadow map depth range
+            falloff:         Edge window exponent, clamped to a minimum of 1. At 0 the
+                             window would be zero everywhere and the light would go black
+            edge_brightness: Brightness at the radius as a fraction of the centre.
+                             1.0 is no attenuation, 0.01 is a spotlight
+
+        Returns:
+            bool: False if not found, or if the light is directional
+        """
+
+.. _pythonApi-get_light_point_parameters:
+
+get_light_point_parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_light_point_parameters(light_id: int) -> Vec4:
+        """
+        Read back the four falloff values.
+
+        Args:
+            light_id: Handle ID of the light
+
+        Returns:
+            Vec4: (intensity, radius, falloff, edge_brightness), or zero Vec4 if not
+                  found or the light is directional. Zero is unambiguous here, a radius
+                  or falloff of 0 is never valid
+        """
+
+.. _pythonApi-set_light_point_attenuation:
+
+set_light_point_attenuation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_light_point_attenuation(light_id: int, constant: float, linear: float) -> bool:
+        """
+        Set a point light's constant and linear attenuation. Exponential is solved from
+        them and cannot be set directly.
+
+        The three terms are not independent. Requiring the curve to reach edge_brightness
+        exactly at radius fixes their relationship:
+
+            linear * radius + exponential * radius^2 = constant * (1/edge_brightness - 1)
+
+        One equation, three unknowns, so only two are ever free. Linear is clamped so the
+        remaining budget cannot go negative.
+
+        Args:
+            light_id: Handle ID of the light
+            constant: Divisor at distance zero, so L(0) = intensity / constant.
+                      Clamped to a minimum of 0.01
+            linear:   The linear term, clamped to whatever the budget allows
+
+        Returns:
+            bool: False if not found, or if the light is directional
+        """
+
+.. _pythonApi-get_light_point_attenuation:
+
+get_light_point_attenuation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_light_point_attenuation(light_id: int) -> Vec4:
+        """
+        Read back the solved attenuation triple.
+
+        Args:
+            light_id: Handle ID of the light
+
+        Returns:
+            Vec4: (constant, linear, exponential) with w unused, or zero Vec4 if not
+                  found or the light is directional
+        """
+
+.. _pythonApi-solve_light_point_attenuation:
+
+solve_light_point_attenuation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def solve_light_point_attenuation(light_id: int, constant: float, linear: float,
+                                      exponential: float) -> Vec4:
+        """
+        Work out a valid attenuation triple for this light's current radius and edge
+        brightness, without modifying the light. Feed the constant and linear it gives
+        you into set_light_point_attenuation.
+
+        The typical question: you know the linear and exponential you want, so what
+        constant makes the setter produce them? Pass -1 for constant.
+
+        The result is computed through the same rebalance the setter uses, so feeding it
+        back reproduces it exactly. If the request can't be met - the constant it needs
+        is under the 0.01 floor, linear is over the budget, or edge_brightness is 1 so
+        there is no budget - the closest reachable triple comes back with w = 0.
+
+        Pass a negative value for anything you want solved for you. Zero is a real
+        request, not a sentinel - a pure quadratic light legitimately has linear 0, so
+        it has to stay expressible.
+
+            nothing negative        constant is held, linear and exponential are
+                                    rescaled proportionally onto the budget
+            exponential only        solved from the budget. If linear overshoots it,
+                                    linear is clamped and exponential comes back 0
+            linear only             mirror of the above
+            constant only           derived from the two distance terms
+            linear and exponential  the budget is split evenly between them
+            constant and one other  constant becomes 1, then the other is solved
+            all three               the light's current attenuation is returned, w = 1
+
+        Args:
+            light_id:    Handle ID of the light
+            constant:    Desired constant term, or negative to have it solved
+            linear:      Desired linear term, or negative to have it solved
+            exponential: Desired exponential term, or negative to have it solved
+
+        Returns:
+            Vec4: (constant, linear, exponential, exact), or zero Vec4 if not found or
+                  the light is directional. exact (w) is 1 if the request survived,
+                  0 if xyz is only the closest reachable triple
+        """
+
+.. _pythonApi-set_light_ambient:
+
+set_light_ambient
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_light_ambient(light_id: int, ambient_color: Vec4) -> bool:
+        """
+        Set a light's ambient fill colour. Added during shading regardless of surface
+        facing, and never shadowed - it is what keeps shadowed surfaces off pure black.
+
+        Works on both light types. For a point light it falls off with distance exactly
+        like the rest of the light and reaches zero at the radius.
+
+        Args:
+            light_id:      Handle ID of the light
+            ambient_color: RGB colour (Vec4; w is ignored)
+
+        Returns:
+            bool: True if the light was found and updated
+        """
+
+.. _pythonApi-get_light_ambient:
+
+get_light_ambient
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_light_ambient(light_id: int) -> Vec4:
+        """
+        Read back a light's ambient fill colour.
+
+        Args:
+            light_id: Handle ID of the light
+
+        Returns:
+            Vec4: RGB colour with w=1, or zero Vec4 if not found
         """
 
 World Management
