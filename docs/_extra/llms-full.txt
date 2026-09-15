@@ -93,6 +93,7 @@ Models can be flipped on X, Y, Z axes — any combination, editable in editor. E
 
 - attachObjectToObject(objectID, parentID) — child position is relative to parent
 - attachObjectToObjectAtWorldPosition(objectID, parentID) — attach while keeping current world position
+- detachObjectFromParent(objectID) — detach, object stays at its current world position; false if not found or no parent
 - getModelChildren(modelID) — returns vector of all child IDs
 - getObjectParent(objectID) — returns parent ID, 0 if none
 - getObjectByName(name) — searches models, GUI elements, and triggers

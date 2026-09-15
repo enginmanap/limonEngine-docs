@@ -50,6 +50,8 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`attachObjectToObjectAtWorldPosition(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObjectAtWorldPosition>`                                                                                                                                                                       |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`detachObjectFromParent(uint32_t objectID)<LimonAPI-detachObjectFromParent>`                                                                                                                                                                                                                              |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setObjectTemporary(uint32_t objectID, bool temporary)<LimonAPI-setObjectTemporary>`                                                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getObjectTransformation(uint32_t objectID)<LimonAPI-getObjectTransformation>`                                                                                                                                                                                                                            |
@@ -508,6 +510,17 @@ Parameters:
 
 #. uint32_t objectID: handle id of the object to attach as child.
 #. uint32_t objectToAttachToID: handle id of the object to attach as parent.
+
+.. _LimonAPI-detachObjectFromParent:
+
+bool detachObjectFromParent(uint32_t objectID)
+----------------------------------------------
+
+Detaches object indicated by the handle ID from its parent. The object stays at the world position it had at the moment of detachment, and no longer moves with the parent. Returns true if detached, false if the handle ID is invalid or the object has no parent.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the object to detach.
 
 .. _LimonAPI-setObjectTemporary:
 

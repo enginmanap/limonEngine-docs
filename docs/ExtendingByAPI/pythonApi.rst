@@ -398,6 +398,23 @@ attach_object_to_object_at_world_position
             bool: True if attachment succeeded
         """
 
+detach_object_from_parent
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def detach_object_from_parent(object_id: int) -> bool:
+        """
+        Detach an object from its parent. The object stays at the world position it had
+        at the moment of detachment, and no longer follows the parent.
+
+        Args:
+            object_id: ID of the object to detach
+
+        Returns:
+            bool: True if detached, False if the object is not found or has no parent
+        """
+
 remove_trigger_object
 ^^^^^^^^^^^^^^^^^^^^^
 
