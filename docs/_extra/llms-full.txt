@@ -34,6 +34,8 @@ GenericParameter serves three concerns simultaneously: load from disk, serialize
 
 Stale ID detection: any type referencing a GameObject by ID detects dangling references on load (object removed after save) and resets the parameter rather than leaving a stale ID.
 
+Jump to reference: MODEL, TRIGGER, GUI_TEXT, LIGHT, SOUND and CAMERA_RIG widgets have a "->" button after the dropdown that makes the referenced object the editor's picked object. Disabled while the parameter is unset.
+
 ### ValueType union
 
 - STRING: char[64] stringValue

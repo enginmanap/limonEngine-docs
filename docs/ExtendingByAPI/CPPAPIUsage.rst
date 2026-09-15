@@ -88,6 +88,8 @@ Possible values:
 * SOUND: Lists the sounds in the map. Uses value type LONG, sets world object ID. Stale IDs are detected and reset.
 * CAMERA_RIG: Lists the camera rigs in the map. Uses value type LONG, sets world object ID. Stale IDs are detected and reset.
 
+MODEL, TRIGGER, GUI_TEXT, LIGHT, SOUND and CAMERA_RIG widgets also get a **->** button next to the drop-down, which selects the referenced object in the editor. It is disabled while nothing is selected. Nothing is needed from the extension for this.
+
 ValueTypes Enum
 ===============
 

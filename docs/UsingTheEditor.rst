@@ -279,6 +279,8 @@ Object editor has two parts. One is the window that is on the left by default, a
 
 Object editor has tree view of the map, you can use it to change selected object, as well as clicking on them. All object have a remove button at the end of the window, which removes selected object completely.
 
+Settings that reference another object in the map, like a model an Actor watches or a trigger an Action listens to, have a small **->** button next to their drop-down. Clicking it selects the referenced object, so you can jump to it without searching the tree. The button is greyed out while the drop-down shows "Not selected". This applies to Model, Trigger, GUI Text, Light, Sound and Camera Rig references, wherever they appear: trigger and actor settings, player extension settings, on load actions and camera rigs.
+
 .. figure:: _static/media/images/ObjectEditor/object_marked.png
     :align: center
 
