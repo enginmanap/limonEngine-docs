@@ -2615,7 +2615,11 @@ Base class for creating custom triggers.
 
         def get_parameters(self) -> list:
             """
-            Return a list of parameters this trigger requires.
+            Return the default parameters of this trigger.
+
+            Called only once, when the trigger is created. The engine keeps the
+            edited or loaded values and passes them to run(), so read values
+            there, not from members set here.
 
             Returns:
                 list: List of GenericParameter objects
@@ -2624,6 +2628,7 @@ Base class for creating custom triggers.
             param = GenericParameter()
             param.request_type = RequestParameterType.FREE_TEXT
             param.description = "Message to display"
+            param.value_type = ValueType.STRING
             param.value = "Hello from Python!"
             return [param]
 
@@ -2667,6 +2672,7 @@ Base class for creating player extensions.
 
 .. code-block:: python
 
+    import limon
     from player_extension_interface import PlayerExtensionInterface
 
     class MyPlayerExtension(PlayerExtensionInterface):
@@ -2683,7 +2689,7 @@ Base class for creating player extensions.
                 player_info: PlayerInformation object with player state
                 time: Current game time
             """
-            if input_states.get_input_status(limon.Inputs.KEY_SPACE):
+            if input_states.get_input_status(limon.InputActions.JUMP):
                 print("Jump!")
 
         def interact(self, interaction_data):
@@ -2711,6 +2717,7 @@ Base class for creating player extensions.
             param = GenericParameter()
             param.request_type = RequestParameterType.FREE_NUMBER
             param.description = "Starting ammo"
+            param.value_type = ValueType.LONG
             param.value = 30
             return [param]
 
@@ -2745,8 +2752,8 @@ Base class for creating AI actors.
     from actor_interface import ActorInterface
 
     class MyActor(ActorInterface):
-        def __init__(self, limon_api):
-            super().__init__(limon_api)
+        def __init__(self, actor_id, limon_api):
+            super().__init__(actor_id, limon_api)
             self._limon_api = limon_api
 
         def get_name(self) -> str:
@@ -2794,6 +2801,7 @@ Base class for creating AI actors.
             param = GenericParameter()
             param.request_type = RequestParameterType.FREE_TEXT
             param.description = "Actor behavior"
+            param.value_type = ValueType.STRING
             param.value = "friendly"
             return [param]
 
@@ -2914,9 +2922,12 @@ Utility Functions
     extension_names = limon.get_extension_names()
     actor_names = limon.get_actor_names()
 
-    # Create player extension and actor dynamically
+    # Create registered triggers, player extensions, actors and camera rigs dynamically.
+    # These classes have no constructor; create_* is the only way to get an instance.
+    trigger = limon.TriggerInterface.create_trigger(name: str, limon_api)
     extension = limon.PlayerExtensionInterface.create_extension(name: str, limon_api)
     actor = limon.ActorInterface.create_actor(name: str, id: int, limon_api)
+    camera_rig = limon.CameraExtensionInterface.create_extension(name: str, limon_api)
 
 Best Practices
 --------------

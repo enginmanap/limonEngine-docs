@@ -80,7 +80,7 @@ These constants are defined in ``src/limonAPI/InputStates.h`` as ``constexpr uin
      - Super/GUI key held.
    * - ``TEXT_INPUT``
      - Digital
-     - Set for one frame when SDL delivers a text input event. **Engine-internal** — set automatically from ``SDL_EVENT_TEXT_INPUT``; not configurable via ``inputBindings.xml``. Use ``getTextInput()`` / ``get_text_input()`` to read the typed character(s).
+     - Set for one frame when SDL delivers a text input event. **Engine-internal** — set automatically from ``SDL_EVENT_TEXT_INPUT``; not configurable via ``inputBindings.xml``. Use ``getText()`` / ``get_text()`` to read the typed character(s).
    * - ``NUMBER_1``
      - Digital
      - ``1`` key.
@@ -160,8 +160,10 @@ All extension types receive a ``const InputStates &`` from the engine each frame
      - Returns ``InputStates::ActiveDevice::KEYBOARD_MOUSE`` or ``GAMEPAD``, reflecting which device last sent input. Useful for switching between prompt styles (show ``[A]`` vs ``[Space]``).
    * - ``getMouseChange(xPos, yPos, xChange, yChange)`` / ``get_mouse_change``
      - Fills four floats: absolute cursor position (``xPos``, ``yPos``) and relative delta (``xChange``, ``yChange``). Use this in cursor-mode UIs (menu players, free-cursor overlays) where you need screen-space coordinates, not normalised look deltas.
-   * - ``getTextInput()`` / ``get_text_input``
+   * - ``getText()`` / ``get_text``
      - Returns the UTF-8 string typed this frame (non-empty only when ``TEXT_INPUT`` is set). Use for text fields in menus.
+   * - ``isSimulated()`` / ``is_simulated``
+     - Returns ``true`` when the input was injected through the API rather than coming from a device.
 
 .. note::
    ``getInputStatus``, ``getInputEvents``, and ``getAnalogValue`` return a default value (``false`` / ``0.0f``) for unknown hashes and never throw.
