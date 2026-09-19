@@ -143,7 +143,7 @@ Every entity in a Limon world is a ``GameObject``. All types implement the base 
    * - **Model Group**
      - Collection of models managed as a unit.
    * - **Player**
-     - Player controller. Has one model attachment point.
+     - Player controller. Any number of objects can be attached to it.
    * - **GUI Text**
      - Text display element -animatable via sequencer.
    * - **GUI Button**
@@ -179,7 +179,7 @@ Models carry attachment trees. The following types can attach to a model root or
 * **Sound** -follows the parent transform for 3D positional audio that moves with geometry
 * **Camera Rig** -the standard way to make a camera follow an object or bone; attach the rig to the target and the engine feeds the resulting transform to the Camera Attachment each frame
 
-The Player has one model attachment point. The attached model is the root of a normal attachment tree -it can carry further models, particles, lights, sounds, triggers, and camera rigs.
+The Player is an ordinary parent object: objects attached to it follow its position and look direction, and each of them can carry its own attachment tree of models, particles, lights, sounds, triggers, and camera rigs. ``getPlayerObjectID`` returns its ID for the attachment and hierarchy API calls.
 
 GUI elements and Skybox cannot be attached as children.
 
@@ -217,6 +217,10 @@ Limon uses Bullet Physics. Collision shapes are generated automatically from mes
     :align: center
 
     Animated objects have per-bone convex hulls.
+
+**Attached objects.** An object that is attached to a parent moves with the parent, so its body type follows the parent instead of its own mass: a child of something static is static, a child of something that moves (a dynamic or animated model, or the player) is kinematic, and animated models are always kinematic. Detaching restores the mass-based type. Objects in the same attachment tree never collide with each other.
+
+**Animated models out of view.** An animated model's pose is only evaluated when something needs it: it is visible to a camera, an awake physics object is near it, or an AI requested it with ``setPhysicsSimulationActive``. Other animated models keep their last pose and don't wake the physics objects around them, while their animation time keeps advancing.
 
 Input
 -----

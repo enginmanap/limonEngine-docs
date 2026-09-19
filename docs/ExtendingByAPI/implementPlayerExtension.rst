@@ -70,6 +70,9 @@ void setParameters(std::vector<LimonTypes::GenericParameter>parameters)
 
 Stores the configured parameter values on the extension instance. Called when the map designer edits values in the editor and when a map is loaded. The base implementation keeps the values in the protected ``parameters`` member - the single source of truth for load, serialize, and editor edits. Override only if the extension needs to react to value changes.
 
+.. warning::
+    The editor matches saved values to your parameters **by position**. When you add a parameter to an extension that is already used in maps, append it after the existing ones, or saved values end up in the wrong parameter. A map saved before the parameter existed won't contain it, so ``setParameters`` must handle a missing parameter. Look parameters up by ``description`` rather than by index.
+
 .. _PlayerExtensionInterface-getName:
 
 std::string getName() const
@@ -82,6 +85,41 @@ Returns the name of the Player Extension.
 
 .. note::
    To drive the camera from a player extension, activate a :ref:`camera rig <implementCameraAttachment>` at runtime with ``createCameraRig`` / ``activateCameraRig`` (for example from ``processInput``). The old ``getCustomCameraAttachment`` mechanism has been removed.
+
+.. _PlayerExtensionInterface-findingAttachments:
+
+Finding the player's attachments
+________________________________
+
+Models attached to the player are children of the player object. :ref:`getObjectChildren<LimonAPI-getObjectChildren>` with :ref:`getPlayerObjectID<LimonAPI-getPlayerObjectID>` lists them, but the order of that list is not stable across save and load, and the player can carry any number of attachments. Don't pick "the first child" as your body or weapon.
+
+Instead, expose a ``MODEL`` parameter for each model the extension drives. The map designer picks the model in Player Properties, and the ID is saved with the map:
+
+.. code-block:: cpp
+
+    MyExtension(LimonAPI* limonAPI) : PlayerExtensionInterface(limonAPI) {
+        LimonTypes::GenericParameter bodyParameter;
+        bodyParameter.requestType = LimonTypes::GenericParameter::RequestParameterTypes::MODEL;
+        bodyParameter.valueType = LimonTypes::GenericParameter::ValueTypes::LONG;
+        bodyParameter.description = "Body";
+        bodyParameter.isSet = false;
+        this->parameters.push_back(bodyParameter);
+    }
+
+    void setParameters(std::vector<LimonTypes::GenericParameter> parameters) override {
+        PlayerExtensionInterface::setParameters(parameters);
+        bodyModelID = 0;
+        for(const LimonTypes::GenericParameter& parameter : this->parameters) {
+            if(parameter.description == "Body" && parameter.isSet) {
+                bodyModelID = static_cast<uint32_t>(parameter.value.longValue);
+            }
+        }
+    }
+
+``ShooterPlayerExtension``, ``CowboyShooterExtension`` and ``python_player_extension.py`` follow this pattern.
+
+.. note::
+    Moving an attachment relative to the player (for example shifting a weapon while aiming) is done on the attachment itself. ``setObjectTranslate`` sets its position relative to the player, ``addObjectTranslate`` takes a world space delta.
 
 .. _PlayerExtensionInterface-PlayerInformation:
 

@@ -83,6 +83,28 @@ Returns the name of the Actor.
 .. warning::
     The name must be unique, or the results will be undefined.
 
+.. _ActorInterface-physicsOutOfView:
+
+Physics while out of view
+_________________________
+
+To save work, the engine only evaluates an animated model's pose when something needs it: the model is visible to a camera, a moving physics object is near it, or the model was requested with :ref:`setPhysicsSimulationActive<LimonAPI-setPhysicsSimulationActive>`. An animated model that is out of view and not requested keeps its last pose: its collision shape does not follow the animation, and it does not push objects around it. Its animation time still advances, so ``getModelAnimationFinished`` stays correct.
+
+An actor that moves or fights while the player may not be looking should request it for its model, and release it when it is idle:
+
+.. code-block:: cpp
+
+    void MyActor::play(uint32_t time, ActorInformation &information) {
+        // ... state machine ...
+        bool shouldSimulate = currentState != State::IDLE;
+        if(shouldSimulate != simulationActive) {
+            limonAPI->setPhysicsSimulationActive(modelID, shouldSimulate);
+            simulationActive = shouldSimulate;
+        }
+    }
+
+The bundled ``CowboyEnemyAI`` and ``PythonCowboyEnemy`` request it in every state except idle, scripted, and dead once the death animation has finished. ``HumanEnemy`` requests it while pursuing the player and while its death animation plays. Calling it only when the state changes, as above, avoids a call every frame.
+
 .. _ActorInterface-ActorInformation:
 
 ActorInformation struct

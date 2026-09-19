@@ -365,13 +365,20 @@ attach_object_to_object
 
 .. code-block:: python
 
-    def attach_object_to_object(object_id: int, object_to_attach_to_id: int) -> bool:
+    def attach_object_to_object(object_id: int, object_to_attach_to_id: int, bone_name: str = "") -> bool:
         """
         Attach one object to another.
+
+        With a bone name, the child follows that bone of the parent model instead of the
+        model itself, so it moves with the animation. That is how a weapon is put in a
+        character's hand. The names are the ones the editor lists in the model's bone tree,
+        for example "mixamorig:RightHand". A name that is not a bone of the parent, or a
+        parent that is not a model, fails the call.
 
         Args:
             object_id: ID of the object to attach
             object_to_attach_to_id: ID of the object to attach to
+            bone_name: bone of the parent to follow, empty attaches to the object itself
 
         Returns:
             bool: True if attachment succeeded
@@ -382,17 +389,18 @@ attach_object_to_object_at_world_position
 
 .. code-block:: python
 
-    def attach_object_to_object_at_world_position(object_id: int, object_to_attach_to_id: int) -> bool:
+    def attach_object_to_object_at_world_position(object_id: int, object_to_attach_to_id: int, bone_name: str = "") -> bool:
         """
         Attach one object to another using the child's current world-space position as the offset.
 
         Unlike attach_object_to_object, the attachment offset is computed from the child's
         current world position at the moment of attachment rather than using a pre-set
-        relative transform.
+        relative transform. bone_name works as it does in attach_object_to_object.
 
         Args:
             object_id: ID of the object to attach
             object_to_attach_to_id: ID of the object to attach to
+            bone_name: bone of the parent to follow, empty attaches to the object itself
 
         Returns:
             bool: True if attachment succeeded
@@ -479,6 +487,28 @@ get_object_parent
             int: Parent object ID, or 0 if no parent or object not found
         """
 
+.. _pythonApi-get_object_children:
+
+get_object_children
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_children(object_id: int) -> list:
+        """
+        Returns the IDs of every child of the object: models, lights, sounds, camera rigs...
+        Works for any object, including the player (see get_player_object_id).
+
+        Args:
+            object_id: ID of the object
+
+        Returns:
+            list: Child object IDs, empty if none or object not found
+        """
+
+.. warning::
+    The order of the returned IDs is not stable, it can change after the map is saved and loaded. Keep the ID of the child you need, for example through a ``MODEL`` parameter, instead of picking it by position.
+
 is_object_physics_connected
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -494,6 +524,30 @@ is_object_physics_connected
         Returns:
             bool: True if physics-connected, False if disconnected or not found
         """
+
+.. _pythonApi-set_physics_simulation_active:
+
+set_physics_simulation_active
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def set_physics_simulation_active(object_id: int, active: bool) -> bool:
+        """
+        Keeps an animated model's animation evaluated while it is out of view, so its collision
+        shape follows the animation and it can push other objects. AI actors set it while they
+        act and clear it when idle. Visible models don't need it.
+
+        Args:
+            object_id: ID of the model
+            active: True to keep it evaluated, False to release the request
+
+        Returns:
+            bool: False if the object is not a model
+        """
+
+.. note::
+    Out of view animated models are only evaluated when a moving physics object is near them or this was requested. Their animation time still advances, so ``get_model_animation_finished`` stays correct. See :ref:`implementAIActor`.
 
 get_object_linear_velocity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -715,11 +769,12 @@ set_object_translate
 
     def set_object_translate(object_id: int, position: Vec4) -> bool:
         """
-        Set an object's world position.
+        Set an object's world position. For an object attached to a parent,
+        the position is relative to the parent.
 
         Args:
             object_id: ID of the object
-            position: New world position (w component ignored)
+            position: New position (w component ignored)
 
         Returns:
             bool: True if successful, False if object not found
@@ -777,21 +832,13 @@ get_object_transformation_matrix
             list: List of GenericParameter objects containing the 4x4 transformation matrix
         """
 
-get_model_children
-^^^^^^^^^^^^^^^^^^
+.. _pythonApi-get_model_children:
 
-.. code-block:: python
+:del:`get_model_children`
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    def get_model_children(model_id: int) -> list:
-        """
-        Get children of a model.
-
-        Args:
-            model_id: ID of the model
-
-        Returns:
-            list: List of child object IDs
-        """
+.. warning::
+    **Removed.** Use :ref:`get_object_children<pythonApi-get_object_children>`. It accepts any object, including the player, and returns every child, not only models.
 
 .. _pythonApi-set_model_animation:
 
@@ -2230,47 +2277,43 @@ deactivate_camera_rig
         Revert the player camera to the player's own (built-in) camera, releasing any active rig.
         """
 
-get_player_attached_model
-^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _pythonApi-get_player_object_id:
+
+get_player_object_id
+^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-    def get_player_attached_model() -> int:
+    def get_player_object_id() -> int:
         """
-        Get the ID of the model currently attached to the player.
+        Get the world object ID of the player. The player is an ordinary parent object,
+        models attached to it are its children. Always equal to limon.PLAYER_OBJECT_ID.
 
         Returns:
-            int: Model ID, or 0 if no model is attached
+            int: Player object ID
         """
-
-get_player_attached_model_offset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-    def get_player_attached_model_offset() -> Vec4:
-        """
-        Get the position offset of the model attached to the player.
+    attachments = self.limon_api.get_object_children(self.limon_api.get_player_object_id())
 
-        Returns:
-            Vec4: Offset vector
-        """
+:del:`get_player_attached_model`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-set_player_attached_model_offset
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. warning::
+    **Removed.** The player can carry more than one attachment. Use :ref:`get_object_children<pythonApi-get_object_children>` with :ref:`get_player_object_id<pythonApi-get_player_object_id>`, and keep the ID of the model you need through a ``MODEL`` parameter of your player extension. See :ref:`implementPlayerExtension`.
 
-.. code-block:: python
+:del:`get_player_attached_model_offset`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    def set_player_attached_model_offset(new_offset: Vec4) -> bool:
-        """
-        Set the position offset of the model attached to the player.
+.. warning::
+    **Removed.** An attachment's offset from the player is its own position relative to the player.
 
-        Args:
-            new_offset: New offset as Vec4
+:del:`set_player_attached_model_offset`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-        Returns:
-            bool: True if the offset was applied
-        """
+.. warning::
+    **Removed.** Move the attachment itself with ``set_object_translate``, which sets its position relative to the player, or ``add_object_translate``, which takes a world space delta.
 
 Variable Management
 ~~~~~~~~~~~~~~~~~~~

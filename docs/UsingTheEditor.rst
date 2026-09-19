@@ -80,6 +80,12 @@ Static object have a full mesh representing physical object. It is possible to r
 .. note::
     Models with animations, both from the asset itself and custom using the editor are considered "kinematic" It means the object is allowed to move, but the movement is not governed by physics engine. Those types of objects can't be moved by physical interactions like pushing or pulling, but they can effect physical objects.
 
+.. note::
+    An object attached to another object follows its parent, so its own mass no longer decides how it behaves. Attached to something static (a static model, or a model group, light, sound or camera rig that doesn't move), it is static. Attached to something that moves (a dynamic or animated model, or the player), it is kinematic. Animated models are always kinematic. Detaching it gives it back the type its mass defines. Objects in the same attachment tree never collide with each other.
+
+.. note::
+    Animated models that are out of view keep their last pose unless a moving physics object comes near them or an AI requests them, see :ref:`ActorInterface-physicsOutOfView`. In the editor with physics debug drawing on, an animated model you haven't looked at in play can show its collision shape in an older pose.
+
 The mass of an object can be changed after it has been added to the world, both from the editor (the "Mass" field in the selected object's properties) and at runtime through the API (:ref:`setObjectMass<LimonAPI-setObjectMass>` / ``set_object_mass``). Because the physical representation depends on the mass, the engine reloads the collision shape when the value crosses between 0 and a positive value:
 
 * Switching from 0 to a value greater than 0 turns a static object into a dynamic one: its full-mesh (or baked) collider is replaced with the simplified convex hull, and from then on its movement is governed by the physics engine.
@@ -194,7 +200,14 @@ If a custom player extension is going to be used, it can be selected from the **
 
 When an extension is selected, any configurable parameters it exposes are drawn directly beneath the drop-down, the same way Actor settings appear under a selected Actor. These parameters are edited here and saved with the map. An extension that exposes no parameters simply shows the drop-down with nothing below it. For how an extension declares these parameters, see :ref:`implementPlayerExtension`.
 
-If player has a Model attached, there will be an "Disconnect Attachment" button.
+**Player attachments**
+
+The player is an ordinary parent object, so models are attached to it the same way they are attached to any other object. Select the model and press "Attach this object to another", then select the player in the object tree and press "Attach saved object to current". The player can carry more than one attachment, and each one moves with the player's position and look direction. The player's node in the object tree lists its attachments, and selecting one lets you edit its position relative to the player. To remove an attachment, select it and press "Detach from parent", it becomes a normal world object.
+
+If the player extension drives specific models, such as a body or weapons, it exposes them as model parameters under the extension. Pick the models there after attaching them, see :ref:`PlayerExtensionInterface-findingAttachments`.
+
+.. note::
+    Attachments are saved as ordinary objects with the player as their parent. Older version 1 maps are converted when loaded. Maps saved with the previous version 2 attachment format lose their player attachments, re-attach them and save the map again.
 
 
 Setting Up World Properties

@@ -28,7 +28,7 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setModelAnimationSpeed(uint32_t modelID, float speed)<LimonAPI-setModelAnimationSpeed>`                                                                                                                                                                                                                  |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``std::vector<uint32_t>``                     | :ref:`getModelChildren(uint32_t modelID)<LimonAPI-getModelChildren>`                                                                                                                                                                                                                                           |
+| :del:`std::vector<uint32_t>`                  | :del:`getModelChildren(uint32_t modelID)` — :ref:`Removed<LimonAPI-getModelChildren>`                                                                                                                                                                                                                          |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`addGuiText(const std::string &fontFilePath, uint32_t fontSize, const std::string &name, const std::string &text, const glm::vec3 &color, const glm::vec2 &position, float rotation)<LimonAPI-addGuiText>`                                                                                                |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -46,9 +46,9 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`addObject(const std::string &modelFilePath, float modelWeight, bool physical, const glm::vec3 &position, const glm::vec3 &scale, const glm::quat &orientation)<LimonAPI-addObject>`                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObject>`                                                                                                                                                                                                     |
+| ``bool``                                      | :ref:`attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID, const std::string &boneName = "")<LimonAPI-attachObjectToObject>`                                                                                                                                                                   |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`attachObjectToObjectAtWorldPosition(uint32_t objectID, uint32_t objectToAttachToID)<LimonAPI-attachObjectToObjectAtWorldPosition>`                                                                                                                                                                       |
+| ``bool``                                      | :ref:`attachObjectToObjectAtWorldPosition(uint32_t objectID, uint32_t objectToAttachToID, const std::string &boneName = "")<LimonAPI-attachObjectToObjectAtWorldPosition>`                                                                                                                                     |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`detachObjectFromParent(uint32_t objectID)<LimonAPI-detachObjectFromParent>`                                                                                                                                                                                                                              |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -130,11 +130,13 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``LimonTypes::Vec4``                          | :ref:`getCameraLookDirection()<LimonAPI-getCameraLookDirection>`                                                                                                                                                                                                                                               |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``uint32_t``                                  | :ref:`getPlayerAttachedModel()<LimonAPI-getPlayerAttachedModel>`                                                                                                                                                                                                                                               |
+| ``uint32_t``                                  | :ref:`getPlayerObjectID()<LimonAPI-getPlayerObjectID>`                                                                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``LimonAPI::Vec4``                            | :ref:`getPlayerAttachedModelOffset()<LimonAPI-getPlayerAttachedModelOffset>`                                                                                                                                                                                                                                   |
+| :del:`uint32_t`                               | :del:`getPlayerAttachedModel()` — :ref:`Removed<LimonAPI-getPlayerAttachedModel>`                                                                                                                                                                                                                              |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``bool``                                      | :ref:`setPlayerAttachedModelOffset(LimonTypes::Vec4 newOffset)<LimonAPI-setPlayerAttachedModelOffset>`                                                                                                                                                                                                         |
+| :del:`LimonAPI::Vec4`                         | :del:`getPlayerAttachedModelOffset()` — :ref:`Removed<LimonAPI-getPlayerAttachedModelOffset>`                                                                                                                                                                                                                  |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| :del:`bool`                                   | :del:`setPlayerAttachedModelOffset(LimonTypes::Vec4 newOffset)` — :ref:`Removed<LimonAPI-setPlayerAttachedModelOffset>`                                                                                                                                                                                        |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``void``                                      | :ref:`interactWithPlayer(std::vector\<LimonTypes::GenericParameter\>& input)<LimonAPI-interactWithPlayer>`                                                                                                                                                                                                     |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -204,7 +206,11 @@ C++ API reference
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`getObjectParent(uint32_t objectID)<LimonAPI-getObjectParent>`                                                                                                                                                                                                                                            |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``std::vector<uint32_t>``                     | :ref:`getObjectChildren(uint32_t objectID)<LimonAPI-getObjectChildren>`                                                                                                                                                                                                                                        |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`isObjectPhysicsConnected(uint32_t objectID)<LimonAPI-isObjectPhysicsConnected>`                                                                                                                                                                                                                          |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`setPhysicsSimulationActive(uint32_t objectID, bool active)<LimonAPI-setPhysicsSimulationActive>`                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``LimonTypes::GenericParameter&``             | :ref:`getVariable(const std::string& variableName)<LimonAPI-getVariable>`                                                                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -366,14 +372,11 @@ Parameters:
 
 .. _LimonAPI-getModelChildren:
 
-std::vector<uint32_t> getModelChildren(uint32_t modelID)
----------------------------------------------------------
+:del:`std::vector<uint32_t> getModelChildren(uint32_t modelID)`
+----------------------------------------------------------------
 
-Returns a vector of IDs with all children of model. Returns empty list for Model not found, as well as no children found.
-
-Parameters:
-
-#. uint32_t modelID: handle ID of the model to check for children
+.. warning::
+    **Removed.** Use :ref:`getObjectChildren<LimonAPI-getObjectChildren>`. It accepts any object, including the player, and returns every child, not only models.
 
 GUI Methods
 ===========
@@ -489,34 +492,47 @@ Parameters:
 
 .. _LimonAPI-attachObjectToObject:
 
-bool attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID)
--------------------------------------------------------------------------
+bool attachObjectToObject(uint32_t objectID, uint32_t objectToAttachToID, const std::string &boneName = "")
+------------------------------------------------------------------------------------------------------------
 
-Attaches object indicated by the handle ID, to another object indicated by second parameter. Returns true for success, false for invalid Handle ID for either parameter. Attachment means if parent object move, child will move too. Example usage: bullet hole decals to dynamic objects. The object should have a transformation relative to the object it will be attached.
+Attaches object indicated by the handle ID, to another object indicated by second parameter. Returns true for success, false for invalid Handle ID for either parameter. Attachment means if parent object move, child will move too. Example usage: bullet hole decals to dynamic objects. The object should have a transformation relative to the object it will be attached. To attach to the player, use :ref:`getPlayerObjectID<LimonAPI-getPlayerObjectID>` as the parent.
+
+With a bone name, the child follows that bone of the parent model instead of the model itself, so it moves with the animation. That is how a weapon is put in a character's hand. The names are the ones the editor lists in the model's bone tree, for example ``mixamorig:RightHand``. A name that is not a bone of the parent, or a parent that is not a model, fails the call.
 
 Parameters:
 
 #. uint32_t objectID: handle id of the object to attach as child.
 #. uint32_t objectToAttachToID: handle id of the object to attach as parent.
+#. const std::string &boneName: bone of the parent to follow. Empty, the default, attaches to the object itself.
+
+.. note::
+    Attaching changes how the child behaves in physics, because it now moves with its parent instead of on its own:
+
+    * Attached to a static object, a model group, a light, a sound or a camera rig that is not attached to anything moving: the child is static.
+    * Attached to a moving object (dynamic, animated, or the player): the child is kinematic. It pushes physics objects but is not pushed by them.
+    * Animated models are always kinematic.
+
+    Detaching gives the child back its own type, based on its mass. Objects never collide with other objects in the same attachment tree, so a child can't push its parent.
 
 .. _LimonAPI-attachObjectToObjectAtWorldPosition:
 
-bool attachObjectToObjectAtWorldPosition(uint32_t objectID, uint32_t objectToAttachToID)
------------------------------------------------------------------------------------------
+bool attachObjectToObjectAtWorldPosition(uint32_t objectID, uint32_t objectToAttachToID, const std::string &boneName = "")
+----------------------------------------------------------------------------------------------------------------------------
 
-Attaches object indicated by the handle ID to another object, using the object's current world-space position as the attachment offset. This is equivalent to ``attachObjectToObject``, but instead of using a pre-set relative transform the engine computes the offset from the child's current world position at the moment of attachment. Returns true for success, false for invalid handle ID for either parameter.
+Attaches object indicated by the handle ID to another object, using the object's current world-space position as the attachment offset. This is equivalent to ``attachObjectToObject``, but instead of using a pre-set relative transform the engine computes the offset from the child's current world position at the moment of attachment. Returns true for success, false for invalid handle ID for either parameter. The bone name and the physics notes of :ref:`attachObjectToObject<LimonAPI-attachObjectToObject>` apply.
 
 Parameters:
 
 #. uint32_t objectID: handle id of the object to attach as child.
 #. uint32_t objectToAttachToID: handle id of the object to attach as parent.
+#. const std::string &boneName: bone of the parent to follow. Empty, the default, attaches to the object itself.
 
 .. _LimonAPI-detachObjectFromParent:
 
 bool detachObjectFromParent(uint32_t objectID)
 ----------------------------------------------
 
-Detaches object indicated by the handle ID from its parent. The object stays at the world position it had at the moment of detachment, and no longer moves with the parent. Returns true if detached, false if the handle ID is invalid or the object has no parent.
+Detaches object indicated by the handle ID from its parent. The object stays at the world position it had at the moment of detachment, and no longer moves with the parent. Its physics type goes back to what its mass defines: static for mass 0, dynamic otherwise, animated models stay kinematic. Returns true if detached, false if the handle ID is invalid or the object has no parent.
 
 Parameters:
 
@@ -564,7 +580,7 @@ Parameters:
 bool setObjectTranslate(uint32_t objectID, const LimonAPI::Vec4& position)
 --------------------------------------------------------------------------
 
-Sets objects world position to 2. parameter. Returns false if object is not found.
+Sets objects world position to 2. parameter. Returns false if object is not found. For an object attached to a parent, the position is relative to the parent.
 
 Parameters:
 
@@ -815,6 +831,20 @@ Parameters:
 
 Returns the parent object ID, or 0 if the object has no parent or is not found.
 
+.. _LimonAPI-getObjectChildren:
+
+std::vector<uint32_t> getObjectChildren(uint32_t objectID)
+----------------------------------------------------------
+
+Returns the world object IDs of every child of the given object: models, lights, sounds, camera rigs and any other attachable object. Works for any object, including the player (see :ref:`getPlayerObjectID<LimonAPI-getPlayerObjectID>`). Returns an empty list if the object has no children or is not found.
+
+Parameters:
+
+#. uint32_t objectID: The handleID of the object whose children are requested
+
+.. warning::
+    The order of the returned IDs is not stable. It can change after the map is saved and loaded again. To find a specific child, keep its ID, for example through a ``MODEL`` parameter the level designer sets in the editor, instead of picking it by position in this list.
+
 .. _LimonAPI-isObjectPhysicsConnected:
 
 bool isObjectPhysicsConnected(uint32_t objectID)
@@ -827,6 +857,24 @@ Parameters:
 #. uint32_t objectID: The handleID of the object
 
 Returns true if physics-connected, false if disconnected or not found.
+
+.. _LimonAPI-setPhysicsSimulationActive:
+
+bool setPhysicsSimulationActive(uint32_t objectID, bool active)
+---------------------------------------------------------------
+
+Requests that an animated model keeps its animation evaluated while it is out of view, so its collision shape follows the animation and it can push other objects.
+
+The engine only evaluates an animated model's pose when something needs it: the model is visible to a camera, a moving physics object is near it, or it was requested with this method. Animated models that are out of view and not requested keep their last pose, and do not wake up physics objects around them. Their animation time still advances, so ``getModelAnimationFinished`` stays correct.
+
+AI actors should set this while they act (chasing, fighting, dying) and clear it when they are idle. Rendering does not need it, visible models are always evaluated.
+
+Parameters:
+
+#. uint32_t objectID: The handleID of the model
+#. bool active: true to keep the model evaluated, false to release the request
+
+Returns false if the object is not a model, true otherwise. The request is dropped when the model is removed.
 
 Sound
 =====
@@ -1105,41 +1153,44 @@ Parameters:
 
 none
 
-.. _LimonAPI-getPlayerAttachedModel:
+.. _LimonAPI-getPlayerObjectID:
 
-uint32_t getPlayerAttachedModel()
-----------------------------------
+uint32_t getPlayerObjectID()
+----------------------------
 
-Returns the model ID of player attachment. return 0 if player has no attachment.
+Returns the world object ID of the player. The player is an ordinary parent object: models attached to the player are its children, and follow the player's position and look direction. The value is always ``LimonAPI::PLAYER_OBJECT_ID``.
 
 Parameters:
 
 none
 
-.. note::
-    Player attachment might have children, check :ref:`getModelChildren method <LimonAPI-getModelChildren>`
+.. code-block:: cpp
+
+    std::vector<uint32_t> attachments = limonAPI->getObjectChildren(limonAPI->getPlayerObjectID());
+
+.. _LimonAPI-getPlayerAttachedModel:
+
+:del:`uint32_t getPlayerAttachedModel()`
+-----------------------------------------
+
+.. warning::
+    **Removed.** The player can carry more than one attachment, so there is no single attached model. Use :ref:`getObjectChildren<LimonAPI-getObjectChildren>` with :ref:`getPlayerObjectID<LimonAPI-getPlayerObjectID>` to list them. To find a specific one, keep its ID through a ``MODEL`` parameter of your player extension, see :ref:`implementPlayerExtension`.
 
 .. _LimonAPI-getPlayerAttachedModelOffset:
 
-LimonAPI::Vec4 getPlayerAttachedModelOffset()
-----------------------------------------------
+:del:`LimonAPI::Vec4 getPlayerAttachedModelOffset()`
+-----------------------------------------------------
 
-Returns offset of the model attached to player. returns Vec4(0,0,0,0) if player has no attachment.
-
-Parameters:
-
-none
+.. warning::
+    **Removed.** An attachment's offset from the player is its own position relative to the player. Read it from the attachment itself.
 
 .. _LimonAPI-setPlayerAttachedModelOffset:
 
-bool setPlayerAttachedModelOffset(LimonAPI::Vec4 newOffset)
-------------------------------------------------------------
+:del:`bool setPlayerAttachedModelOffset(LimonAPI::Vec4 newOffset)`
+-------------------------------------------------------------------
 
-Sets offset to player attachment. Returns false if player has no attachment.
-
-Parameters:
-
-#. LimonAPI::Vec4: offset to set. w component of parameter ignored.
+.. warning::
+    **Removed.** Move the attachment itself with :ref:`setObjectTranslate<LimonAPI-setObjectTranslate>`, which sets its position relative to the player, or :ref:`addObjectTranslate<LimonAPI-addObjectTranslate>`, which takes a world space delta.
 
 .. _LimonAPI-interactWithPlayer:
 

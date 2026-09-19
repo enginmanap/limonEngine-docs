@@ -69,7 +69,7 @@ Both convex hull and triangle mesh collision shapes are generated at model impor
 
 - Model — static or animated mesh. Attachment root or bone attachment supported.
 - Model Group — collection of models managed as a unit.
-- Player — player controller. One model attachment point.
+- Player — player controller. Any number of objects can be attached to it; it is an ordinary parent (getPlayerObjectID).
 - GUI Text — text display. Animatable via sequencer. Font, size, colour, position, rotation configurable.
 - GUI Button — wraps a LimonAPI call. Supports normal, hover, on-click, and disabled images.
 - GUI Image — image display. Full-screen option available.
@@ -83,7 +83,7 @@ Both convex hull and triangle mesh collision shapes are generated at model impor
 
 ### Attachment rules
 
-Bone attachment means the child follows the bone transform through the full skeletal animation. These types can attach to a model root or a specific named bone: Model, Model Group, Trigger Volume, CPU Particle, GPU Particle, Light, Sound, Camera Rig. GUI elements and Skybox cannot be attached. Player has one model attachment point; that model's attachment tree is otherwise normal.
+Bone attachment means the child follows the bone transform through the full skeletal animation. These types can attach to a model root or a specific named bone: Model, Model Group, Trigger Volume, CPU Particle, GPU Particle, Light, Sound, Camera Rig. GUI elements and Skybox cannot be attached. The player is an ordinary parent: any number of objects can attach to it (getPlayerObjectID), each with a normal attachment tree. getObjectChildren(objectID) lists children of any object; order is not stable across save/load, keep child IDs (e.g. MODEL parameters) instead of picking by index. getPlayerAttachedModel, getPlayerAttachedModelOffset, setPlayerAttachedModelOffset and getModelChildren were removed.
 
 Step-on sound is a model attribute (not an attachable Sound GameObject) — it fires at the contact point between the player's feet and the model surface, requiring knowledge of both objects simultaneously.
 
@@ -93,8 +93,8 @@ Models can be flipped on X, Y, Z axes — any combination, editable in editor. E
 
 ### Scene graph API
 
-- attachObjectToObject(objectID, parentID) — child position is relative to parent
-- attachObjectToObjectAtWorldPosition(objectID, parentID) — attach while keeping current world position
+- attachObjectToObject(objectID, parentID, boneName = "") — child position is relative to parent, a bone name makes the child follow that bone of the parent model
+- attachObjectToObjectAtWorldPosition(objectID, parentID, boneName = "") — attach while keeping current world position
 - detachObjectFromParent(objectID) — detach, object stays at its current world position; false if not found or no parent
 - getModelChildren(modelID) — returns vector of all child IDs
 - getObjectParent(objectID) — returns parent ID, 0 if none
@@ -170,6 +170,12 @@ setObjectMass(objectID, mass): mass=0 makes object static (switches to triangle 
 getObjectTransformation vs getObjectTransformationMatrix: For physical objects, prefer getObjectTransformationMatrix — collision shape offsets are baked into the matrix but not reflected in the decomposed TRS values from getObjectTransformation.
 
 disconnectObjectFromPhysics / reconnectObjectToPhysics — removes/restores physics simulation. Object still renders normally when disconnected.
+
+Attached objects: body type follows the parent (static parent → static child; moving parent such as a dynamic/animated model or the player → kinematic child; animated models always kinematic). Detaching restores the mass-based type. Objects in the same attachment tree never collide with each other.
+
+Animated models out of view: pose is only evaluated when visible, when an awake dynamic body is near, or when requested with setPhysicsSimulationActive(objectID, active). AI actors should request it while acting and release it when idle. Animation time and getModelAnimationFinished keep advancing either way.
+
+setObjectTranslate on an attached object sets its position relative to the parent.
 
 ## Navigation System
 
