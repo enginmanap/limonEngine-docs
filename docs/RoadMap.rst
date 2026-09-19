@@ -75,7 +75,7 @@ The following limitations are confirmed in version 0.7:
 **Rendering and Assets**
 
 * Model scaling is imported directly from the source file - no automatic correction is applied. Incorrect scale must be fixed in the editor.
-* Aggressive engine-wide LOD settings can produce visible mesh pop-in. Tune the ``LodDistanceList`` option for your scene.
+* Aggressive engine-wide LOD settings can produce visible mesh pop-in. Tune the :ref:`LOD_distanceList <option-LOD_distanceList>` option for your scene.
 * Raspberry Pi 4/5 is affected by an upstream Mesa driver bug causing a visual artefact. A ticket is open on the public Mesa tracker.
 * limonmodel load-time benchmarks are not yet published.
 

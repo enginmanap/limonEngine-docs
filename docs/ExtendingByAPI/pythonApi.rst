@@ -1372,23 +1372,23 @@ a sound is ``per-sound gain × channel volume × master volume``.
      - ``play_sound``
      - Description
    * - ``MASTER``
-     - ``soundVolumeMaster``
+     - :ref:`audio_volumeMaster <option-audio_volumeMaster>`
      - **invalid**
      - Global volume multiplier applied to all channels. Not an assignable channel — passing it to ``play_sound`` returns 0.
    * - ``MUSIC``
-     - ``soundVolumeMusic``
+     - :ref:`audio_volumeMusic <option-audio_volumeMusic>`
      - **invalid**
      - Dedicated music channel. Managed exclusively by ``set_music`` / ``stop_music``. Passing it to ``play_sound`` returns 0.
    * - ``SFX``
-     - ``soundVolumeSFX``
+     - :ref:`audio_volumeSFX <option-audio_volumeSFX>`
      - default
      - Sound effects. Default channel for sounds played via ``play_sound``.
    * - ``SPEECH``
-     - ``soundVolumeSpeech``
+     - :ref:`audio_volumeSpeech <option-audio_volumeSpeech>`
      - valid
      - Speech and voice-over.
    * - ``AMBIENT``
-     - ``soundVolumeAmbient``
+     - :ref:`audio_volumeAmbient <option-audio_volumeAmbient>`
      - valid
      - Environmental / ambient sounds.
 
@@ -2082,6 +2082,8 @@ get_options
             Options object with current engine configuration
         """
 
+.. _pythonApi-save_options:
+
 save_options
 ^^^^^^^^^^^^
 
@@ -2563,49 +2565,32 @@ get_input_events
 
     def get_input_events(input_code: int) -> bool:
         """
-        Get input events for a specific input code.
+        Check whether an action changed state this frame.
 
         Args:
-            input_code: Input code to query (see Inputs class)
+            input_code: Action hash, a limon.InputActions constant or limon.hash("NAME")
 
         Returns:
-            bool: True if the input is currently active
+            bool: True for exactly one frame when the action state changes
         """
 
-Input States
-~~~~~~~~~~~~
+Input Actions
+~~~~~~~~~~~~~
+
+Input is queried by action, not by key. ``limon.InputActions`` holds the hash of every built-in action (``MOVE_FORWARD``, ``JUMP``, ``MOUSE_BUTTON_LEFT``, ``LOOK_X`` and so on). Actions defined only in ``inputBindings.xml`` are queried with ``limon.hash("ACTION_NAME")``, which runs the same hash the XML loader and the C++ ``HASH()`` macro use. The full list of built-in actions and the ``InputStates`` query methods (``get_input_status``, ``get_input_events``, ``get_analog_value``, ``get_active_device``, ``is_simulated``) are in :ref:`InputSystem`.
 
 .. code-block:: python
 
-    class Inputs:
-        QUIT = 0
-        MOUSE_MOVE = 1
-        MOUSE_BUTTON_LEFT = 2
-        MOUSE_BUTTON_MIDDLE = 3
-        MOUSE_BUTTON_RIGHT = 4
-        MOUSE_WHEEL_UP = 5
-        MOUSE_WHEEL_DOWN = 6
-        MOVE_FORWARD = 7
-        MOVE_BACKWARD = 8
-        MOVE_LEFT = 9
-        MOVE_RIGHT = 10
-        JUMP = 11
-        RUN = 12
-        DEBUG = 13
-        EDITOR = 14
-        KEY_SHIFT = 15
-        KEY_CTRL = 16
-        KEY_ALT = 17
-        KEY_SUPER = 18
-        TEXT_INPUT = 19
-        NUMBER_1 = 20
-        NUMBER_2 = 21
-        F4 = 22
+    import limon
 
-    # Example usage:
-    if input_states.get_input_status(limon.Inputs.MOVE_FORWARD):
+    if input_states.get_input_status(limon.InputActions.MOVE_FORWARD):
         # Move forward
         pass
+
+    if input_states.get_input_status(limon.hash("RELOAD")):
+        # game-specific action from inputBindings.xml
+        pass
+
 
 Camera System
 -------------
@@ -2622,6 +2607,7 @@ Base class for a registered camera attachment (see :ref:`implementCameraAttachme
     class MyCameraRig(CameraExtensionInterface):
         def __init__(self, limon_api):
             super().__init__(limon_api)
+            self._dirty = True
 
         def get_name(self) -> str:
             return "MyCameraRig"
@@ -2717,11 +2703,15 @@ Base class for creating player extensions.
 
     import limon
     from player_extension_interface import PlayerExtensionInterface
+    from generic_parameter import RequestParameterType, ValueType, GenericParameter
 
     class MyPlayerExtension(PlayerExtensionInterface):
         def __init__(self, limon_api):
             super().__init__(limon_api)
             self._limon_api = limon_api
+            self._starting_ammo = 30
+            self._parameters = [GenericParameter(RequestParameterType.FREE_NUMBER, "Starting ammo",
+                                                 ValueType.LONG, self._starting_ammo, True)]
 
         def process_input(self, input_states, player_info, time):
             """
@@ -2748,21 +2738,14 @@ Base class for creating player extensions.
             """
             Return the configurable parameters of this extension.
 
-            Player extensions follow the same unified parameter contract as
-            Actors: the returned list - each entry carrying both its descriptor
-            and its value - is rendered by the editor and the values are
-            persisted with the map. Return an empty list for no configuration.
+            Called every time the engine needs the values (editor, map save), so
+            return the current values, not freshly built defaults - otherwise
+            edits are lost. Return an empty list for no configuration.
 
             Returns:
                 list: List of GenericParameter objects
             """
-            from generic_parameter import RequestParameterType, ValueType, GenericParameter
-            param = GenericParameter()
-            param.request_type = RequestParameterType.FREE_NUMBER
-            param.description = "Starting ammo"
-            param.value_type = ValueType.LONG
-            param.value = 30
-            return [param]
+            return self._parameters
 
         def set_parameters(self, parameters):
             """
@@ -2773,6 +2756,7 @@ Base class for creating player extensions.
             Args:
                 parameters: List of GenericParameter objects to set
             """
+            self._parameters = parameters
             if parameters and parameters[0].is_set:
                 self._starting_ammo = parameters[0].value
 
@@ -2793,11 +2777,15 @@ Base class for creating AI actors.
 .. code-block:: python
 
     from actor_interface import ActorInterface
+    from generic_parameter import RequestParameterType, ValueType, GenericParameter
 
     class MyActor(ActorInterface):
         def __init__(self, actor_id, limon_api):
             super().__init__(actor_id, limon_api)
             self._limon_api = limon_api
+            self._behavior = "friendly"
+            self._parameters = [GenericParameter(RequestParameterType.FREE_TEXT, "Actor behavior",
+                                                 ValueType.STRING, self._behavior, True)]
 
         def get_name(self) -> str:
             """
@@ -2835,18 +2823,13 @@ Base class for creating AI actors.
 
         def get_parameters(self):
             """
-            Get the current parameters of this actor.
+            Get the current parameters of this actor. Called every time the
+            engine needs the values, so return what set_parameters stored.
 
             Returns:
                 list: List of GenericParameter objects
             """
-            from generic_parameter import RequestParameterType, ValueType, GenericParameter
-            param = GenericParameter()
-            param.request_type = RequestParameterType.FREE_TEXT
-            param.description = "Actor behavior"
-            param.value_type = ValueType.STRING
-            param.value = "friendly"
-            return [param]
+            return self._parameters
 
         def set_parameters(self, parameters):
             """
@@ -2855,9 +2838,9 @@ Base class for creating AI actors.
             Args:
                 parameters: List of GenericParameter objects to set
             """
+            self._parameters = parameters
             if parameters and parameters[0].is_set:
-                behavior = parameters[0].value
-                print(f"Setting actor behavior to: {behavior}")
+                self._behavior = parameters[0].value
 
 ActorInformation
 ~~~~~~~~~~~~~~~~

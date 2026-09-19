@@ -124,23 +124,23 @@ Every sound is mixed on one of five channels. The effective gain of a sound is:
      - ``playSound``
      - Description
    * - ``MASTER``
-     - ``soundVolumeMaster``
+     - :ref:`audio_volumeMaster <option-audio_volumeMaster>`
      - **invalid**
      - Global volume multiplier applied to all channels. Not an assignable channel — passing it to ``playSound`` returns 0.
    * - ``MUSIC``
-     - ``soundVolumeMusic``
+     - :ref:`audio_volumeMusic <option-audio_volumeMusic>`
      - **invalid**
      - Dedicated music channel. Managed exclusively by ``setMusic()`` / ``stopMusic()``. Passing it to ``playSound`` returns 0.
    * - ``SFX``
-     - ``soundVolumeSFX``
+     - :ref:`audio_volumeSFX <option-audio_volumeSFX>`
      - default
      - Sound effects. Default channel for sounds played via ``playSound()``.
    * - ``SPEECH``
-     - ``soundVolumeSpeech``
+     - :ref:`audio_volumeSpeech <option-audio_volumeSpeech>`
      - valid
      - Speech and voice-over.
    * - ``AMBIENT``
-     - ``soundVolumeAmbient``
+     - :ref:`audio_volumeAmbient <option-audio_volumeAmbient>`
      - valid
      - Environmental / ambient sounds.
 
@@ -206,7 +206,7 @@ Key behaviours:
 * When a world is loaded (or reloaded), a fresh interpreter starts. Scripts do not carry state across world loads unless they persist data externally (e.g., to a file or via the engine's ``setVariable`` / ``getVariable`` API).
 * C++ extensions and Python extensions can coexist in the same user library. A C++ Action and a Python Player Extension running in the same world share the same engine API instance but have separate execution contexts.
 
-All five extension types are implementable in Python: Actions, Player Extensions, AI Actors, Camera Attachments, and RenderMethods. Python extensions have full parity with the C++ API - the same GenericParameter contract, the same enums, and automatic type conversion via pybind11.
+Four of the five extension types are implementable in Python: Actions, Player Extensions, AI Actors and Camera Attachments. RenderMethods are C++ only - they run on the performance-critical render path and are not exposed to Python. Python extensions have full parity with the C++ API - the same GenericParameter contract, the same enums, and automatic type conversion via pybind11.
 
 .. note::
     Because Python interpreter state is world-scoped, be careful with module-level singletons or caches that assume persistent lifetime. An extension that registers itself globally on first load will re-register on every world load, which may cause double-registration if the pattern is not world-aware.

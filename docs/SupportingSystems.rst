@@ -112,7 +112,7 @@ Debug Systems
 In-Game Logger Overlay
 ----------------------
 
-A transparent logger overlay is built into the engine. New log entries push the scroll up and disappear after 5 seconds. The overlay is toggleable via the ``renderInformations`` option.
+A transparent logger overlay is built into the engine. New log entries push the scroll up and disappear after 5 seconds. The overlay is toggleable via the :ref:`debug_renderInformations <option-debug_renderInformations>` option.
 
 The ``log(subsystem, level, text)`` API is available from both C++ (:ref:`C++ <LimonAPI-log>` | :ref:`Python <pythonApi-log>`) and Python.
 

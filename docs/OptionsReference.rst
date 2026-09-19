@@ -31,15 +31,21 @@ General
      - Type
      - Default
      - Description
-   * - ``dataDirectory``
+   * - .. _option-dataDirectory:
+
+       ``dataDirectory``
      - String
      - ``../dataLocal/``
      - Root directory the engine loads game data and assets from.
-   * - ``render_backend``
+   * - .. _option-render_backend:
+
+       ``render_backend``
      - String
      - ``libOpenGLGraphicsBackend``
      - Graphics backend library to load (e.g. OpenGL or OpenGL ES).
-   * - ``render_pipeline``
+   * - .. _option-render_pipeline:
+
+       ``render_pipeline``
      - String
      - ``./Engine/forward_renderPipeline.xml``
      - Render pipeline definition loaded at startup.
@@ -55,19 +61,27 @@ Display
      - Type
      - Default
      - Description
-   * - ``display_width``
+   * - .. _option-display_width:
+
+       ``display_width``
      - Long
      - ``2560``
      - Game window width in pixels.
-   * - ``display_height``
+   * - .. _option-display_height:
+
+       ``display_height``
      - Long
      - ``1440``
      - Game window height in pixels.
-   * - ``display_fullScreen``
+   * - .. _option-display_fullScreen:
+
+       ``display_fullScreen``
      - Boolean
      - ``False``
      - Launch in fullscreen.
-   * - ``render_textureFiltering``
+   * - .. _option-render_textureFiltering:
+
+       ``render_textureFiltering``
      - String
      - ``Trilinear``
      - Texture filtering mode: ``Nearest``, ``Bilinear`` or ``Trilinear``.
@@ -88,23 +102,33 @@ reference. Changes are applied to the mixer immediately.
      - Type
      - Default
      - Description
-   * - ``audio_volumeMaster``
+   * - .. _option-audio_volumeMaster:
+
+       ``audio_volumeMaster``
      - Double
      - ``1.0``
      - Master channel volume, normalized 0.0..1.0. Multiplies every sound.
-   * - ``audio_volumeMusic``
+   * - .. _option-audio_volumeMusic:
+
+       ``audio_volumeMusic``
      - Double
      - ``1.0``
      - Music channel volume, normalized 0.0..1.0.
-   * - ``audio_volumeSFX``
+   * - .. _option-audio_volumeSFX:
+
+       ``audio_volumeSFX``
      - Double
      - ``1.0``
      - Sound-effects channel volume, normalized 0.0..1.0.
-   * - ``audio_volumeSpeech``
+   * - .. _option-audio_volumeSpeech:
+
+       ``audio_volumeSpeech``
      - Double
      - ``1.0``
      - Speech/dialogue channel volume, normalized 0.0..1.0.
-   * - ``audio_volumeAmbient``
+   * - .. _option-audio_volumeAmbient:
+
+       ``audio_volumeAmbient``
      - Double
      - ``1.0``
      - Ambient/environmental sound channel volume, normalized 0.0..1.0.
@@ -120,31 +144,45 @@ Player Movement
      - Type
      - Default
      - Description
-   * - ``player_walkSpeed``
+   * - .. _option-player_walkSpeed:
+
+       ``player_walkSpeed``
      - Vec4
      - ``(8, 0, 8)``
      - Player walk speed.
-   * - ``player_runSpeed``
+   * - .. _option-player_runSpeed:
+
+       ``player_runSpeed``
      - Vec4
      - ``(12, 0, 12)``
      - Player run speed.
-   * - ``player_moveSpeed``
+   * - .. _option-player_moveSpeed:
+
+       ``player_moveSpeed``
      - Vec4
      - ``(8, 0, 8)``
      - General movement speed.
-   * - ``player_freeMovementSpeed``
+   * - .. _option-player_freeMovementSpeed:
+
+       ``player_freeMovementSpeed``
      - Vec4
      - ``(0.5, 0.5, 0.5)``
      - Free-camera (editor / debug) movement speed.
-   * - ``player_lookAroundSpeed``
+   * - .. _option-player_lookAroundSpeed:
+
+       ``player_lookAroundSpeed``
      - Double
      - ``-6.5``
      - Look sensitivity. Applies equally to mouse and gamepad stick (both normalised to the same unit). See :ref:`InputSystem-look-speed`.
-   * - ``gamepad_deadZone``
+   * - .. _option-gamepad_deadZone:
+
+       ``gamepad_deadZone``
      - Double
      - ``0.1``
      - Gamepad analog axis dead zone. Stick values with absolute magnitude below this threshold produce no output.
-   * - ``player_jumpFactor``
+   * - .. _option-player_jumpFactor:
+
+       ``player_jumpFactor``
      - Double
      - ``7.0``
      - Jump impulse factor.
@@ -160,55 +198,81 @@ Lighting and Shadows
      - Type
      - Default
      - Description
-   * - ``performance_maximumLights``
+   * - .. _option-performance_maximumLights:
+
+       ``performance_maximumLights``
      - Long
      - ``4``
-     - Maximum number of simultaneous dynamic lights.
-   * - ``shadow_mapDirectionalSize``
+     - Maximum number of simultaneously active lights. A directional light, if there is one, always takes a slot; the point lights that survive culling fill the rest, closest to the player first.
+   * - .. _option-shadow_mapDirectionalSize:
+
+       ``shadow_mapDirectionalSize``
      - Long
      - ``2048``
      - Directional light shadow map resolution.
-   * - ``shadow_mapPointWidth``
+   * - .. _option-shadow_mapPointWidth:
+
+       ``shadow_mapPointWidth``
      - Long
      - ``512``
      - Point light shadow map width.
-   * - ``shadow_mapPointHeight``
+   * - .. _option-shadow_mapPointHeight:
+
+       ``shadow_mapPointHeight``
      - Long
      - ``512``
      - Point light shadow map height.
-   * - ``shadow_pointSampleCount``
+   * - .. _option-shadow_pointSampleCount:
+
+       ``shadow_pointSampleCount``
      - Long
      - ``20``
      - PCF sample count for point light shadows.
-   * - ``shadow_directionalSampleCount``
+   * - .. _option-shadow_directionalSampleCount:
+
+       ``shadow_directionalSampleCount``
      - Long
      - ``8``
      - PCF sample count for directional light shadows.
-   * - ``shadow_cascadeCount``
+   * - .. _option-shadow_cascadeCount:
+
+       ``shadow_cascadeCount``
      - Long
      - ``4``
      - Number of cascaded shadow map cascades.
-   * - ``shadow_cascadeLimitList``
+   * - .. _option-shadow_cascadeLimitList:
+
+       ``shadow_cascadeLimitList``
      - FloatArray
      - ``5.0, 20.0, 50.0, 150.0, 250.0``
      - View-space distance splits between shadow cascades.
-   * - ``shadow_cascadeStaggerOffsets``
+   * - .. _option-shadow_cascadeStaggerOffsets:
+
+       ``shadow_cascadeStaggerOffsets``
      - LongArray
      - ``4, 1, 2, 4``
      - Per-cascade frame offset for staggered shadow updates (cascade 0 updates every frame).
-   * - ``shadow_cascadeStaggerIntervals``
+   * - .. _option-shadow_cascadeStaggerIntervals:
+
+       ``shadow_cascadeStaggerIntervals``
      - LongArray
      - ``4, 2, 4, 8``
      - Per-cascade update interval in frames. Larger values improve framerate but delay shadow updates.
-   * - ``shadow_directionalProjectionBackOff``
+   * - .. _option-shadow_directionalProjectionBackOff:
+
+       ``shadow_directionalProjectionBackOff``
      - Double
      - ``-5000``
-     - Back-off distance for the directional light orthographic projection.
-   * - ``shadow_pointNearPlane``
+     - How far behind the player frustum the directional light's view origin is pulled. Increase it to capture shadow casters behind the camera.
+   * - .. _option-shadow_pointNearPlane:
+
+       ``shadow_pointNearPlane``
      - Double
      - ``0.1``
      - Near plane for point light shadow projection.
-   * - ``shadow_pointFarPlane``
+   * - .. _option-shadow_pointFarPlane:
+
+       ``shadow_pointFarPlane``
      - Double
      - ``100``
      - Far plane for point light shadow projection.
@@ -224,19 +288,27 @@ Ambient Occlusion (SSAO)
      - Type
      - Default
      - Description
-   * - ``ssao_width``
+   * - .. _option-ssao_width:
+
+       ``ssao_width``
      - Long
      - ``2560``
      - SSAO buffer width.
-   * - ``ssao_height``
+   * - .. _option-ssao_height:
+
+       ``ssao_height``
      - Long
      - ``1440``
      - SSAO buffer height.
-   * - ``ssao_sampleCount``
+   * - .. _option-ssao_sampleCount:
+
+       ``ssao_sampleCount``
      - Long
      - ``9``
      - SSAO kernel sample count.
-   * - ``ssao_blurRadius``
+   * - .. _option-ssao_blurRadius:
+
+       ``ssao_blurRadius``
      - Long
      - ``1``
      - SSAO blur radius.
@@ -252,47 +324,69 @@ Culling, LOD and Occlusion
      - Type
      - Default
      - Description
-   * - ``performance_multiThreadedCulling``
+   * - .. _option-performance_multiThreadedCulling:
+
+       ``performance_multiThreadedCulling``
      - Boolean
      - ``True``
      - Run visibility culling on worker threads.
-   * - ``LOD_distanceList``
+   * - .. _option-LOD_distanceList:
+
+       ``LOD_distanceList``
      - LongArray
      - ``5, 10, 25, 150, 250``
      - Distance thresholds selecting LOD level (3 LODs are generated per model, so 4 levels).
-   * - ``LOD_skipRenderDistance``
+   * - .. _option-LOD_skipRenderDistance:
+
+       ``LOD_skipRenderDistance``
      - Double
      - ``50.0``
-     - Distance at which the engine may start skipping rendering of an object (with ``LOD_skipRenderSize``).
-   * - ``LOD_skipRenderSize``
+     - Distance at which the engine may start skipping rendering of an object (with ``LOD_skipRenderSize``). Objects closer than this are never skipped by size.
+   * - .. _option-LOD_skipRenderSize:
+
+       ``LOD_skipRenderSize``
      - Double
      - ``0.075``
      - On-screen size (fraction) below which distant objects past ``LOD_skipRenderDistance`` are skipped.
-   * - ``LOD_maxSkipRenderSize``
+   * - .. _option-LOD_maxSkipRenderSize:
+
+       ``LOD_maxSkipRenderSize``
      - Double
      - ``3``
-     - On-screen size above which an object is never skipped (avoids jarring wall/ground pop).
-   * - ``occlusion_enabled``
+     - World-space size (bounding box width or height) at or above which an object is never skipped regardless of distance, so large geometry such as ground and walls doesn't disappear at range.
+   * - .. _option-occlusion_enabled:
+
+       ``occlusion_enabled``
      - Boolean
      - ``True``
      - Enable software occlusion culling for the player camera. Can be toggled at runtime from the editor.
-   * - ``SplitModelToMeshCount``
+   * - .. _option-SplitModelToMeshCount:
+
+       ``SplitModelToMeshCount``
      - Long
      - ``10``
      - Models with more meshes than this get occlusion tested per mesh instead of per model.
-   * - ``occlusion_renderWidth``
+   * - .. _option-occlusion_renderWidth:
+
+       ``occlusion_renderWidth``
      - Long
      - ``512``
      - Software-rasterized depth buffer width (must be a multiple of 8).
-   * - ``occlusion_renderHeight``
+   * - .. _option-occlusion_renderHeight:
+
+       ``occlusion_renderHeight``
      - Long
      - ``256``
      - Software-rasterized depth buffer height (must be a multiple of 8).
-   * - ``occlusion_occluderSizePerspective``
+   * - .. _option-occlusion_occluderSizePerspective:
+
+       ``occlusion_occluderSizePerspective``
      - Double
      - ``0.1``
      - On-screen size threshold for an object to be treated as an occluder for perspective cameras (1 = full coverage).
-   * - ``occlusion_occluderSizeOrthographic``
+   * - .. _option-occlusion_occluderSizeOrthographic:
+
+       ``occlusion_occluderSizeOrthographic``
      - Double
      - ``0.01``
      - Same threshold for orthographic (shadow) cameras; optimal value is much lower than for perspective.
@@ -308,27 +402,75 @@ Debugging and Profiling
      - Type
      - Default
      - Description
-   * - ``debug_renderInformations``
+   * - .. _option-debug_renderInformations:
+
+       ``debug_renderInformations``
      - Boolean
      - ``True``
      - Show the on-screen logger overlay and tris/lines/FPS counters.
-   * - ``debug_drawLines``
+   * - .. _option-debug_drawLines:
+
+       ``debug_drawLines``
      - Boolean
      - ``False``
      - Draw the engine's own debug lines - shadow cascade frustums and ray cast results. Toggled at runtime with F4. Lines drawn through the API and the editor's object visualisations are not affected by it and render regardless.
-   * - ``debug_drawBufferSize``
+   * - .. _option-debug_drawBufferSize:
+
+       ``debug_drawBufferSize``
      - Long
      - ``1000``
-     - Vertex buffer size for debug line drawing.
-   * - ``profiler_enableServer``
+     - Vertex buffer capacity for debug line drawing. Accumulated lines are flushed to the GPU when it fills.
+   * - .. _option-profiler_enableServer:
+
+       ``profiler_enableServer``
      - Boolean
      - ``True``
-     - Enable the built-in profiler server.
-   * - ``occlusion_renderDump``
+     - Enable the embedded Tracy profiling server (flame graph visible in the editor).
+   * - .. _option-profiler_enableTracing:
+
+       ``profiler_enableTracing``
+     - Boolean
+     - ``True``
+     - Master switch for profiler zones. When off, none of the ``profiler_trace*`` groups below are recorded. Toggled live from the editor profiler window.
+   * - .. _option-profiler_traceSimulation:
+
+       ``profiler_traceSimulation``
+     - Boolean
+     - ``True``
+     - Record simulation (tick) zones. Only applies while ``profiler_enableTracing`` is on; toggled live from the editor profiler window.
+   * - .. _option-profiler_traceVisibility:
+
+       ``profiler_traceVisibility``
+     - Boolean
+     - ``True``
+     - Record visibility and culling zones. Only applies while ``profiler_enableTracing`` is on; toggled live from the editor profiler window.
+   * - .. _option-profiler_traceRendering:
+
+       ``profiler_traceRendering``
+     - Boolean
+     - ``True``
+     - Record CPU-side rendering zones. Only applies while ``profiler_enableTracing`` is on; toggled live from the editor profiler window.
+   * - .. _option-profiler_traceGpuRendering:
+
+       ``profiler_traceGpuRendering``
+     - Boolean
+     - ``True``
+     - Record GPU rendering zones. Only applies while ``profiler_enableTracing`` is on; toggled live from the editor profiler window.
+   * - .. _option-debug_fpsWindowMs:
+
+       ``debug_fpsWindowMs``
+     - Long
+     - ``500``
+     - Time window in milliseconds over which the FPS and frame-time statistics in the profiler window are averaged. Valid range 50 to 10000; a value outside it logs a warning and falls back to 500.
+   * - .. _option-occlusion_renderDump:
+
+       ``occlusion_renderDump``
      - Boolean
      - ``False``
      - Dump the software-rasterized depth buffer to a PPM file (debug only).
-   * - ``occlusion_renderDumpFrequency``
+   * - .. _option-occlusion_renderDumpFrequency:
+
+       ``occlusion_renderDumpFrequency``
      - Long
      - ``300``
      - How often (in frames) to dump the software depth buffer when dumping is enabled.

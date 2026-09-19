@@ -169,7 +169,12 @@ The layer of the button can be selected from the drop down.
 .. figure:: _static/media/images/WorldEditor/GUI_Anim.png
     :align: center
 
-This Widget is not fully functional at 0.6 release. Please avoid until next release.
+A GUI Animation is a flip-book: it cycles through a sequence of images at a fixed rate. Set its name, **FrameSpeed** (images shown per second) and whether it loops, pick the image from the directory tree of ./Data, and select the layer from the drop down.
+
+.. note::
+    The editor creates the animation with the one image you selected. Further images are listed as ``File-1``, ``File-2``, ... entries under the animation in the world file.
+
+To move, scale or fade a GUI element over time instead, use a custom animation - see :ref:`AnimationSequencer`. On GUI elements the Z translation drives the alpha channel. Animations made for 3D models can be applied to GUI elements too, but their Z movement turns into alpha changes, so the result might be unexpected.
 
 Adding Particle Emitters
 _________________________
@@ -371,7 +376,7 @@ The details of Triggers settings are not predefined, triggers can define their o
 The logic of triggers is as follows:
 
 #. If player is not detected, and wasn't detected last frame, do nothing.
-#. If player is not detected, and was detected last frame, and *Exit Trigger* is set, run it.
+#. If player is not detected, and was detected last frame, and *Exit Trigger* is set, run it - unless the enter action that ran on entry returned false. See :ref:`TriggerInterface-run`.
 #. If player is detected, and was detected last frame, do nothing.
 #. If player is detected, and wasn't detected last frame:
 
@@ -651,6 +656,8 @@ ___________________
      - Texture slot
    * - Opacity texture
      - Texture slot
+
+.. _AnimationSequencer:
 
 Animation Sequencer Details
 ###########################

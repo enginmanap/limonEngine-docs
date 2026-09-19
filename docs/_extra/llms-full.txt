@@ -126,7 +126,7 @@ Five stages run in order per camera each frame, with each camera's workload on a
 1. **Frustum culling** — objects outside the camera view volume are discarded. Applies to all scene geometry. Point lights are the exception (see below).
 2. **Size-based full skip** — objects below a configurable projected screen-space size threshold (`SkipRenderSize`) are discarded entirely. Objects closer than `SkipRenderDistance` or larger than `MaxSkipRenderSize` are exempt. This is a binary skip, applied before and independent of LOD selection.
 3. **Occlusion culling** — SIMD software depth buffer on the CPU (see below).
-4. **LOD selection** — LOD mesh chosen based on projected screen-space size and engine-wide `LodDistanceList`. Automatic 4-level LOD (3 simplifications + original) generated via meshoptimizer. Not configurable per model.
+4. **LOD selection** — LOD mesh chosen based on projected screen-space size and engine-wide `LOD_distanceList`. Automatic 4-level LOD (3 simplifications + original) generated via meshoptimizer. Not configurable per model.
 
 ### SIMD occlusion culling
 
@@ -195,11 +195,11 @@ Models must have animations to be assigned an AI actor.
 
 Every sound is mixed on one of five channels. Effective gain = per-sound gain × channel volume × master volume.
 
-- MASTER (soundVolumeMaster) — multiplied into all channels
-- MUSIC (soundVolumeMusic) — used by setMusic/stopMusic, 2D positioned at listener
-- SFX (soundVolumeSFX) — default channel for playSound
-- SPEECH (soundVolumeSpeech)
-- AMBIENT (soundVolumeAmbient)
+- MASTER (audio_volumeMaster) — multiplied into all channels
+- MUSIC (audio_volumeMusic) — used by setMusic/stopMusic, 2D positioned at listener
+- SFX (audio_volumeSFX) — default channel for playSound
+- SPEECH (audio_volumeSpeech)
+- AMBIENT (audio_volumeAmbient)
 
 Channel volumes are global Options (not dedicated API calls). Change via getOptions()/saveOptions() using the option names above. Applied live — no restart required.
 
@@ -328,7 +328,7 @@ Each world instance gets an isolated Python sub-interpreter. When a world is unl
 
 ### Auto-discovery
 
-On world load the engine scans both directories. Every .py file (except __init__.py) is imported. Each top-level class subclassing TriggerInterface, PlayerExtensionInterface, ActorInterface, or CameraExtensionInterface is registered automatically. The class name is the registered name shown in the editor. Keep one extension class per file — unrelated helper classes are ignored as long as they don't subclass an extension interface.
+On world load the engine scans both directories. Every .py file (except __init__.py) is imported. Each top-level class subclassing TriggerInterface, PlayerExtensionInterface, ActorInterface, or CameraExtensionInterface is registered automatically. RenderMethods are C++ only; they are performance critical and not exposed to Python. The class name is the registered name shown in the editor. Keep one extension class per file — unrelated helper classes are ignored as long as they don't subclass an extension interface.
 
 ### Python actor helpers (valid from constructor)
 

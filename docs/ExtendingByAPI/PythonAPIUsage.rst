@@ -62,7 +62,7 @@ Registration is automatic - there is no Python equivalent of the C++ ``registerA
 The ``limon`` module and the base classes
 =========================================
 
-Inside each sub-interpreter the engine injects a built-in ``limon`` module. It exposes value types and enums you use at runtime (``Vec4``, ``Inputs``, ``LogSubsystem``, and so on); the ``LimonAPI`` instance is handed to your extension's constructor as ``limon_api``.
+Inside each sub-interpreter the engine injects a built-in ``limon`` module. It exposes value types and enums you use at runtime (``Vec4``, ``InputActions``, ``LogSubsystem``, and so on); the ``LimonAPI`` instance is handed to your extension's constructor as ``limon_api``.
 
 Your extension class must subclass the matching **pure-Python base class** shipped in ``Engine/Scripts``:
 
@@ -76,7 +76,7 @@ Your extension class must subclass the matching **pure-Python base class** shipp
     class MyExtension(PlayerExtensionInterface):
         ...
 
-Discovery matches by **class identity** against these base classes (``TriggerInterface`` in ``trigger_interface.py``, ``PlayerExtensionInterface`` in ``player_extension_interface.py``, ``ActorInterface`` in ``actor_interface.py``).
+Discovery matches by **class identity** against these base classes (``TriggerInterface`` in ``trigger_interface.py``, ``PlayerExtensionInterface`` in ``player_extension_interface.py``, ``ActorInterface`` in ``actor_interface.py``, ``CameraExtensionInterface`` in ``camera_extension_interface.py``).
 
 .. warning::
     Do not use ``dir(limon)`` to discover extension base classes. The ``limon`` module exposes internal C++ binding types such as ``limon.TriggerInterface`` that are not intended for user extension — subclassing them will silently fail to register, and can trigger an interpreter-shutdown crash. Only use the documented pure-Python base classes from ``Engine/Scripts``. You still ``import limon`` when you need its value types and enums.
@@ -93,7 +93,7 @@ The engine calls a fixed set of methods on each extension instance. The base cla
    * - Extension type
      - Methods the engine calls
    * - ``TriggerInterface``
-     - ``get_name``, ``get_parameters``, ``set_parameters``, ``run``, ``get_results``
+     - ``get_name``, ``get_parameters``, ``run``, ``get_results``
    * - ``PlayerExtensionInterface``
      - ``get_name``, ``process_input``, ``interact``
    * - ``ActorInterface``
@@ -106,7 +106,12 @@ All method names are ``snake_case`` to match the Python API binding. See :ref:`i
 Parameters
 ==========
 
-Python extensions use the same :ref:`unified parameter contract <GenericParameter-unified-contract>` as C++. ``get_parameters`` returns a list of :ref:`GenericParameter <pythonApi>` objects - each carrying both its descriptor (request type, description, value type) and its value - and ``set_parameters`` receives the edited or loaded values back. The defaults you return from ``get_parameters`` at construction are what the editor shows; the configured values are persisted with the map and editable in the editor exactly as for C++ extensions.
+Python extensions use the same :ref:`unified parameter contract <GenericParameter-unified-contract>` as C++. ``get_parameters`` returns a list of :ref:`GenericParameter <pythonApi>` objects - each carrying both its descriptor (request type, description, value type) and its value - and ``set_parameters`` receives the edited or loaded values back. The configured values are persisted with the map and editable in the editor exactly as for C++ extensions.
+
+When the engine calls ``get_parameters`` depends on the extension type:
+
+* **Actions** (``TriggerInterface``) - called **once**, when the action is created. Return the defaults. From then on the engine holds the values itself and passes the configured ones to ``run()``; ``set_parameters`` is never called on a Python action.
+* **Player Extensions, AI Actors and Camera Attachments** - called **every time** the engine needs the values, such as when the editor draws them or the map is saved. Return the *current* values: seed a list in ``__init__``, store what ``set_parameters`` receives, and return that. Returning freshly built defaults loses every edit, and the defaults are what gets saved.
 
 The ``RequestParameterType`` and ``ValueType`` enums and the ``GenericParameter`` and ``Vec3`` helper types are documented in the :ref:`Python API reference <pythonApi>`.
 

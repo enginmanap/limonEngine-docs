@@ -1051,23 +1051,23 @@ Every sound is mixed on one of five channels (buses). The effective output gain 
      - ``playSound``
      - Description
    * - ``MASTER``
-     - ``soundVolumeMaster``
+     - :ref:`audio_volumeMaster <option-audio_volumeMaster>`
      - **invalid**
      - Global volume multiplier applied to all channels. Not an assignable channel — passing it to ``playSound`` returns 0.
    * - ``MUSIC``
-     - ``soundVolumeMusic``
+     - :ref:`audio_volumeMusic <option-audio_volumeMusic>`
      - **invalid**
      - Dedicated music channel. Managed exclusively by :ref:`setMusic<LimonAPI-setMusic>` / :ref:`stopMusic<LimonAPI-stopMusic>`. Passing it to ``playSound`` returns 0.
    * - ``SFX``
-     - ``soundVolumeSFX``
+     - :ref:`audio_volumeSFX <option-audio_volumeSFX>`
      - default
      - Sound effects. Default channel for sounds played via ``playSound``.
    * - ``SPEECH``
-     - ``soundVolumeSpeech``
+     - :ref:`audio_volumeSpeech <option-audio_volumeSpeech>`
      - valid
      - Speech and voice-over.
    * - ``AMBIENT``
-     - ``soundVolumeAmbient``
+     - :ref:`audio_volumeAmbient <option-audio_volumeAmbient>`
      - valid
      - Environmental / ambient sounds.
 

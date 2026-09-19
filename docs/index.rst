@@ -20,7 +20,7 @@ Features at a Glance
 
 **Scripting**
 
-Gameplay logic runs in C++ plugins or Python scripts (via pybind11) through five extension points: :ref:`Actions <implementAction>`, :ref:`Player Extensions <implementPlayerExtension>`, :ref:`AI Actors <implementAIActor>`, :ref:`Camera Attachments <implementCameraAttachment>`, and :ref:`RenderMethods <RenderingPipeline>`. All five types are loaded from a single user dynamic library at engine launch.
+Gameplay logic runs in C++ plugins or Python scripts (via pybind11) through five extension points: :ref:`Actions <implementAction>`, :ref:`Player Extensions <implementPlayerExtension>`, :ref:`AI Actors <implementAIActor>`, :ref:`Camera Attachments <implementCameraAttachment>`, and :ref:`RenderMethods <RenderingPipeline>`. C++ implementations of all five are loaded from a single user dynamic library at engine launch. All but RenderMethods can also be written in Python; RenderMethods run on the performance-critical render path, so they are C++ only.
 
 **Rendering**
 

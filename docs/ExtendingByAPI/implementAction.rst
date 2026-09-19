@@ -65,6 +65,8 @@ run(std::vector<LimonTypes::GenericParameter>parameters)
 
 The parameters with their set values will be provided. The logic of the action should be this method. Return true if run succesfully. Return false if the run failed for some reason.
 
+The engine doesn't retry or log a failed run. The only effect is on trigger volumes: when an enter action returns false, the *Exit Trigger* is skipped for that visit. A *First Enter Trigger* counts as used even if it returns false, so it is not run again. Button actions ignore the result.
+
 .. _TriggerInterface-getResults:
 
 getResults()
