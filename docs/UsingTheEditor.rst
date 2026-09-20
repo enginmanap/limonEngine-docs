@@ -365,7 +365,7 @@ _______________________
 
 The trigger object has same interfaces with model for transformation settings. The difference is at "Trigger Properties" section.
 
-This section has 3 Trigger settings.
+This section has 3 Trigger settings. Each one selects an **action** - code implemented as a ``TriggerInterface`` - to run at that moment; the trigger object itself is only the volume that detects the player.
 
 #. First Enter Trigger.
 #. Enter Trigger.
@@ -376,7 +376,7 @@ The details of Triggers settings are not predefined, triggers can define their o
 The logic of triggers is as follows:
 
 #. If player is not detected, and wasn't detected last frame, do nothing.
-#. If player is not detected, and was detected last frame, and *Exit Trigger* is set, run it - unless the enter action that ran on entry returned false. See :ref:`TriggerInterface-run`.
+#. If player is not detected, and was detected last frame, and *Exit Trigger* is set, run it. See :ref:`TriggerInterface-run` for what an action's return value does.
 #. If player is detected, and was detected last frame, do nothing.
 #. If player is detected, and wasn't detected last frame:
 

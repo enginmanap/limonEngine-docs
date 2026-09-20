@@ -6,6 +6,9 @@ How to Implement a Player Extension
 
 Player extensions are main ways of handling input in Limon Engine. Input from player is first handled by PhysicalPlayer class, which governs look around and movement, then all input information is passed to selected extension, so it can handle custom interactions, like pickups, shooting etc. On the other side, any interaction send by other entities to player is directly passed to player extension for handling.
 
+.. note::
+    ``PhysicalPlayer`` owns the player's movement and state. An extension is expected to react to the player, not to drive it. Nothing stops an extension from moving the player or changing its state through the API, but that is not supported or encouraged: it is at your own risk, and it may conflict with what ``PhysicalPlayer`` does in the same tick.
+
 Player extensions follow the :ref:`unified parameter contract <GenericParameter-unified-contract>`. Like Triggers, the base class holds the values on a protected ``parameters`` member: you seed any default parameters into that member in the **constructor**, the base ``getParameters() const`` returns it, and ``setParameters()`` overwrites it when the designer edits values or a map is loaded. The configured values are persisted with the map and editable in the editor. An extension with no configurable settings simply seeds nothing and the member stays empty.
 
 PlayerExtensionInterface Class
@@ -17,7 +20,7 @@ ______________________________
    * -
      - :ref:`PlayerExtensionInterface(LimonAPI *limonAPI)<PlayerExtensionInterface-PlayerExtensionInterface>`
    * - ``void``
-     - :ref:`processInput(const InputStates &inputState, const PlayerInformation &playerInformation, long time)<PlayerExtensionInterface-processInput>`
+     - :ref:`processInput(const InputStates &inputState, const PlayerInformation &playerInformation, uint32_t time)<PlayerExtensionInterface-processInput>`
    * - ``void``
      - :ref:`interact(std::vector\<LimonTypes::GenericParameter\> &parameters)<PlayerExtensionInterface-interact>`
    * - ``std::vector<LimonTypes::GenericParameter>``
@@ -38,8 +41,8 @@ The constructor of the interface. If the extension exposes editor-configurable s
 
 .. _PlayerExtensionInterface-processInput:
 
-void processInput(const InputStates &inputState, const PlayerInformation &playerInformation, long time)
-========================================================================================================
+void processInput(const InputStates &inputState, const PlayerInformation &playerInformation, uint32_t time)
+============================================================================================================
 
 Called each frame with updated input information, current player state, and the frame time in milliseconds.
 
@@ -47,7 +50,7 @@ Parameters:
 
 #. const InputStates &inputState: Current input state for this frame.
 #. const PlayerInformation &playerInformation: Current player position and look direction. See :ref:`PlayerInformation struct<PlayerExtensionInterface-PlayerInformation>` below.
-#. long time: Frame time in milliseconds.
+#. uint32_t time: Frame time in milliseconds.
 
 .. _PlayerExtensionInterface-interact:
 

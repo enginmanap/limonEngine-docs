@@ -61,8 +61,8 @@ The parameters set by map designer will be passed to this method. It might be ju
 
 .. _ActorInterface-play:
 
-void play(long time, ActorInformation &information)
-===================================================
+void play(uint32_t time, ActorInformation &information)
+=======================================================
 
 Called on each frame, with current information about player and world, in form of :ref:`ActorInterface-ActorInformation`
 
@@ -141,8 +141,6 @@ This struct is feeded for each frame, and meant to contain information to trigge
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 |                        |                             |                                                                          |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
-| uint32_t               | maximumRouteDistance(128)   | how deep the route search should go. (maximum ~128 meters default)       |
-+------------------------+-----------------------------+--------------------------------------------------------------------------+
 | std::vector<glm::vec3> | routeToRequest              | Points to follow to reach the player.                                    |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 | bool                   | routeFound                  | Was route course successful?                                             |
@@ -168,6 +166,53 @@ This struct is part of ActorInterface, and each frame Limon Engine checks all Ac
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 | glm::vec3              | customPosition              | Position to course path                                                  |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
+| uint32_t               | maximumRouteNodeCount(128)  | Search depth, in navigation nodes. Not reset after a request.            |
++------------------------+-----------------------------+--------------------------------------------------------------------------+
+
+.. _ActorInterface-route-lifecycle:
+
+Requesting and following a route
+________________________________
+
+A route search runs on a worker thread and its result is delivered exactly once:
+
+#. In ``play()``, set ``informationRequest.routeToPlayer = true`` (or ``routeToCustomPosition`` together with ``customPosition``).
+#. On the next tick the engine reads the request, clears it and starts the search. The destination is fixed at that moment - for ``routeToPlayer`` it is where the player stands then. A request made while a search for this actor is still running is dropped, not queued.
+#. On the tick the search finishes, ``play()`` gets ``routeReady == true`` along with ``routeFound`` and ``routeToRequest``. ``ActorInformation`` is rebuilt every tick, so on the next tick ``routeReady`` is false and ``routeToRequest`` is empty again. **Copy the route into your actor when it arrives.**
+#. ``routeReady`` with ``routeFound == false`` means there is no route: the destination is not reachable on the navigation grid, or is beyond the search depth (``informationRequest.maximumRouteNodeCount``, 128 by default; unlike the request flags it stays set, so set it once).
+#. Request again when the route is stale, for example because the player moved. Don't request every tick: each request is a full search.
+
+Route points float 2 units above the ground (the navigation grid height, ``AIMovementGrid::floatingHeight``), so compare them against your position plus that offset. ``routeToRequest[0]`` is the next point to walk to.
+
+.. code-block:: cpp
+
+    class Chaser : public ActorInterface {
+        std::vector<glm::vec3> route;
+        bool routeRequested = false;
+        uint32_t routeTime = 0;
+    public:
+        // constructor, getName() etc. omitted
+        void play(uint32_t time, ActorInformation &information) override {
+            if (information.routeReady) {//only on this tick, keep a copy
+                route = information.routeToRequest;//empty if routeFound is false
+                routeRequested = false;
+                routeTime = time;
+            }
+            if (!routeRequested && (routeTime == 0 || time - routeTime > 1000)) {//refresh once a second
+                informationRequest.routeToPlayer = true;
+                routeRequested = true;
+            }
+            if (!route.empty()) {
+                glm::vec3 positionOnGrid = getPosition() + glm::vec3(0, 2.0f, 0);
+                if (glm::length(positionOnGrid - route[0]) < 0.3f) {
+                    route.erase(route.begin());//reached it, head for the next one
+                }
+                // move toward route[0] here
+            }
+        }
+    };
+
+The same flow applies to Python actors through ``self.information_request`` - see below. ``CowboyEnemyAI`` in the samples follows this pattern.
 
 .. _ActorInterface-python:
 
@@ -191,7 +236,7 @@ To request a navigation route - the Python equivalent of writing the :ref:`Infor
             self.information_request.route_to_player = True   # ask the engine for a route
         # ... follow information.route_to_request once information.route_ready is True
 
-The engine reads the request once per tick and clears it (the same one-shot semantics as the C++ ``getRequests()`` path), so re-raise it whenever you still need a route. Setting ``route_to_custom_position`` together with ``custom_position`` (a ``Vec3``) requests a route to an arbitrary point instead of the player.
+The engine reads the request once per tick and clears it (the same one-shot semantics as the C++ ``getRequests()`` path), so re-raise it whenever you still need a route. Setting ``route_to_custom_position`` together with ``custom_position`` (a ``Vec3``) requests a route to an arbitrary point instead of the player. ``maximum_route_node_count`` sets the search depth and, like its C++ counterpart, is not cleared.
 
 .. note::
     Route nodes in ``information.route_to_request`` arrive as ``{x, y, z}`` dicts, and VEC4 parameter values as 4-tuples. Convert them to ``Vec3`` before doing vector math - ``python_cowboy_enemy.py`` includes small helpers for this.

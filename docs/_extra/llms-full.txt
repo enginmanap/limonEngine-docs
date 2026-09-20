@@ -55,7 +55,7 @@ Not a singleton by design — supports multiple instances for testing harnesses.
 
 ### Multithreaded loading pipeline
 
-CPU layer: thread pool decompresses, parses, and converts assets in parallel. Completed assets pushed to a thread-safe queue. GPU layer: main thread consumes from the queue on a fixed per-frame budget — texture uploads, vertex buffer creation, and shader compilation are spread across frames. World signals ready only after all assets complete both layers. No partial asset state is visible to the scene. In the editor, a model can only be placed after loading is fully complete.
+CPU layer: thread pool decompresses, parses, and converts assets in parallel. Completed assets pushed to a thread-safe queue. GPU layer: main thread consumes from the queue and does the GPU uploads. World signals ready only after all assets complete both layers. No partial asset state is visible to the scene. In the editor, a model can only be placed after loading is fully complete.
 
 ### limonmodel format
 
@@ -183,7 +183,7 @@ Grid is static for the lifetime of the loaded world. Single grid shared by all A
 
 ## AI System
 
-ActorInformation fields passed each simulation step: canSeePlayerDirectly, isPlayerLeft/Right/Up/Down/Front/Back, cosineBetweenPlayer (−1.0 to 1.0), playerDirection (vec3), playerDistance (meters), routeToRequest (waypoints), routeFound, routeReady (check before using route), playerDead, maximumRouteDistance (default 128 nodes ≈ 128 m).
+ActorInformation fields passed each simulation step: canSeePlayerDirectly, isPlayerLeft/Right/Up/Down/Front/Back, cosineBetweenPlayer (−1.0 to 1.0), playerDirection (vec3), playerDistance (meters), routeToRequest (waypoints), routeFound, routeReady (check before using route), playerDead. Route search depth is InformationRequest::maximumRouteNodeCount (default 128 nodes, persists between requests).
 
 interactWithAI(AIID, interactionInformation) — send GenericParameter data to an AI actor.
 

@@ -15,6 +15,20 @@ The pattern is uniform across extension points: ``getParameters()`` returns the 
 
 For the full contract and the per-extension-point breakdown, see :ref:`the unified parameter contract <GenericParameter-unified-contract>`.
 
+.. _API-object-ids:
+
+Object IDs
+==========
+
+Every object the API hands you - models, AI actors, lights, sounds, particle emitters, GUI elements, trigger volumes, camera rigs - is identified by a ``uint32_t`` ID. The same rules apply to all of them, in C++ and Python:
+
+* **One ID space per world.** All object kinds share it, so an ID tells you which object, not what kind. IDs belong to the world that issued them; after a world change, IDs from the previous world mean nothing.
+* **0 is never a valid ID.** Methods that create an object return ``0`` when creation fails.
+* **An ID is valid from the call that returns it until the object is removed** - by a ``remove*`` call, from the editor, or when the world is unloaded. Sounds have no remove call; a sound ID stays valid after playback ends, until the world is unloaded.
+* **Removed IDs are reused.** The ID of a removed model, actor, light, trigger volume or camera rig is handed to the next object created, which may be of a different kind. Forget an ID once you remove its object; don't use a failing call to test whether something still exists, because the ID may already point at something else.
+* **Using an unknown ID fails safely.** The call returns ``false``, ``0`` or an empty value; the per-method reference lists which.
+* **IDs of objects placed in the editor are saved with the world**, so they are the same on every load. That is what lets a parameter (for example a ``MODEL`` request) refer to an object by ID.
+
 Animation Blending
 ==================
 
@@ -61,7 +75,7 @@ Each animation's playback speed is independently configurable. The start point o
 Sound
 =====
 
-The audio backend is OpenAL with a dedicated audio thread. Supported formats are OGG and WAV.
+The audio backend is OpenAL with a dedicated audio thread. The only supported format is WAV.
 
 Placing and Controlling Sounds
 ------------------------------

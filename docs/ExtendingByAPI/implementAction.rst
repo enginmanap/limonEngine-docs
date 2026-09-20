@@ -4,7 +4,10 @@
 How to Implement an Action
 ==========================
 
-Actions are generalized by the class TriggerInterface, under src/GamePlay of the engine. Each new action must implement this interface. These actions can be assigned to trigger volumes or GUI button.They can also be run on map load.
+Actions are generalized by the class TriggerInterface, in src/limonAPI/TriggerInterface.h. Each new action must implement this interface. These actions can be assigned to trigger volumes or GUI button.They can also be run on map load.
+
+.. note::
+    The names overlap for historical reasons. A **trigger volume** is the scene object the player walks into, placed in the editor. An **action** is the code it runs, implemented as a ``TriggerInterface`` - which is why the editor labels a volume's action slots *First Enter Trigger*, *Enter Trigger* and *Exit Trigger*.
 
 Action constructors will get a populated LimonAPI instance for the world they are to be run in. Using this instance, API calls can be made to interact or change the world to game design.
 
@@ -65,7 +68,7 @@ run(std::vector<LimonTypes::GenericParameter>parameters)
 
 The parameters with their set values will be provided. The logic of the action should be this method. Return true if run succesfully. Return false if the run failed for some reason.
 
-The engine doesn't retry or log a failed run. The only effect is on trigger volumes: when an enter action returns false, the *Exit Trigger* is skipped for that visit. A *First Enter Trigger* counts as used even if it returns false, so it is not run again. Button actions ignore the result.
+The engine doesn't act on the result: a failed run is not retried, not logged, and doesn't stop the trigger volume's later actions. A *First Enter Trigger* counts as used even if it returns false, so it is not run again. The result is only visible to other extensions, through :ref:`getResultOfTrigger<LimonAPI-getResultOfTrigger>`.
 
 .. _TriggerInterface-getResults:
 

@@ -51,20 +51,43 @@ Interface
        the editable fields (and is what gets saved); ``setParameters`` applies edited/loaded values. This is
        how the editor renders the rig's configuration and how it round-trips through the world file.
    * - ``getCameraVariables``
-     - Called every frame. Returns four vectors that define the camera pose: position, center (look-at
-       direction), up, and right.
+     - Called once per rendered frame, **only while** ``isDirty`` returns ``true``. Returns four vectors that
+       define the camera pose: position, center (look-at direction), up, and right.
    * - ``getProjection``
      - **Required.** Returns the :ref:`projection <camerarig-projection>` the engine should build for this
        camera - perspective or orthographic, plus the near/far planes and field-of-view or orthographic
-       half-height.
+       half-height. Read when the rig is activated, and again on frames where ``isDirty`` is ``true``.
    * - ``isDirty`` / ``clearDirty``
      - ``isDirty`` returns ``true`` when the pose has changed since the last frame; ``clearDirty`` marks it
-       consumed. A follow camera typically returns ``true`` every frame.
+       consumed. See :ref:`camerarig-recompute`.
    * - ``setAttachmentTransform``
      - Optional. When the ``CameraRig`` carrying this attachment is attached to a world object, the engine
        calls this each frame *before* ``getCameraVariables`` with the target's world transform, already
        decomposed into position, orientation, and scale (so no attachment ever decomposes a matrix per
        frame). When the rig is unattached, this is never called and the attachment produces its own pose.
+
+.. _camerarig-recompute:
+
+When the camera is recomputed
+=============================
+
+The engine asks ``isDirty()`` once per rendered frame. If it returns ``true``, the engine calls
+``getCameraVariables()``, rebuilds the view matrix and view frustum, uploads the camera to the GPU, moves the
+audio listener, and then calls ``clearDirty()``. If it returns ``false``, all of that is skipped and the last
+pose is reused.
+
+* **Keeping it false while nothing moves** is what the flag saves: the pose read, the matrix and frustum
+  rebuild and the upload. For a Python rig it also saves a call into the interpreter.
+* **Never setting it** freezes the camera, even though the rig keeps receiving ``setAttachmentTransform``.
+  A rig that follows an object must set its dirty flag there when the target moves, as the
+  ``ObjectAttachedCameraRig`` sample does.
+* **Always returning** ``true`` is correct, just not free. It is the simple choice for a camera that moves
+  most frames anyway.
+* ``setAttachmentTransform`` runs every simulation tick, which can be more often than frames are rendered;
+  ``getCameraVariables`` only sees the latest transform.
+* The projection is picked up the same way. On a dirty frame the engine also reads ``getProjection()``, and if it
+  changed, rebuilds the projection, switching between perspective and orthographic if the type changed. To
+  change field of view or zoom at runtime, change what ``getProjection()`` returns and set the dirty flag.
 
 .. _camerarig-projection:
 
@@ -148,6 +171,8 @@ attach controls.
 The same scene viewed through an active orthographic camera rig.
 
 Saving the world persists the rig (and which one is active) as a ``<CameraRig>`` block; loading recreates it.
+
+.. _camerarig-runtime-activation:
 
 Activating a rig from gameplay
 ==============================

@@ -6,7 +6,7 @@
 Python API reference
 =====================================
 
-This page is the API reference for Python users.
+This page is the API reference for Python users. The object IDs taken and returned below follow the rules in :ref:`API-object-ids`.
 
 .. contents:: Table of Contents
    :depth: 3
@@ -2738,9 +2738,9 @@ Base class for creating player extensions.
             """
             Return the configurable parameters of this extension.
 
-            Called every time the engine needs the values (editor, map save), so
-            return the current values, not freshly built defaults - otherwise
-            edits are lost. Return an empty list for no configuration.
+            Called once, when the extension is created: return the defaults. The
+            engine keeps edited or loaded values and hands them to set_parameters().
+            Return an empty list for no configuration.
 
             Returns:
                 list: List of GenericParameter objects
@@ -2823,8 +2823,9 @@ Base class for creating AI actors.
 
         def get_parameters(self):
             """
-            Get the current parameters of this actor. Called every time the
-            engine needs the values, so return what set_parameters stored.
+            Default parameters of this actor. Called once, when the actor is
+            created; the engine keeps edited or loaded values and hands them
+            to set_parameters().
 
             Returns:
                 list: List of GenericParameter objects
@@ -2892,9 +2893,6 @@ Contains information about the actor's environment and player state, passed to t
 
 ``route_to_request`` : list
     List of Vec3 waypoints for pathfinding route to requested destination.
-
-``maximum_route_distance`` : int
-    Maximum route distance in node count (default: 128).
 
 ``route_found`` : bool
     True if a valid route was found.

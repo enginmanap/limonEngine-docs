@@ -230,7 +230,7 @@ Input is handled by SDL3 and exposed to gameplay code through a **named-action**
 Sound
 -----
 
-Audio backend is OpenAL. A separate thread refreshes sound buffers. Supported formats: OGG and WAV.
+Audio backend is OpenAL. A separate thread refreshes sound buffers. Supported format: WAV.
 
 GUI
 ---

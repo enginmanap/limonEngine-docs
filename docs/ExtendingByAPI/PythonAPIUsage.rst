@@ -93,7 +93,7 @@ The engine calls a fixed set of methods on each extension instance. The base cla
    * - Extension type
      - Methods the engine calls
    * - ``TriggerInterface``
-     - ``get_name``, ``get_parameters``, ``run``, ``get_results``
+     - ``get_name``, ``get_parameters``, ``set_parameters``, ``run``, ``get_results``
    * - ``PlayerExtensionInterface``
      - ``get_name``, ``process_input``, ``interact``
    * - ``ActorInterface``
@@ -108,10 +108,7 @@ Parameters
 
 Python extensions use the same :ref:`unified parameter contract <GenericParameter-unified-contract>` as C++. ``get_parameters`` returns a list of :ref:`GenericParameter <pythonApi>` objects - each carrying both its descriptor (request type, description, value type) and its value - and ``set_parameters`` receives the edited or loaded values back. The configured values are persisted with the map and editable in the editor exactly as for C++ extensions.
 
-When the engine calls ``get_parameters`` depends on the extension type:
-
-* **Actions** (``TriggerInterface``) - called **once**, when the action is created. Return the defaults. From then on the engine holds the values itself and passes the configured ones to ``run()``; ``set_parameters`` is never called on a Python action.
-* **Player Extensions, AI Actors and Camera Attachments** - called **every time** the engine needs the values, such as when the editor draws them or the map is saved. Return the *current* values: seed a list in ``__init__``, store what ``set_parameters`` receives, and return that. Returning freshly built defaults loses every edit, and the defaults are what gets saved.
+``get_parameters`` is called **once**, when the extension is created: return the defaults. From then on the engine holds the values itself, exactly as the C++ base classes do. It shows and saves them, and hands every edited or loaded set to ``set_parameters`` so you can apply them to your own members. Actions also receive the configured values in ``run()``, so ``set_parameters`` is optional for them.
 
 The ``RequestParameterType`` and ``ValueType`` enums and the ``GenericParameter`` and ``Vec3`` helper types are documented in the :ref:`Python API reference <pythonApi>`.
 

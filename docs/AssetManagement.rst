@@ -30,7 +30,7 @@ Asset Types
      - All formats supported by SDL3_image.
    * - Audio
      - OpenAL
-     - OGG and WAV.
+     - WAV only.
    * - Materials (MaterialAsset)
      - Model asset or world file
      - Deduplicated automatically regardless of source. See `Materials as Assets`_ below.
@@ -44,9 +44,44 @@ Loading Pipeline
 Asset loading is split into two layers to maximise parallelism while keeping GPU uploads on the main thread:
 
 * **CPU layer** - a thread pool decompresses, parses, and converts assets in parallel. Each completed asset is pushed to a thread-safe queue.
-* **GPU layer** - the main thread consumes from the queue on a fixed per-frame budget. Texture uploads, vertex buffer creation, and shader compilation are spread across frames to prevent load spikes from dropping below the target framerate.
+* **GPU layer** - the main thread consumes from the queue and does the GPU uploads.
 
 A world signals ready only after all assets have completed both layers - no partial asset state is visible to the scene. In the editor, a model can only be placed after its loading is fully complete.
+
+.. _AssetManagement-failures:
+
+When Loading Fails
+==================
+
+Loading calls don't return an error. Failures are written to standard error, and whether the engine keeps running depends on what failed:
+
+.. note::
+    Failing hard is deliberate. Falling back to something that looks plausible turns a missing asset into a problem that shows up somewhere else, much later, and takes far longer to identify and fix than an engine that stops at the file it could not load.
+
+    Textures are the one exception, because it is not the content's fault: many model formats store the texture paths from the machine the asset was made on, which never match the paths on the user's machine. The search by file name recovers those without the artist editing every model.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Failure
+     - What happens
+   * - Texture file missing or unreadable
+     - The engine looks through the known assets under ``./Data`` for a file with the same name, then for the same name with any image extension, and uses the first one that loads. If none does, it logs ``TextureAsset Load from disk failed`` and uses ``./Engine/Textures/notFoundFallback.jpg``. The world keeps loading. If the fallback itself is missing, the engine exits.
+   * - Texture referenced by a model
+     - Found and resolved the same way, so a model whose textures were moved still loads, with the fallback texture if nothing matches. A texture slot the model file can't describe at all is left empty, with a log message.
+   * - Model can't be imported, has no meshes, or has a material without a name
+     - The engine exits, after an ``ERROR::ASSIMP`` or similar message.
+   * - Sound file can't be read
+     - The engine exits.
+   * - World file missing or not valid XML
+     - The engine exits.
+   * - World file with invalid content (a required element missing, invalid IDs)
+     - The engine exits, both at startup and when switching worlds during play.
+
+The exits apply to API calls too: ``addObject``, ``playSound`` and ``setMusic`` take a path and don't check it first, so a wrong path stops the engine. Check the paths your extensions use during development.
+
+World changes requested through the API (``loadAndSwitchWorld`` and the related calls) are queued and carried out after the current tick, so the call returns ``true`` as soon as the request is queued. If the load then fails, the engine exits.
 
 Reference Counting
 ==================
