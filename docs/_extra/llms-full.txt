@@ -96,6 +96,8 @@ Models can be flipped on X, Y, Z axes — any combination, editable in editor. E
 - attachObjectToObject(objectID, parentID, boneName = "") — child position is relative to parent, a bone name makes the child follow that bone of the parent model
 - attachObjectToObjectAtWorldPosition(objectID, parentID, boneName = "") — attach while keeping current world position
 - detachObjectFromParent(objectID) — detach, object stays at its current world position; false if not found or no parent
+- addObjectTag(objectID, tag) / removeObjectTag(objectID, tag) — render tags of a model, takes effect the same frame; removing the last tag restores the engine-set ones; false if not a model (or tag missing on remove)
+- getObjectTags(objectID) — all tags of a model, engine-set ones included
 - getModelChildren(modelID) — returns vector of all child IDs
 - getObjectParent(objectID) — returns parent ID, 0 if none
 - getObjectByName(name) — searches models, GUI elements, and triggers
@@ -122,7 +124,7 @@ Per-model material editing is copy-on-write: editing globally writes to the shar
 
 Five stages run in order per camera each frame, with each camera's workload on a separate thread concurrently:
 
-0. **Tag filtering** — each camera and each scene object carries a tag; a pass specifies which camera tags render which object tags. Tags converted to uint128 hashes at pipeline load for zero-cost matching at runtime. The engine auto-tags objects as `animated`, `static`, `transparent`, and others — freely changeable in editor. Custom pipeline configurations target specific tags to enable per-tag shaders or dedicated passes.
+0. **Tag filtering** — each camera and each scene object carries a list of tags; a pass specifies which camera tags render which object tags, and an object is rendered if any of its tags is in the pass list. Tags converted to 64-bit hashes at pipeline load for zero-cost matching at runtime. The engine auto-tags models (`basic_model_object`, `animated_model_object`, `transparent_model_object`, `ambient_model_object`, `static_model_object` / `physical_model_object`, and `*_player_attachment` for models attached to the player). All tags are editable in the editor and through the API, engine-set ones can be removed; removing the last tag restores the engine-set ones. Tags are saved with the map. Custom pipeline configurations target specific tags to enable per-tag shaders or dedicated passes.
 1. **Frustum culling** — objects outside the camera view volume are discarded. Applies to all scene geometry. Point lights are the exception (see below).
 2. **Size-based full skip** — objects below a configurable projected screen-space size threshold (`SkipRenderSize`) are discarded entirely. Objects closer than `SkipRenderDistance` or larger than `MaxSkipRenderSize` are exempt. This is a binary skip, applied before and independent of LOD selection.
 3. **Occlusion culling** — SIMD software depth buffer on the CPU (see below).

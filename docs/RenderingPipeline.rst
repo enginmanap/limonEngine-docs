@@ -74,7 +74,7 @@ Filtering Pipeline
 
 Each rendering pass applies four sequential visibility filters. With multiple cameras in the pipeline (player camera, shadow map cameras), each camera runs its culling workload on a separate thread concurrently.
 
-1. **Tag filtering** -each camera and each scene object carries a tag. The pass specifies which camera tags render which object tags. Tags are converted to uint128 hashes at pipeline load for zero-cost matching at runtime.
+1. **Tag filtering** -each camera and each scene object carries a tag. The pass specifies which camera tags render which object tags. Tags are converted to 64-bit hashes at pipeline load for zero-cost matching at runtime.
 
 2. **Frustum culling** -objects outside the camera's view volume are discarded. Point lights use sphere-based culling rather than frustum culling -a point light illuminates in all directions, and a frustum test would incorrectly cull lights behind the camera that still illuminate visible geometry.
 
@@ -82,10 +82,44 @@ Each rendering pass applies four sequential visibility filters. With multiple ca
 
 4. **LOD selection** -the appropriate level-of-detail mesh is selected based on the object's projected screen-space size and the engine-wide LOD settings.
 
+.. _Tagging:
+
 Tagging
 -------
 
-The engine automatically tags objects: ``animated``, ``static``, ``transparent``, and others. Tags are freely changeable in the editor. Custom pipeline configurations target specific tags -enabling per-tag custom shaders or custom passes for specific object categories.
+Every model carries a list of tags, and every render stage lists the object tags it renders. A model is rendered by a stage if **any** of its tags appears in that stage's list. A model tagged ``basic_model_object,static_model_object`` is drawn both by a stage that asks for ``basic_model_object`` and by one that asks for ``static_model_object``.
+
+The engine sets these tags itself:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Tag
+     - Set on
+   * - ``basic_model_object``
+     - Models that are not animated, not transparent and have no ambient map.
+   * - ``animated_model_object``
+     - Animated models without an ambient map.
+   * - ``transparent_model_object``
+     - Transparent models.
+   * - ``ambient_model_object``
+     - Models with an ambient map in any mesh.
+   * - ``static_model_object``, ``physical_model_object``
+     - Models with mass 0, and models with mass above 0.
+   * - ``basic_player_attachment``, ``animated_player_attachment``, ``transparent_player_attachment``
+     - Models attached to the player, directly or through other objects. Each one follows the matching ``*_model_object`` tag, so a model without ``basic_model_object`` doesn't get ``basic_player_attachment`` either. Added on attach, removed on detach.
+   * - ``picked_object``
+     - The object selected in the editor. Not saved with the map.
+
+Cameras carry tags too, and a stage's camera tags select which cameras it renders for: ``player_camera``, ``directional_camera`` and ``point_camera``.
+
+Any tag can be added, and the engine-set ones can be removed, both from the editor and at runtime through the API (:ref:`addObjectTag<LimonAPI-addObjectTag>`, :ref:`removeObjectTag<LimonAPI-removeObjectTag>`, :ref:`getObjectTags<LimonAPI-getObjectTags>`). A custom tag and a stage that asks for it is how a game gives a category of objects its own shader or its own pass.
+
+* A model with no tags would be rendered by no stage, so removing the last tag puts the engine-set ones back.
+* Changing the mass between 0 and a positive value swaps ``static_model_object`` and ``physical_model_object``, but only if the model still has one of them.
+* A tag change made from game code (triggers, actors, Python) is used by the same frame's rendering.
+* Tags are saved with the map, so engine-set tags you removed stay removed. Once saved, the engine no longer re-derives them, so if a model's asset later becomes animated or transparent, update its tags by hand.
 
 Built-in Shaders
 ================

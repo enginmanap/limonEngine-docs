@@ -38,7 +38,7 @@ Visibility System
 
 Four sequential visibility filters run every frame for each active camera before any geometry is submitted to the GPU. With multiple cameras in the pipeline (player camera, shadow map cameras), each camera's culling workload runs on a separate thread concurrently.
 
-1. **Tag filtering** - each camera and scene object carries a tag; only matching combinations are considered for rendering.
+1. **Tag filtering** - each camera and scene object carries tags; an object is considered by a render stage if any of its tags is one the stage asks for.
 2. **Frustum culling** - objects outside the camera view volume are discarded.
 3. **Occlusion culling** - a SIMD software depth buffer on the CPU rejects objects hidden behind other geometry. SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5).
 4. **LOD selection** - the appropriate level-of-detail mesh is chosen based on projected screen-space size.

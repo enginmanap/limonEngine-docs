@@ -91,10 +91,12 @@ The mass of an object can be changed after it has been added to the world, both 
 * Switching from 0 to a value greater than 0 turns a static object into a dynamic one: its full-mesh (or baked) collider is replaced with the simplified convex hull, and from then on its movement is governed by the physics engine.
 * Switching from a value greater than 0 back to 0 turns a dynamic object into a static one: it stops being driven by physics and gets the full triangle mesh (or baked ``UCX_`` mesh) as its collider again.
 
-The collision shape swap and re-registration with the physics world happen automatically; you no longer need to remove and re-add the object.
+The collision shape swap and re-registration with the physics world happen automatically; you no longer need to remove and re-add the object. The ``static_model_object`` and ``physical_model_object`` tags are swapped along with it, if the object still has one of them.
 
 .. note::
     Changing the mass has no effect on animated models. As described above they are "kinematic" and always use per-bone convex hulls regardless of mass, so there is no static/dynamic representation to switch between.
+
+The "Tags" field of the selected object lists its tags, comma separated. Render stages pick the objects they draw by these tags, see :ref:`Tagging`. The field holds all of them, including the ones the engine set, and any of them can be removed. Clearing the field puts the engine-set tags back, because an object with no tags would render nowhere. Tags are saved with the map.
 
 Add Trigger Volume button will create an empty cube. That cube can be used to trigger custom code paths. The details are at :ref:`Trigger Object Editor`.
 

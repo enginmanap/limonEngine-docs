@@ -54,6 +54,12 @@ The ``uint32_t`` IDs taken and returned below follow the rules in :ref:`API-obje
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`detachObjectFromParent(uint32_t objectID)<LimonAPI-detachObjectFromParent>`                                                                                                                                                                                                                              |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`addObjectTag(uint32_t objectID, const std::string& tag)<LimonAPI-addObjectTag>`                                                                                                                                                                                                                          |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`removeObjectTag(uint32_t objectID, const std::string& tag)<LimonAPI-removeObjectTag>`                                                                                                                                                                                                                    |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``std::vector<std::string>``                  | :ref:`getObjectTags(uint32_t objectID)<LimonAPI-getObjectTags>`                                                                                                                                                                                                                                                |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`setObjectTemporary(uint32_t objectID, bool temporary)<LimonAPI-setObjectTemporary>`                                                                                                                                                                                                                      |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``std::vector<LimonTypes::GenericParameter>`` | :ref:`getObjectTransformation(uint32_t objectID)<LimonAPI-getObjectTransformation>`                                                                                                                                                                                                                            |
@@ -539,6 +545,41 @@ Detaches object indicated by the handle ID from its parent. The object stays at 
 Parameters:
 
 #. uint32_t objectID: handle id of the object to detach.
+
+.. _LimonAPI-addObjectTag:
+
+bool addObjectTag(uint32_t objectID, const std::string& tag)
+------------------------------------------------------------
+
+Adds a tag to the model indicated by the handle ID. Render stages pick the objects they draw by tags, see :ref:`Tagging`. The change is used by the same frame's rendering, and saved with the map. Adding a tag the model already has does nothing and returns true. Returns false if the handle ID is not a model.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the model.
+#. const std::string& tag: tag to add.
+
+.. _LimonAPI-removeObjectTag:
+
+bool removeObjectTag(uint32_t objectID, const std::string& tag)
+---------------------------------------------------------------
+
+Removes a tag from the model indicated by the handle ID. Tags the engine set, like ``static_model_object``, can be removed too. A model with no tags is rendered by no stage, so removing the last tag puts the engine-set tags back. Returns false if the handle ID is not a model, or the model doesn't have the tag.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the model.
+#. const std::string& tag: tag to remove.
+
+.. _LimonAPI-getObjectTags:
+
+std::vector<std::string> getObjectTags(uint32_t objectID)
+---------------------------------------------------------
+
+Returns all tags of the model indicated by the handle ID, engine-set ones included. Returns an empty vector if the handle ID is not a model.
+
+Parameters:
+
+#. uint32_t objectID: handle id of the model.
 
 .. _LimonAPI-setObjectTemporary:
 

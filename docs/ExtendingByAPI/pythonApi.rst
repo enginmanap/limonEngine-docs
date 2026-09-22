@@ -423,6 +423,58 @@ detach_object_from_parent
             bool: True if detached, False if the object is not found or has no parent
         """
 
+add_object_tag
+^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def add_object_tag(object_id: int, tag: str) -> bool:
+        """
+        Add a tag to a model. Render stages pick the objects they draw by tags,
+        the change is used by the same frame's rendering and saved with the map.
+
+        Args:
+            object_id: ID of the model
+            tag: tag to add
+
+        Returns:
+            bool: True if the model has the tag now, False if the model is not found
+        """
+
+remove_object_tag
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def remove_object_tag(object_id: int, tag: str) -> bool:
+        """
+        Remove a tag from a model, engine-set ones included. A model with no tags is
+        rendered by no stage, so removing the last tag puts the engine-set tags back.
+
+        Args:
+            object_id: ID of the model
+            tag: tag to remove
+
+        Returns:
+            bool: True if removed, False if the model is not found or doesn't have the tag
+        """
+
+get_object_tags
+^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_object_tags(object_id: int) -> list[str]:
+        """
+        Get all tags of a model, engine-set ones included.
+
+        Args:
+            object_id: ID of the model
+
+        Returns:
+            list[str]: the tags, empty if the model is not found
+        """
+
 remove_trigger_object
 ^^^^^^^^^^^^^^^^^^^^^
 
