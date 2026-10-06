@@ -140,11 +140,41 @@ Raw model formats (FBX, OBJ, GLTF, etc.) are suitable for development but carry 
 
 * Near memory-direct layout - loading is read-and-map rather than parse-and-transform.
 * Contains: vertex and index buffers, skeletal animation data, material information, and textures if they were embedded in the source file.
+* Also contains everything that would otherwise be computed at load: the generated :ref:`LOD levels <LevelOfDetail>` together with what was asked of each one (distance and pixel limits) and what it measured, any per-model LOD settings, and a baked software occluder for every LOD level. A converted model neither simplifies nor bakes at load, and never reads or writes a ``.limon`` sidecar.
 * Texture handling mirrors the source - embedded textures stay embedded; external texture references stay external.
 * Faster load times and smaller file size than raw formats.
 * Works around raw asset redistribution restrictions.
 
 To convert all models in a world, use the **Convert models to binary** button in the world editor. The world file is updated to reference the converted assets automatically.
+
+Conversion bakes the occluders for all LOD levels first, which makes it slower than a plain save but lets :ref:`occlusion_bakeLodLevel <option-occlusion_bakeLodLevel>` be changed afterwards without re-exporting.
+
+Flipped models
+--------------
+
+A model referenced with flipped axes has its mirroring applied to the vertices themselves, so each flip is different geometry and gets its own file: ``Saloon.obj`` flipped on X and Z converts to ``Saloon_flipXZ.limonmodel``. The world file drops the flip flag for that object, because the exported geometry is already mirrored, and the editor hides the flip controls for a model loaded from a ``limonmodel``. A world file that asks for a flip on a ``limonmodel`` is rejected at load with a message asking for the flipped variant to be exported.
+
+Format changes
+--------------
+
+The format carries a version stamp. A file written by an older engine - for example one from before the current LOD levels and baked occluders were stored - is rejected at load with a message asking for a re-export, rather than being read as if it were current.
+
+LOD settings changed in the editor for a converted model are saved by rewriting its ``limonmodel``. The editor asks for confirmation first, since it overwrites the file in the game data and can't be undone.
+
+.. _LodSidecar:
+
+.limon Sidecar Files
+====================
+
+A source model (OBJ, FBX, GLTF, ...) gets a ``.limon`` file next to it, named after the asset: ``Saloon.obj`` gets ``Saloon.obj.limon``. It is an XML file with three sections:
+
+* **LOD calibration** - the generated :ref:`LOD levels <LevelOfDetail>` and what each one measured. Generating them can take seconds to minutes per model, so this is what makes the second load of a map fast. It is discarded and regenerated when the model's geometry or a project-wide LOD option changes.
+* **LOD overrides** - the model's own LOD settings, if it was given any in the editor (see :ref:`LOD levels in the model editor <LodLevelsEditor>`). These survive engine updates that discard the calibration.
+* **Animation sections** - animations cut out of a longer one in the editor.
+
+Each flipped variant of a model keeps its own entries in the same file.
+
+Ship the ``.limon`` files with the game data. Without them every model is generated again on its first load, or, with :ref:`LOD_calibrate <option-LOD_calibrate>` off, renders without LOD levels. A ``limonmodel`` doesn't need one for LOD, because it carries its levels itself.
 
 Asset Browser
 =============

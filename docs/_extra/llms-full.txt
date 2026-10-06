@@ -128,7 +128,7 @@ Five stages run in order per camera each frame, with each camera's workload on a
 1. **Frustum culling** — objects outside the camera view volume are discarded. Applies to all scene geometry. Point lights are the exception (see below).
 2. **Size-based full skip** — objects below a configurable projected screen-space size threshold (`SkipRenderSize`) are discarded entirely. Objects closer than `SkipRenderDistance` or larger than `MaxSkipRenderSize` are exempt. This is a binary skip, applied before and independent of LOD selection.
 3. **Occlusion culling** — SIMD software depth buffer on the CPU (see below).
-4. **LOD selection** — LOD mesh chosen based on projected screen-space size and engine-wide `LOD_distanceList`. Automatic 4-level LOD (3 simplifications + original) generated via meshoptimizer. Not configurable per model.
+4. **LOD selection** — each object uses the coarsest level whose switch distance (`LOD_levelDistances`, times instance scale, with `LOD_switchHysteresis`) it is past. Levels are generated automatically via meshoptimizer (default 3 plus the original, at 50/100/200 m): each is the coarsest simplification that passes five pixel limits (surface, outline, holes, texture, normal) on a CPU render at its real size on a reference 1080p screen. Results are cached in a `.limon` sidecar or in the `limonmodel`; `LOD_calibrate` off generates nothing new. Shadow cameras use position-welded copies of the coarse levels. Project-wide by default; a model can take over its own levels in the editor.
 
 ### SIMD occlusion culling
 
@@ -426,7 +426,7 @@ Options are live-referenced, not cached at load. Extensions reading an option vi
 - AI pathfinding: assumes actor collision size and mobility match the player — flying and swimming actors not supported natively.
 - GPU Particle: experimental.
 - Stereo audio: not spatialized by OpenAL. Source mono audio for 3D positioning.
-- LOD: engine-wide settings only — not configurable per model. Aggressive settings can produce visible mesh pop-in.
+- LOD: the first load of a large map with `LOD_calibrate` on can take minutes while levels are generated; later loads use the cache. Aggressive pixel limits can produce visible mesh pop-in.
 - Raspberry Pi 4/5: upstream Mesa driver bug causes visual artefact — ticket open on public Mesa tracker.
 - No height map terrain support.
 - No time dilation.

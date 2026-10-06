@@ -28,7 +28,7 @@ All items implemented.
 #. Shadow mapping improvements -staggered cascade rendering, point light cube map shadows.
 #. Node-based render pipeline editor -visual pipeline configuration with forward and deferred configurations shipped.
 #. SIMD software occlusion culling -SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5).
-#. Automatic LOD generation -meshoptimizer, 4 LOD levels per model.
+#. Automatic LOD generation -meshoptimizer, levels checked against pixel limits at their own distance, overridable per model.
 #. Python scripting -full LimonAPI surface via pybind11, multi-interpreter, all five extension types implementable in Python.
 #. Camera Attachment -fourth user extension point: registered, configurable cameras (perspective and orthographic) wrapped in first-class ``CameraRig`` scene objects, enabling third-person, isometric, top-down, and custom cameras.
 #. RenderMethod Extension -fifth user extension point for custom GPU rendering primitives.
@@ -75,7 +75,6 @@ The following limitations are confirmed in version 0.7:
 **Rendering and Assets**
 
 * Model scaling is imported directly from the source file - no automatic correction is applied. Incorrect scale must be fixed in the editor.
-* Aggressive engine-wide LOD settings can produce visible mesh pop-in. Tune the :ref:`LOD_distanceList <option-LOD_distanceList>` option for your scene.
 * Raspberry Pi 4/5 is affected by an upstream Mesa driver bug causing a visual artefact. A ticket is open on the public Mesa tracker.
 * limonmodel load-time benchmarks are not yet published.
 

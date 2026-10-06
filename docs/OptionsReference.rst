@@ -330,12 +330,108 @@ Culling, LOD and Occlusion
      - Boolean
      - ``True``
      - Run visibility culling on worker threads.
-   * - .. _option-LOD_distanceList:
+   * - .. _option-LOD_levelDistances:
 
-       ``LOD_distanceList``
-     - LongArray
-     - ``5, 10, 25, 150, 250``
-     - Distance thresholds selecting LOD level (3 LODs are generated per model, so 4 levels).
+       ``LOD_levelDistances``
+     - FloatArray
+     - ``4, 50, 100, 200``
+     - Where each LOD level is used, in meters, multiplied by the instance scale. Each level is generated as the coarsest simplification that stays inside its pixel limits seen from exactly this distance, so the triangle count is a result, not a setting. Every ``LOD_level*`` list must have the same length; an empty list means no LOD levels at all. Changing a distance regenerates that level only. See :ref:`LevelOfDetail`.
+   * - .. _option-LOD_levelTriangleTargets:
+
+       ``LOD_levelTriangleTargets``
+     - FloatArray
+     - ``4, 80, 60, 40``
+     - Percent of the original triangles each level is hoped to keep. Only reported in the editor next to what was reached; it decides nothing, except for animated models, which can't be rendered for a check and are built straight to these shares.
+   * - .. _option-LOD_levelSurfacePixels:
+
+       ``LOD_levelSurfacePixels``
+     - FloatArray
+     - ``4, 4, 3, 4``
+     - Per level: how far the visible surface may move at the level's distance, in pixels of the reference screen. A texture sliding a few texels counts here too. Negative switches the check off.
+   * - .. _option-LOD_levelOutlinePixels:
+
+       ``LOD_levelOutlinePixels``
+     - FloatArray
+     - ``4, 4, 3, 4``
+     - Per level: how far the silhouette may move, in pixels of the reference screen. Negative switches the check off.
+   * - .. _option-LOD_levelHolePixels:
+
+       ``LOD_levelHolePixels``
+     - FloatArray
+     - ``4, 2, 6, 8``
+     - Per level: how wide the widest hole may be, where something behind shows through, in pixels of the reference screen. Negative switches the check off.
+   * - .. _option-LOD_levelTexturePixels:
+
+       ``LOD_levelTexturePixels``
+     - FloatArray
+     - ``4, 8, 12, 16``
+     - Per level: how wide the widest patch may be where the UV jumped to another part of the texture, in pixels of the reference screen. Negative switches the check off.
+   * - .. _option-LOD_levelNormalPixels:
+
+       ``LOD_levelNormalPixels``
+     - FloatArray
+     - ``4, 8, 12, 16``
+     - Per level: how wide the widest patch may be whose shading changed past ``LOD_normalDeviation``, in pixels of the reference screen. Negative switches the check off.
+   * - .. _option-LOD_normalDeviation:
+
+       ``LOD_normalDeviation``
+     - Double
+     - ``0.2``
+     - How far a normal may move before a pixel counts as damaged, as the length of the difference. That length is the most diffuse brightness can change under any light, so ``0.05`` is 5%. Changing it regenerates every level.
+   * - .. _option-LOD_referenceHeight:
+
+       ``LOD_referenceHeight``
+     - Long
+     - ``1080``
+     - Height in pixels of the screen LOD levels are judged for, together with ``LOD_referenceFov``. The default is a low-end 1080p screen; the resolution of the machine doing the generation doesn't matter. Changing it regenerates every level.
+   * - .. _option-LOD_referenceFov:
+
+       ``LOD_referenceFov``
+     - Double
+     - ``60.0``
+     - Vertical field of view in degrees of the screen LOD levels are judged for. Changing it regenerates every level.
+   * - .. _option-LOD_calibrate:
+
+       ``LOD_calibrate``
+     - Boolean
+     - ``True``
+     - Generate and check each model's LOD levels at load. Off generates nothing new: a model uses the levels its ``.limon`` sidecar or ``limonmodel`` already holds, otherwise only the original. This is what a Raspberry Pi build wants.
+   * - .. _option-LOD_calibrateSearchSteps:
+
+       ``LOD_calibrateSearchSteps``
+     - Long
+     - ``7``
+     - Bisection steps per level. Each step renders the model from 14 directions to measure it, so more steps cost load time and land on a slightly larger error.
+   * - .. _option-LOD_calibrationMaxResolution:
+
+       ``LOD_calibrationMaxResolution``
+     - Long
+     - ``2048``
+     - Largest image the check renders: twice the model's real size on screen at the level's distance. A big model seen close needs more and is checked at reduced precision, which the editor marks. Cost grows with the square of this. Changing it regenerates every level.
+   * - .. _option-LOD_shadowWeldedLevels:
+
+       ``LOD_shadowWeldedLevels``
+     - Boolean
+     - ``True``
+     - Build a second, position-welded copy of the coarse levels for shadow cameras. Welding drops normals and UVs, which a depth-only pass never samples, and roughly triples the reduction at the coarse end. Nothing that samples a texture ever picks one. Changing it regenerates every level of every source model; a ``limonmodel`` keeps the levels it was exported with until it is re-exported.
+   * - .. _option-LOD_shadowWeldedFromLevel:
+
+       ``LOD_shadowWeldedFromLevel``
+     - Long
+     - ``2``
+     - First level that gets a welded shadow copy. Shadows use the original and the levels before this one as they are. Same regeneration rules as ``LOD_shadowWeldedLevels``.
+   * - .. _option-LOD_switchHysteresis:
+
+       ``LOD_switchHysteresis``
+     - Double
+     - ``0.15``
+     - How far past a switch distance an object has to move before switching back, as a fraction. Stops an object sitting on a threshold from flipping every frame.
+   * - .. _option-LOD_forceLevel:
+
+       ``LOD_forceLevel``
+     - Long
+     - ``-1``
+     - Forces every model to this LOD level, so one level can be inspected everywhere it would appear. ``-1`` selects levels normally.
    * - .. _option-LOD_skipRenderDistance:
 
        ``LOD_skipRenderDistance``
@@ -390,6 +486,12 @@ Culling, LOD and Occlusion
      - Double
      - ``0.01``
      - Same threshold for orthographic (shadow) cameras; optimal value is much lower than for perspective.
+   * - .. _option-occlusion_bakeLodLevel:
+
+       ``occlusion_bakeLodLevel``
+     - Long
+     - ``0``
+     - Which LOD of a mesh occludes. Level 0 is the full mesh and the most accurate; level 2 rasterizes about 40% faster but over culls more, mostly on ground pieces. A mesh with fewer levels uses its coarsest one. A model loaded from a source file bakes only this level, so changing the value needs a reload; a ``limonmodel`` carries every level and switches immediately.
 
 Debugging and Profiling
 =======================

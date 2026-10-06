@@ -29,7 +29,7 @@ Forward and deferred pipelines ship with the engine. The :ref:`node-based visual
 * Cascaded shadow maps for directional lights; cube map shadows for point lights
 * Screen-space ambient occlusion (SSAO), included as a sample RenderMethod
 * SIMD software occlusion culling: SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5)
-* Automatic LOD with 4 levels per model via meshoptimizer
+* Automatic LOD via meshoptimizer, each level generated to stay within pixel limits at its own distance
 * Multithreaded culling — each camera's frustum and occlusion workload runs on a separate thread
 * Instanced rendering with GPU-side skeletal skinning
 * Lights are creatable and removable at runtime via API

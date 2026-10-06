@@ -41,7 +41,7 @@ Four sequential visibility filters run every frame for each active camera before
 1. **Tag filtering** - each camera and scene object carries tags; an object is considered by a render stage if any of its tags is one the stage asks for.
 2. **Frustum culling** - objects outside the camera view volume are discarded.
 3. **Occlusion culling** - a SIMD software depth buffer on the CPU rejects objects hidden behind other geometry. SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5).
-4. **LOD selection** - the appropriate level-of-detail mesh is chosen based on projected screen-space size.
+4. **LOD selection** - each object uses the coarsest level whose switch distance it is past. Levels are generated so that each one stays within pixel limits at its own distance.
 
 Objects below a configurable screen-space size threshold are skipped entirely before any of the above tests run.
 

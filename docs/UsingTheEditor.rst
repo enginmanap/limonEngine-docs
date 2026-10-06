@@ -357,6 +357,48 @@ Models can be flipped on the X, Y, or Z axis - any combination of axes is suppor
 
 When a flip is applied, the engine generates a flipped mesh asset in the background using the same shader and material path as the original. There is no per-instance runtime cost - the flipped mesh participates in instanced rendering identically to the original mesh.
 
+.. _LodLevelsEditor:
+
+**LOD levels**
+
+.. figure:: _static/media/images/ObjectEditor/lodLevels.png
+    :align: center
+
+    The LOD levels section of a model
+
+This section shows the model's :ref:`LOD levels <LevelOfDetail>` and lets a single model use settings other than the project's. Each row is one level: **0: Original** first, then the textured levels, then the welded shadow levels, named like ``LOD3 shadow``. The columns are:
+
+* **Distance m** - where the level starts being used. Hovering shows the distance at this object's scale.
+* **Triangles** and **Share %** - what the level kept. Next to the share is the project's :ref:`triangle target <option-LOD_levelTriangleTargets>` for comparison.
+* **Surface**, **Outline**, **Holes**, **Texture**, **Normal** - for each limit, what the level measured, then the limit itself, in pixels at the level's distance.
+
+A ``*`` after a measured value marks the limit that stopped the level from being simplified further; raise that one to get fewer triangles. A ``~`` after the level name means it was checked at reduced resolution, because :ref:`LOD_calibrationMaxResolution <option-LOD_calibrationMaxResolution>` capped the render. A level that could not be built keeps its row, greyed out; hovering it says why: nothing fits within the limits at that distance, it would save too few triangles over the level before it, or it simplified away to nothing.
+
+Shadow levels are judged with their textured level's limits and only on surface, outline and holes, so their limits are edited on the textured row.
+
+**Changing a model's levels**
+
+Above the table the section says whether the model uses the project's LOD settings. Any of these makes the model own its whole set of levels, after which the project's ``LOD_level*`` options no longer apply to it:
+
+* Typing a different distance or limit. The level is regenerated as soon as the field is left.
+* Typing a **Share %**. This forces the level to that triangle share, ignoring its limits. The share has to stay between its neighbours; a value past one is clamped. The share column then shows ``forced``.
+
+**Back to project defaults** drops the model's own settings and rebuilds its levels from the project options.
+
+.. figure:: _static/media/images/ObjectEditor/lodPreview.png
+    :align: center
+
+    A level compared with the original
+
+**Preview level** shows the chosen level in the preview; clicking a row in the table selects it too. Right-click and drag on the preview to orbit. For any level other than the original, **Compare at px** renders the level and the original side by side at that size in pixels, magnified, so the difference can be judged at the size the model will really have on screen.
+
+Changes stay in memory until they are saved, either with **Save changes to disk** or by saving the world; until then the section warns about unsaved changes. A source model saves them to its :ref:`.limon sidecar <LodSidecar>`. A ``limonmodel`` is saved by rewriting the file, which asks for confirmation first because it overwrites the model in the game data with no undo.
+
+**Recalibrate** ignores the cached result, generates every level again and rewrites the cache. The map picks up the new levels on the next frame.
+
+.. note::
+    Animated models are never measured, because a deforming mesh has no single pose to render. Their levels are built straight to the project's triangle targets, and the table is read-only for them.
+
 .. _Trigger Object Editor:
 
 Trigger Object Settings

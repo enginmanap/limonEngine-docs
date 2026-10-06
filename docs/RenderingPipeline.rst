@@ -80,7 +80,7 @@ Each rendering pass applies four sequential visibility filters. With multiple ca
 
 3. **Occlusion culling** -a SIMD software depth buffer on the CPU. Objects above a configurable size threshold act as occluders; smaller objects are tested against the depth buffer. See `SIMD Software Occlusion Culling`_ below.
 
-4. **LOD selection** -the appropriate level-of-detail mesh is selected based on the object's projected screen-space size and the engine-wide LOD settings.
+4. **LOD selection** -each object uses the coarsest level whose switch distance it is past. See `Level of Detail`_ below.
 
 .. _Tagging:
 
@@ -213,13 +213,62 @@ A software depth buffer produces per-camera visibility results consumed by Rende
 * SSE4.1 on x86, NEON on AArch64 -covers Apple Silicon and Raspberry Pi 4/5
 * A debug AABB wireframe picture-in-picture overlay is available in the editor
 
+Occluders are **baked**: the mesh is compressed into quads once, at load, and that blob is rasterized every frame instead of the triangle list. Which LOD is baked is set by :ref:`occlusion_bakeLodLevel <option-occlusion_bakeLodLevel>`. A ``limonmodel`` stores a bake for every level, so the option can be changed without re-exporting; a model loaded from a source file only carries the level it was loaded with, and any other level falls back to submitting the raw mesh.
+
+Animated models never act as occluders. Their occluder would need the node transform and the current pose, neither of which is available where occluders are submitted, so they are only ever tested as occludees.
+
+.. _LevelOfDetail:
+
 Level of Detail
 ---------------
 
-LOD mesh generation is automatic via meshoptimizer. Every model gets 4 LOD levels: 3 progressive simplifications plus the original mesh.
+LOD levels are generated automatically with meshoptimizer. A project defines a list of levels, each with a **distance** and **five pixel limits**; by default three levels at 50, 100 and 200 meters, plus the original mesh. The distance is where the level is used, and the limits say how different it may look from the original when seen from there.
 
-* LOD selection is engine-wide -not configurable per model
-* Aggressive LOD settings can produce visible pop-in -tune the LOD option for your scene
+**How a level is generated**
+
+Each level is the coarsest simplification that passes all five of its limits. To find it, the engine renders the candidate and the original on the CPU from 14 directions, at twice the size the model would have on screen at that distance, and compares them:
+
+* **Surface** -how far the visible surface moved. A texture sliding a few texels counts here too.
+* **Outline** -how far the silhouette moved.
+* **Holes** -the widest place where something behind now shows through.
+* **Texture** -the widest place where the UV jumped to another part of the texture.
+* **Normal** -the widest place whose shading changed by more than :ref:`LOD_normalDeviation <option-LOD_normalDeviation>`.
+
+All five are in pixels of a reference screen, :ref:`LOD_referenceHeight <option-LOD_referenceHeight>` tall with a :ref:`LOD_referenceFov <option-LOD_referenceFov>` field of view, not the screen of the machine doing the work. The default is a low-end 1080p screen, so the same levels are produced on every machine. Albedo is never compared, because materials can be edited after the levels are made, and the check never uses the GPU, because render pipelines are user defined.
+
+The triangle count is therefore a result, not a setting. The defaults are tuned so a typical map keeps about 80%, 60% and 40% of its triangles at the three levels; :ref:`LOD_levelTriangleTargets <option-LOD_levelTriangleTargets>` holds those numbers, but they are only shown in the editor for comparison. A level is not built when even the smallest simplification breaks a limit at its distance, or when it saves less than 5% of the triangles over the level before it.
+
+Simplification is attribute aware: normals and UVs take part in the error metric, and vertices where UVs differ at a shared position are protected, so texture and palette seams survive.
+
+**Shadow levels**
+
+From :ref:`LOD_shadowWeldedFromLevel <option-LOD_shadowWeldedFromLevel>` on, each level also gets a **welded** copy for shadow cameras. Welding merges vertices by position and drops normals and UVs, which a depth-only pass never reads, and simplifies about three times further at the coarse end. These copies are checked on surface, outline and holes only, and only cameras that aren't the player camera can use them. Turn them off with :ref:`LOD_shadowWeldedLevels <option-LOD_shadowWeldedLevels>`.
+
+**Animated models**
+
+A skinned mesh deforms, so a render of its bind pose says nothing about how a level will look. Animated models are never measured; their levels are built straight to the :ref:`LOD_levelTriangleTargets <option-LOD_levelTriangleTargets>` shares.
+
+**Load time and caching**
+
+Generating the levels is expensive: each search step renders the model from 14 directions, and a large map can take several minutes on its first load. The results are cached, so later loads take seconds:
+
+* For a source asset (OBJ, FBX, ...), in a ``.limon`` sidecar file next to it -see :ref:`LodSidecar`.
+* For a ``limonmodel``, inside the file itself.
+
+A level is regenerated only when what was asked of it changes. Changing one level's distance or limits rebuilds that level only. Changing :ref:`LOD_referenceHeight <option-LOD_referenceHeight>`, :ref:`LOD_referenceFov <option-LOD_referenceFov>`, :ref:`LOD_normalDeviation <option-LOD_normalDeviation>`, :ref:`LOD_calibrationMaxResolution <option-LOD_calibrationMaxResolution>`, :ref:`LOD_calibrateSearchSteps <option-LOD_calibrateSearchSteps>` or the shadow level options rebuilds every level of every source model.
+
+With :ref:`LOD_calibrate <option-LOD_calibrate>` off, nothing is generated: models use the levels their sidecar or ``limonmodel`` already holds, otherwise only the original. Generate the levels on a desktop machine and ship the sidecars or ``limonmodel`` files; slower targets such as the Raspberry Pi should run with calibration off.
+
+**How a level is selected**
+
+* Selection is by distance from the player. Every distance is multiplied by the instance's scale (its largest axis), so a model scaled up twice switches twice as far away.
+* :ref:`LOD_switchHysteresis <option-LOD_switchHysteresis>` adds a dead band around every switch distance, so an object standing on a threshold doesn't flip every frame.
+* Shadow cameras select the same way. A point light also considers its own distance: an object next to the light gets its fine level in that shadow map even when the player is far away. Directional cascades follow the player.
+* :ref:`LOD_forceLevel <option-LOD_forceLevel>` forces one level everywhere, for inspection.
+
+**Per model settings**
+
+The levels are configured for the whole project by the ``LOD_level*`` options. A single model can take over its own levels from the model editor, see :ref:`LOD levels in the model editor <LodLevelsEditor>`. Aggressive limits can produce visible pop-in while moving; the editor preview is the place to judge a level before it is used in the map.
 
 Size-Based Render Skipping
 --------------------------
@@ -244,8 +293,8 @@ Rendering is configured through engine options; :ref:`OptionsReference` is the c
 * **Display** - :ref:`display_width <option-display_width>`, :ref:`display_height <option-display_height>`, :ref:`display_fullScreen <option-display_fullScreen>`
 * **Lights and shadows** - :ref:`performance_maximumLights <option-performance_maximumLights>`, :ref:`shadow_mapDirectionalSize <option-shadow_mapDirectionalSize>`, :ref:`shadow_mapPointWidth <option-shadow_mapPointWidth>`, :ref:`shadow_mapPointHeight <option-shadow_mapPointHeight>`, :ref:`shadow_directionalSampleCount <option-shadow_directionalSampleCount>`, :ref:`shadow_pointSampleCount <option-shadow_pointSampleCount>`, :ref:`shadow_cascadeCount <option-shadow_cascadeCount>`, :ref:`shadow_cascadeLimitList <option-shadow_cascadeLimitList>`, :ref:`shadow_cascadeStaggerIntervals <option-shadow_cascadeStaggerIntervals>`, :ref:`shadow_cascadeStaggerOffsets <option-shadow_cascadeStaggerOffsets>`, :ref:`shadow_directionalProjectionBackOff <option-shadow_directionalProjectionBackOff>`, :ref:`shadow_pointNearPlane <option-shadow_pointNearPlane>`, :ref:`shadow_pointFarPlane <option-shadow_pointFarPlane>`
 * **SSAO** - :ref:`ssao_width <option-ssao_width>`, :ref:`ssao_height <option-ssao_height>`, :ref:`ssao_sampleCount <option-ssao_sampleCount>`, :ref:`ssao_blurRadius <option-ssao_blurRadius>`
-* **Culling and LOD** - :ref:`performance_multiThreadedCulling <option-performance_multiThreadedCulling>`, :ref:`LOD_distanceList <option-LOD_distanceList>`, :ref:`LOD_skipRenderDistance <option-LOD_skipRenderDistance>`, :ref:`LOD_skipRenderSize <option-LOD_skipRenderSize>`, :ref:`LOD_maxSkipRenderSize <option-LOD_maxSkipRenderSize>`, :ref:`SplitModelToMeshCount <option-SplitModelToMeshCount>`
-* **Software occlusion** - :ref:`occlusion_enabled <option-occlusion_enabled>`, :ref:`occlusion_renderWidth <option-occlusion_renderWidth>`, :ref:`occlusion_renderHeight <option-occlusion_renderHeight>`, :ref:`occlusion_occluderSizePerspective <option-occlusion_occluderSizePerspective>`, :ref:`occlusion_occluderSizeOrthographic <option-occlusion_occluderSizeOrthographic>`, :ref:`occlusion_renderDump <option-occlusion_renderDump>`, :ref:`occlusion_renderDumpFrequency <option-occlusion_renderDumpFrequency>`
+* **Culling and LOD** - :ref:`performance_multiThreadedCulling <option-performance_multiThreadedCulling>`, :ref:`LOD_levelDistances <option-LOD_levelDistances>`, :ref:`LOD_calibrate <option-LOD_calibrate>`, :ref:`LOD_switchHysteresis <option-LOD_switchHysteresis>`, :ref:`LOD_forceLevel <option-LOD_forceLevel>`, :ref:`LOD_skipRenderDistance <option-LOD_skipRenderDistance>`, :ref:`LOD_skipRenderSize <option-LOD_skipRenderSize>`, :ref:`LOD_maxSkipRenderSize <option-LOD_maxSkipRenderSize>`, :ref:`SplitModelToMeshCount <option-SplitModelToMeshCount>`
+* **Software occlusion** - :ref:`occlusion_enabled <option-occlusion_enabled>`, :ref:`occlusion_renderWidth <option-occlusion_renderWidth>`, :ref:`occlusion_renderHeight <option-occlusion_renderHeight>`, :ref:`occlusion_occluderSizePerspective <option-occlusion_occluderSizePerspective>`, :ref:`occlusion_occluderSizeOrthographic <option-occlusion_occluderSizeOrthographic>`, :ref:`occlusion_bakeLodLevel <option-occlusion_bakeLodLevel>`, :ref:`occlusion_renderDump <option-occlusion_renderDump>`, :ref:`occlusion_renderDumpFrequency <option-occlusion_renderDumpFrequency>`
 * **Debugging** - :ref:`debug_renderInformations <option-debug_renderInformations>`, :ref:`debug_drawLines <option-debug_drawLines>`, :ref:`debug_drawBufferSize <option-debug_drawBufferSize>`, :ref:`profiler_enableServer <option-profiler_enableServer>`
 
 
