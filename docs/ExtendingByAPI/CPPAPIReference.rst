@@ -507,6 +507,8 @@ Attaches object indicated by the handle ID, to another object indicated by secon
 
 With a bone name, the child follows that bone of the parent model instead of the model itself, so it moves with the animation. That is how a weapon is put in a character's hand. The names are the ones the editor lists in the model's bone tree, for example ``mixamorig:RightHand``. A name that is not a bone of the parent, or a parent that is not a model, fails the call.
 
+With a bone, the child's current transform is its offset in the bone's own frame: an offset of zero puts the child at the joint, and the axes are the bone's axes as the skeleton defines them. The offset is not relative to the model.
+
 Parameters:
 
 #. uint32_t objectID: handle id of the object to attach as child.

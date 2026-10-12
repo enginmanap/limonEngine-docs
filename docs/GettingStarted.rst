@@ -55,6 +55,8 @@ Running
 
 Limon engine takes single parameter, and that is the path to first map file to load. If no parameter is passed, Limon first tries to get the file name from release settings file, at ./Data/Release.xml, if file not found, or no world name specified, it defaults to "./Data/Maps/World001.xml", which is a test map that has samples for capabilities of the engine.
 
+Started with ``--convert``, Limon instead converts a map exported from another engine as one model into a world of separate objects, then exits. See :ref:`MapConverter`.
+
 The Custom trigger are automatically loaded from the same directory of the engine binary, with name  *libcustomTriggers*, the extension of that file depends on the platform(dll, so, dynlib).
 
 Keyboard, mouse, and gamepad/controller input are all supported out of the box. Bindings are defined in ``./Engine/inputBindings.xml`` and can be changed without recompiling the engine. See :ref:`InputSystem` for the full binding format, the built-in action list, and how to add your own game actions.

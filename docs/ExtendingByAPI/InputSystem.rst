@@ -230,7 +230,7 @@ The Python API exposes additional ``InputStates`` methods that let scripts const
 Custom Game Actions
 ===================
 
-To add a game-specific action (such as ``RELOAD``), add it to ``Engine/inputBindings.xml`` with the bindings you want. No engine recompile is needed.
+To add a game-specific action (such as ``RELOAD``), add it to ``Engine/inputBindings.xml`` with the bindings you want, or in an override file, ``Data/inputBindings.xml``, see :ref:`InputSystem-override-bindings`. No engine recompile is needed.
 
 .. code-block:: xml
 
@@ -399,6 +399,53 @@ For buttons outside SDL's GameController mapping — proprietary or extra button
     <Binding source="joystick_button" index="8"/>
 
 ``index`` is the raw SDL joystick button index (0-based). For standard gamepad buttons that SDL already maps (A, B, X, Y, …) prefer ``source="gamepad_button"`` instead to avoid double-firing.
+
+**Multiple gamepads**
+
+``gamepad_button``, ``gamepad_axis`` and ``joystick_button`` bindings accept ``gamepadIndex`` (0-based), so extensions can read each connected pad through its own actions while there is still a single player.
+
+.. code-block:: xml
+
+    <Action name="P2_PICK">
+        <Binding source="gamepad_button" button="A" gamepadIndex="1"/>
+    </Action>
+
+* A binding without ``gamepadIndex`` listens to every connected pad, so the default bindings still work with any pad, including a second one.
+* A pad keeps its index while other pads connect and disconnect. A new or reconnecting pad takes the lowest free index.
+* A held action is not released when its pad is unplugged.
+* ``ActiveDevice`` stays a single value and does not say which pad sent the input.
+
+.. _InputSystem-override-bindings:
+
+Override Bindings
+=================
+
+An override file, ``Data/inputBindings.xml``, has the same format as the engine's file. It is read after ``Engine/inputBindings.xml``, and it replaces the engine's bindings **per device**, not per binding. Bindings only make sense as a scheme, so an override that binds a device owns all of it.
+
+The devices are:
+
+* **keyboard**: ``keyboard``
+* **mouse**: ``mouse_button``, ``mouse_wheel`` and ``mouse_axis``
+* **each gamepad**: ``gamepad_button``, ``gamepad_axis`` and ``joystick_button``. There can be any number of pads, a binding names its pad with ``gamepadIndex``, and a binding without one is for every pad.
+
+If the override file has any binding on a device, every engine binding on that device is dropped before the override's are loaded. A device the file does not mention keeps the engine's bindings. An override that only binds the keyboard keeps the engine's mouse and gamepad bindings, which the editor needs.
+
+For the pads this works per index. A file that binds ``gamepadIndex="0"`` and ``gamepadIndex="1"`` replaces the engine's bindings for those two pads. The engine's bindings that are for every pad stop applying to pads 0 and 1 and keep working for the others. An override file with a gamepad binding that has no ``gamepadIndex`` takes over all pads.
+
+Dropping a device also drops the engine's bindings for actions that are still needed, such as ``QUIT`` or ``EDITOR``. The override file has to bind them again on the devices it replaces. At startup the engine prints one line, ``engine actions with no binding left``, listing the engine actions that ended up with no binding on any device, so a missing one is easy to see.
+
+.. code-block:: xml
+
+    <InputBindings>
+        <Action name="P1_PICK">
+            <Binding source="keyboard" key="E"/>
+            <Binding source="gamepad_button" button="A" gamepadIndex="1"/>
+        </Action>
+        <!-- the keyboard is replaced, so the editor key has to be bound again -->
+        <Action name="EDITOR">
+            <Binding source="keyboard" key="F2"/>
+        </Action>
+    </InputBindings>
 
 .. _InputSystem-look-speed:
 

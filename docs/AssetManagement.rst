@@ -161,6 +161,56 @@ The format carries a version stamp. A file written by an older engine - for exam
 
 LOD settings changed in the editor for a converted model are saved by rewriting its ``limonmodel``. The editor asks for confirmation first, since it overwrites the file in the game data and can't be undone.
 
+.. _MapConverter:
+
+Converting a map exported as one model
+--------------------------------------
+
+A level exported from another engine often arrives as a single model file holding the whole map. Loaded as it is, the map is one object: it can't be edited piece by piece, and it is culled and sorted as one unit. The map converter turns such a file into a world of separate objects:
+
+::
+
+    LimonEngine --convert <model file> [output directory] [--scale <factor>]
+
+Run it from the engine directory. It opens the engine window as usual, writes the result and exits.
+
+* Without an output directory, the result goes to a folder named after the source, next to it: ``Data/Maps/City.fbx`` converts into ``Data/Maps/City/``.
+* ``--scale`` resizes the whole map around the map origin, positions included. The pieces themselves keep the source's units, only the objects placing them are scaled.
+
+The folder receives:
+
+* **One** ``limonmodel`` **per distinct mesh**, named ``<source>_<mesh number>_<node name>.limonmodel``. A mesh placed many times is stored once and placed by many objects, so a map with thousands of props needs a few hundred files. Meshes are matched by content as well, since some exporters write a separate copy of a skinned mesh for every placement.
+* A mirrored placement gets its own ``_mirror`` file, because the mirror is in the vertices (see `Flipped models`_).
+* **A world file**, ``<source>.xml``. Every placement in the source becomes its own object. The world also gets one directional light and an editor player placed above the highest point of the map, and no sky.
+* **Model groups** from the source's hierarchy. A node holding more than one object, like a building base with its floors and roof attached, becomes a model group named after the node, so it can be selected and moved as one. A mesh the exporter split by material, like a car's body and glass, is grouped too and named after its parent, the car. As with any model group, the editor places its gizmo at the average of its members, not at the base mesh's origin.
+
+Like any ``limonmodel``, every piece carries its LOD levels and baked occluders, so converting is slow: about a minute for a city of around 5000 objects.
+
+Skinned and animated meshes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* A skinned mesh that no animation moves (vehicles are often exported this way) becomes an ordinary static piece. It keeps its bones, so animations can still be added to it later.
+* Animated meshes are grouped. Meshes moved by the same animation, directly or through another mesh it also moves, become one animated model carrying every animation that touches them. Two animations that move separate things end up as two models. A keyframe that never leaves its node's rest pose doesn't count as movement, since exporters often key every node.
+* An animated model placed many times shares one file. Its animations are stored once when the copies have identical ones. When copies have different animations under the same name, every variant is named ``<placement node>|<animation name>``.
+* No object is given an animation. Pick one in the editor.
+* Some exports bind every placed copy of a skinned mesh as if it stood at the map origin (Unreal level exports do). Such skins are rebound to their rest pose, and the converter lists every mesh it rebound.
+
+Refused input
+^^^^^^^^^^^^^
+
+The converter stops without writing anything, and lists every node at fault, when the source has:
+
+* a placement with shear, which a non uniform scale above a rotated child produces
+* ``UCX_`` physics proxy nodes
+* more objects than the engine's object ID limit
+
+An animated model that can't be converted is left out with an error naming it, and the rest of the map still converts. That happens when:
+
+* a bone that carries skin weights would get a rig index of 128 or more
+* its placement is mirrored or sheared, since animated models can't be flipped
+* its root node is animated and has a non uniform scale
+* a bone it skins with shares its name with a later node of the same rig
+
 .. _LodSidecar:
 
 .limon Sidecar Files

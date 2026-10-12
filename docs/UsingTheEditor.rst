@@ -108,6 +108,10 @@ ____________________
 
 A model group can hold unlimited number of models, or other model groups. It is used to make operations on multiple objects easier. First part of Model Groups section is used to put a model to a model group. Second part is used to create a new model group with given name.
 
+The group's gizmo sits at the average position of its members. Adding a member moves the gizmo to the new average without moving any member. Moving, rotating or scaling the group applies to every member around that point. The group keeps its rotation and scale, so a rotated group's gizmo stays aligned with how it was rotated.
+
+Members are saved at their world positions. Loading a world puts every member back where it was saved and places the gizmo at their average again, so a member moved on its own since the last save brings the gizmo along.
+
 .. _Adding Lights:
 
 Adding Lights
@@ -202,6 +206,8 @@ The Player properties section allows to set what is the launch time player mode.
 * Debug: The player that controls exactly like physical, but doesn't interact with physics, so can fly and walkthrough objects. Also renders physics meshes, GUI borders and AI walk grid to allow debugging issues.
 * Editor: Builtin editor.
 * Menu: Menu interaction is allowed, movement and screen rotation disallowed. Mouse is set to free movement.
+
+The player of the selected type is listed in the object tree and has a gizmo, move and rotate it to set where the map starts, for a Menu player this is where its fixed camera sits. The start pose is saved with the map. For a Debug or Editor start the pose is taken from the Physical player's gizmo, since those two types fly around while you edit.
 
 If a custom player extension is going to be used, it can be selected from the **Extension Type** drop-down. The drop-down is populated automatically from every registered player extension (the engine queries ``getExtensionNames()``), so there is no need to type a name and risk a typo - only valid, loaded extensions are offered. Selecting an extension loads and enables it.
 
@@ -343,7 +349,7 @@ Right-click and drag on the preview image to orbit the camera around the model, 
 AI properties section has a list of available Actors. Game developers can write custom actors using API provided. Please check :ref:`implementAIActor` for details. If selected actor has settings exposed, they will be listed under actor type drop-down.
 
 .. note::
-    If model has no animation, it can't be assigned an AI. Both Animation properties and AI properties will be hidden in that case.
+    Any model can be assigned an Actor, animated or not. A static prop is a fine carrier for game logic, such as a station or a pickup. Animation properties are the section that is hidden for models without animation.
 
 Under AI settings, there is "Step on Sound" setting. This is used as step sound when "Physical player" move on top of the model.
 

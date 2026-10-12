@@ -461,7 +461,7 @@ Culling, LOD and Occlusion
        ``SplitModelToMeshCount``
      - Long
      - ``10``
-     - Models with more meshes than this get occlusion tested per mesh instead of per model.
+     - Models with more meshes than this get occlusion tested per mesh instead of per model. A map imported as one model is better served by the :ref:`map converter <MapConverter>`, which turns it into separate objects.
    * - .. _option-occlusion_renderWidth:
 
        ``occlusion_renderWidth``

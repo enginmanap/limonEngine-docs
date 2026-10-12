@@ -375,6 +375,10 @@ attach_object_to_object
         for example "mixamorig:RightHand". A name that is not a bone of the parent, or a
         parent that is not a model, fails the call.
 
+        With a bone, the child's current transform is its offset in the bone's own frame:
+        an offset of zero puts the child at the joint, and the axes are the bone's axes
+        as the skeleton defines them. The offset is not relative to the model.
+
         Args:
             object_id: ID of the object to attach
             object_to_attach_to_id: ID of the object to attach to
