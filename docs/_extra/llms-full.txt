@@ -177,6 +177,8 @@ Attached objects: body type follows the parent (static parent → static child; 
 
 Animated models out of view: pose is only evaluated when visible, when an awake dynamic body is near, or when requested with setPhysicsSimulationActive(objectID, active). AI actors should request it while acting and release it when idle. Animation time and getModelAnimationFinished keep advancing either way.
 
+Simulation ticks: the world is simulated in fixed ticks, TICK_PER_SECOND per second (a build setting: 60 by default, 30 on the Raspberry Pi). processInput of a player extension, play of an actor and trigger runs are called once per tick, game time is ticks * tick length, and rendering is not tied to ticks. Never assume the rate: getTicksPerSecond() (get_ticks_per_second() in Python) returns it, derive per tick steps as 1.0 / ticksPerSecond. When the engine falls more than MAX_CATCHUP_TICKS ticks behind the wall clock it drops ticks, so game time and animations run slower than real time, and it logs the achieved rate every five seconds.
+
 setObjectTranslate on an attached object sets its position relative to the parent.
 
 ## Navigation System

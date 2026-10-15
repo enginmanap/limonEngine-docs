@@ -222,6 +222,28 @@ Limon uses Bullet Physics. Collision shapes are generated automatically from mes
 
 **Animated models out of view.** An animated model's pose is only evaluated when something needs it: it is visible to a camera, an awake physics object is near it, or an AI requested it with ``setPhysicsSimulationActive``. Other animated models keep their last pose and don't wake the physics objects around them, while their animation time keeps advancing.
 
+.. _EngineArchitecture-ticks:
+
+Simulation Ticks
+----------------
+
+The world is simulated in fixed steps, **ticks**. The rate is ``TICK_PER_SECOND``, a build setting of the engine: 60 by default, and 30 for the Raspberry Pi. Everything that is called once per simulation step runs once per tick: the ``processInput`` of a player extension, the ``play`` of an actor, trigger runs, and their Python counterparts. Game time, the clock that drives animations, particles and timed events, is the number of ticks run times the length of a tick.
+
+Rendering is not tied to ticks. The engine renders as fast as it can, and the frames between two ticks repeat the last simulated state, so a high frame rate says nothing about the tick rate.
+
+Game time follows the wall clock only while the engine keeps up. When it falls more than ``MAX_CATCHUP_TICKS`` ticks behind, it drops the surplus instead of trying to catch up, because catching up makes the next frame longer and falls further behind. From then on game time runs slower than real time, and everything driven by it slows down together, animations included. The engine prints a line every five seconds while this happens, with the tick rate it actually reached and how many ticks it dropped.
+
+Code that moves things or counts time must not assume the tick rate. Ask for it with :ref:`getTicksPerSecond<LimonAPI-getTicksPerSecond>` (``get_ticks_per_second`` in Python), and turn speeds and durations into per tick steps:
+
+.. code-block:: python
+
+    ticks_per_second = self.limon_api.get_ticks_per_second()
+    seconds_per_tick = 1.0 / ticks_per_second
+    position += velocity * seconds_per_tick                 # metres per second to metres per tick
+    ticks_left = int(round(seconds_to_wait * ticks_per_second))  # seconds to a tick count
+
+Animations are not affected by this: an imported animation carries its own rate. Only animations made in the editor, and imported ones that do not state a rate, count their frames in ticks.
+
 Input
 -----
 

@@ -140,6 +140,8 @@ The ``uint32_t`` IDs taken and returned below follow the rules in :ref:`API-obje
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`getPlayerObjectID()<LimonAPI-getPlayerObjectID>`                                                                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``uint32_t``                                  | :ref:`getTicksPerSecond()<LimonAPI-getTicksPerSecond>`                                                                                                                                                                                                                                                         |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | :del:`uint32_t`                               | :del:`getPlayerAttachedModel()` — :ref:`Removed<LimonAPI-getPlayerAttachedModel>`                                                                                                                                                                                                                              |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | :del:`LimonAPI::Vec4`                         | :del:`getPlayerAttachedModelOffset()` — :ref:`Removed<LimonAPI-getPlayerAttachedModelOffset>`                                                                                                                                                                                                                  |
@@ -1213,6 +1215,22 @@ none
 
     std::vector<uint32_t> attachments = limonAPI->getObjectChildren(limonAPI->getPlayerObjectID());
 
+.. _LimonAPI-getTicksPerSecond:
+
+uint32_t getTicksPerSecond()
+----------------------------
+
+Returns how many simulation ticks the engine runs per second. This is a build setting of the engine, 60 by default and lower on slow hardware such as the Raspberry Pi, so code must not assume it. Everything that is called once per tick (``processInput`` of a player extension, ``play`` of an actor, trigger runs) steps by one tick, so a movement speed in metres per second, or a countdown in seconds, has to be turned into a per tick step with this value.
+
+Parameters:
+
+none
+
+.. code-block:: cpp
+
+    float secondsPerTick = 1.0f / limonAPI->getTicksPerSecond();
+    position += velocity * secondsPerTick;
+
 .. _LimonAPI-getPlayerAttachedModel:
 
 :del:`uint32_t getPlayerAttachedModel()`
@@ -1782,7 +1800,7 @@ Returns:
     long: A handle ID for the scheduled event. Pass it to :ref:`cancelTimedEvent <LimonAPI-cancelTimedEvent>` to cancel before it fires. Returns -1 on failure.
 
 .. note::
-    Wait time is not precise beyond game ticks. Limon Engine internally ticks each 1/60 seconds.
+    Wait time is not precise beyond game ticks. The engine runs :ref:`getTicksPerSecond<LimonAPI-getTicksPerSecond>` ticks a second, 60 by default.
 
 .. warning::
     If function is part of an object, and that object is removed, engine might crash. Avoiding those situations are game developers responsibility.

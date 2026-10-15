@@ -64,7 +64,10 @@ The parameters set by map designer will be passed to this method. It might be ju
 void play(uint32_t time, ActorInformation &information)
 =======================================================
 
-Called on each frame, with current information about player and world, in form of :ref:`ActorInterface-ActorInformation`
+Called once per simulation tick, with current information about player and world, in form of :ref:`ActorInterface-ActorInformation`
+
+.. note::
+    How many ticks run per second is a build setting, 60 by default and 30 on the Raspberry Pi. Do not step by a fixed amount per call: ask for the rate with :ref:`getTicksPerSecond<LimonAPI-getTicksPerSecond>` and derive the step from it.
 
 .. _ActorInterface-interaction:
 

@@ -103,6 +103,24 @@ The engine calls a fixed set of methods on each extension instance. The base cla
 
 All method names are ``snake_case`` to match the Python API binding. See :ref:`implementCameraAttachment` for camera attachments.
 
+Time and ticks
+==============
+
+``process_input``, an actor's ``play`` and a trigger's ``run`` are called once per simulation tick. How many ticks run per second is a build setting of the engine, 60 by default and 30 on the Raspberry Pi, so a script must not assume it. Read it once, when the script is created, and derive per tick steps from it:
+
+.. code-block:: python
+
+    class MyActor(ActorInterface):
+        def __init__(self, limon_api):
+            super().__init__(limon_api)
+            self.seconds_per_tick = 1.0 / limon_api.get_ticks_per_second()
+
+        def play(self, time, actor_information):
+            # 3 metres per second, whatever the tick rate is
+            self.distance += 3.0 * self.seconds_per_tick
+
+See :ref:`get_ticks_per_second<pythonApi-get_ticks_per_second>` and :ref:`EngineArchitecture-ticks`.
+
 Parameters
 ==========
 

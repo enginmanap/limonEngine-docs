@@ -2355,6 +2355,30 @@ get_player_object_id
 
     attachments = self.limon_api.get_object_children(self.limon_api.get_player_object_id())
 
+.. _pythonApi-get_ticks_per_second:
+
+get_ticks_per_second
+^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def get_ticks_per_second() -> int:
+        """
+        Get how many simulation ticks the engine runs per second. This is a build setting of
+        the engine, 60 by default and lower on slow hardware such as the Raspberry Pi, so a
+        script must not assume it. process_input, an actor's play and every other per tick
+        callback run once per tick, so a speed in metres per second, or a countdown in
+        seconds, has to be turned into a per tick step with this value.
+
+        Returns:
+            int: Ticks per second
+        """
+
+.. code-block:: python
+
+    seconds_per_tick = 1.0 / self.limon_api.get_ticks_per_second()
+    position += velocity * seconds_per_tick
+
 :del:`get_player_attached_model`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -44,7 +44,10 @@ The constructor of the interface. If the extension exposes editor-configurable s
 void processInput(const InputStates &inputState, const PlayerInformation &playerInformation, uint32_t time)
 ============================================================================================================
 
-Called each frame with updated input information, current player state, and the frame time in milliseconds.
+Called once per simulation tick with updated input information, current player state, and the time in milliseconds.
+
+.. note::
+    How many ticks run per second is a build setting, 60 by default and 30 on the Raspberry Pi. A movement speed in metres per second has to be turned into a step per call with :ref:`getTicksPerSecond<LimonAPI-getTicksPerSecond>`, a fixed step per call would run half as fast on the Pi.
 
 Parameters:
 

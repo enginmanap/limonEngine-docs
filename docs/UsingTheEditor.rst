@@ -728,7 +728,7 @@ The sequencer starts with animation name. You can't save/finish an animation wit
 Second line is how many frames long the animation will be. After that the main sequencer part comes. The "-" symbol is used to hide/show the sequences. "+" sign is used to add a section to the end of the animation. Each section has "+" and "-" symbols next to them. "-" removes the section, and "+" add a section just after the selected one, with the same length.
 
 .. note::
-    Animations are considered 60 frames per second.
+    One frame of an animation made here lasts one simulation tick, so animations are considered 60 frames per second with the default build, and run longer on a build with fewer ticks per second, see :ref:`EngineArchitecture-ticks`. Animations imported with a model keep their own rate.
 
 How to create animations
 ________________________
