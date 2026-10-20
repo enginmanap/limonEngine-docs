@@ -492,6 +492,30 @@ Culling, LOD and Occlusion
      - Long
      - ``0``
      - Which LOD of a mesh occludes. Level 0 is the full mesh and the most accurate; level 2 rasterizes about 40% faster but over culls more, mostly on ground pieces. A mesh with fewer levels uses its coarsest one. A model loaded from a source file bakes only this level, so changing the value needs a reload; a ``limonmodel`` carries every level and switches immediately.
+   * - .. _option-occlusion_occluderSizeByGroup:
+
+       ``occlusion_occluderSizeByGroup``
+     - Boolean
+     - ``True``
+     - A model in a model group becomes an occluder when the box of its nearest group passes the occluder size, instead of its own box. Turn it off to select occluders from each model individually.
+   * - .. _option-occlusion_occluderGroupMemberMinFraction:
+
+       ``occlusion_occluderGroupMemberMinFraction``
+     - Double
+     - ``0.1``
+     - With ``occlusion_occluderSizeByGroup``, a member still has to cover this fraction of the occluder size itself, so small props in a big group are not rasterized. ``1`` gives grouped models the same rule as ungrouped ones.
+   * - .. _option-occlusion_debugReverse:
+
+       ``occlusion_debugReverse``
+     - Boolean
+     - ``False``
+     - Debug view: the player camera draws only what occlusion culling removed. Needs ``occlusion_enabled``. See :ref:`RenderDebugging`.
+   * - .. _option-occlusion_debugOverlayOpacity:
+
+       ``occlusion_debugOverlayOpacity``
+     - Double
+     - ``0.25``
+     - With ``occlusion_debugReverse``, the meshes that passed culling are drawn over the occluded ones with this opacity. ``0`` hides them, ``1`` draws them as normal.
 
 Debugging and Profiling
 =======================

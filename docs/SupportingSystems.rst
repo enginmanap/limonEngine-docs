@@ -33,6 +33,8 @@ Route requests are asynchronous - the result is delivered via callback and the s
 .. warning::
     Navigation grid is not generated if the world contains no AI actors. Areas unreachable from the first AI actor's location are silently excluded. The system assumes actor size and mobility matches the player - flying and swimming actors are not supported natively. Dynamic geometry changes at runtime do not update the grid (planned post-0.7).
 
+.. _VisibilitySystem:
+
 Visibility System
 =================
 
@@ -44,6 +46,8 @@ Four sequential visibility filters run every frame for each active camera before
 4. **LOD selection** (see :ref:`LevelOfDetail`) - each object uses the coarsest level whose switch distance it is past. Levels are generated so that each one stays within pixel limits at its own distance.
 
 Objects below a configurable screen-space size threshold are skipped entirely before any of the above tests run.
+
+To see what occlusion culling removes, and to change how it decides while the game runs, see :ref:`RenderDebugging`.
 
 Full details - including the three-layer occlusion culling architecture, LOD mesh generation, cascade shadow map setup, all configuration options, and the rationale for targeting integrated GPU hardware - are in :ref:`RenderingPipeline`.
 
@@ -141,6 +145,67 @@ Colour is linearly interpolated from ``fromColor`` to ``toColor`` along each lin
 
 The engine draws its own editor visualisations through these same buffers - a selected particle emitter's spawn box and trajectory hull, and a selected point light's radius sphere. Those are drawn whenever the object is selected and do not depend on the ``debug_drawLines`` option; that option gates the engine's *own* producers such as the shadow cascade frustums and ray cast results, not the buffers a plugin fills.
 
+.. _RenderDebugging:
+
+Render Debugging
+----------------
+
+The editor window has a **Render Debugging** section for investigating what the renderer is doing. It has two tools, one for looking at the render pipeline's targets and one for occlusion culling.
+
+.. _RenderTargetViewer:
+
+Render target viewer
+^^^^^^^^^^^^^^^^^^^^
+
+Every texture of the active render pipeline can be viewed in the editor, so you can see the output of each render stage instead of guessing from the final image. Pick a texture from the **Current Textures** list. Hovering a name shows what the texture is: its type and format. The list also has the textures the editor's own previews render into.
+
+.. figure:: _static/media/images/editor-render-debugging-textures.png
+    :align: center
+
+    The render target viewer, showing a pipeline texture with a custom range.
+
+Once a texture is selected, the viewer shows its id and the controls below it:
+
+* **Fit to window** scales the image to the width of the editor window. Turn it off to see the texture at its real size.
+* **Layer** appears for texture arrays and cube map arrays, for example the shadow maps. For a cube map array it also tells you the cube and the face.
+* **Range min** and **Range max** are a manual tonemapping. Colours are mapped so that ``min`` shows as black and ``max`` as white. Floating point targets, like HDR colour, can hold values far above 1 and look pure white or pure black at the default range, so drag the range until the part you care about shows up. Targets stored as normalised values (8 bit colour, depth) stay inside 0 to 1. **Reset range** returns to 0 to 1, which shows the texture as it is.
+* **Channel** shows all channels, or only red, green, blue or alpha. With all channels, alpha is ignored so a transparent target is still visible.
+
+Selecting another texture resets the range, the channel and the layer.
+
+Occlusion culling debugging
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Occlusion culling is the filter that is hardest to judge by looking at the final image, since it removes things that were hidden anyway. The occlusion controls in **Render Debugging** show what it removes and let you change how it decides, while the game runs. See :ref:`the visibility system <VisibilitySystem>` for how the culling works.
+
+.. figure:: _static/media/images/editor-render-debugging-occlusion.png
+    :align: center
+
+    The occlusion controls in the Render Debugging section.
+
+* **Occlusion Culling** turns the whole filter on and off, so you can compare a frame with and without it, or find out whether culling is what removed an object. This is the :ref:`occlusion_enabled <option-occlusion_enabled>` option.
+* **Reverse Occlusion** draws only what occlusion culling removed. The scene is drawn without the objects that are visible, so a mesh that disappears when it should not shows up here. It needs occlusion culling to be on, and it only affects the player camera, shadow rendering is left alone. This is the :ref:`occlusion_debugReverse <option-occlusion_debugReverse>` option.
+* **Visible meshes opacity** is used while Reverse Occlusion is on. The meshes that passed culling are drawn over the occluded ones with this opacity: at 0 they are not drawn, so you see only the occluded meshes, and at 100 they are drawn as normal. A value in between lets you see the occluded meshes through the visible ones. This is the :ref:`occlusion_debugOverlayOpacity <option-occlusion_debugOverlayOpacity>` option.
+* **Occluder size (perspective)** is the share of the screen a mesh must cover to become an occluder for the player camera, with 1 being the full screen. Raise it to get fewer occluders, lower it to get more, and watch the effect on the culling directly. This is :ref:`occlusion_occluderSizePerspective <option-occlusion_occluderSizePerspective>`.
+* **Occluder size (orthographic)** is the same threshold for orthographic cameras, which the directional light's shadow cascades use. It changes what shadow rendering culls, not what the player camera culls. This is :ref:`occlusion_occluderSizeOrthographic <option-occlusion_occluderSizeOrthographic>`.
+* **Occluder bake LOD** chooses which LOD level is rasterized as the occluder. This is :ref:`occlusion_bakeLodLevel <option-occlusion_bakeLodLevel>`, with the same limit: a model loaded from a source file bakes only that level, so it needs a reload to change, while a ``limonmodel`` switches immediately.
+* **Occluder size by group** decides how a model that is in a model group becomes an occluder. When it is on, the model counts as an occluder when the box of its nearest group passes the occluder size, instead of its own box. Turn it off to select occluders from each model individually. This is :ref:`occlusion_occluderSizeByGroup <option-occlusion_occluderSizeByGroup>`.
+* **Group member min fraction** applies when occluders are selected by group. A member still has to cover at least this fraction of the occluder size itself, so small props in a big group are not rasterized. At 1 a grouped model follows the same rule as an ungrouped one. This is :ref:`occlusion_occluderGroupMemberMinFraction <option-occlusion_occluderGroupMemberMinFraction>`.
+
+Changes apply on the next tick. The editor does not write them to the options files, so to keep a value, set the option itself, see :ref:`OptionsReference`.
+
+Depth buffer dump
+^^^^^^^^^^^^^^^^^
+
+Occlusion culling decides with a small depth buffer that the CPU rasterizes from the occluders. To see that buffer itself, for example to find out why an object is culled or why an occluder is missing, the engine can write it to an image file. There is no editor control for it, it is set with two options:
+
+* :ref:`occlusion_renderDump <option-occlusion_renderDump>` turns the dump on.
+* :ref:`occlusion_renderDumpFrequency <option-occlusion_renderDumpFrequency>` sets how often a dump is written, as a number of culling passes of that camera. A dump every frame would flood the disk and slow the game down, so keep it high.
+
+Each dump is a ``.ppm`` image written to the engine's working directory, and the next dump of the same camera replaces it. The player camera writes ``SDOCdepthMap_player.ppm``. Each shadow cascade of the directional light writes its own file, ``SDOCdepthMap_<camera name>_<size>.ppm``, where the size identifies the cascade. The console prints the buffer's dimensions and whether saving worked. Most image viewers can not open ``.ppm`` files, but GIMP and many others can.
+
+The buffer's size is set by :ref:`occlusion_renderWidth <option-occlusion_renderWidth>` and :ref:`occlusion_renderHeight <option-occlusion_renderHeight>`. Combined with the occluder size sliders above, the dump shows what your changes did to the buffer.
+
 Profiling System
 ================
 
@@ -166,6 +231,20 @@ A custom Tracy server is embedded in the engine process. A per-frame flame graph
 
 .. note::
     The embedded view is less capable than the official Tracy UI. The official Tracy client can connect to the embedded server for complete profiling - the two are fully protocol-compatible.
+
+Asset Tools
+===========
+
+Two functions of the engine work on a game's assets rather than inside a running game. Both can be started from the command line, and the packer from the editor too.
+
+* :ref:`Packaging <Packaging>` builds the ``Data.pak`` a released game ships with.
+* The :ref:`Map Converter <MapConverter>` splits a map exported from another engine as one model into a world of separate objects.
+
+.. toctree::
+   :maxdepth: 1
+
+   Packaging
+   MapConverter
 
 
 .. seealso::
