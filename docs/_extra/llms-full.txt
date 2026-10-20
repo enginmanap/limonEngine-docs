@@ -114,11 +114,13 @@ The pipeline compiler packages per-stage requirements (blend state, FBO attachme
 
 ### Material system
 
-All materials uploaded as a UBO — material index passed per instance. Any shader declaring the material UBO is automatically detected via runtime reflection — no registration required.
+Materials uploaded as a UBO — material index passed per instance. Any shader declaring the material UBO is automatically detected via runtime reflection — no registration required.
 
 Material properties: diffuse colour (RGB), ambient colour (RGB), specular exponent (float), and five texture slots: diffuse, ambient, specular, normal, opacity.
 
-Per-model material editing is copy-on-write: editing globally writes to the shared material and affects all users; editing per-model creates a permanent copy assigned to that mesh while leaving the original unchanged. The new material appears in the global registry.
+Identical materials (same colours, values and texture files; the name doesn't count) are shared, whichever model or world defines them. A material takes a UBO slot (the number of slots is set by the `NR_MAX_MATERIALS` constant; currently 200, adjustable for the target hardware) and loads its textures only while something draws it; one that every object replaces never loads its textures, and its missing textures are never reported. The limit counts drawn materials, not every material of every loaded model. Packing follows the same rule: only textures of materials some placed object draws are packed, while the `.limonmodel` still holds every material of its source.
+
+Editing a model's material in the registry splits it into a world override: it replaces that material on every mesh of this world and on models added later, is saved in the world file, and leaves the model file and other worlds untouched. An override no object uses is kept. Per-model editing ("Alter material for this model") creates a copy assigned to that mesh while leaving the original unchanged. The new material appears in the global registry.
 
 ### Culling pipeline
 
@@ -373,10 +375,11 @@ Asset browser: model assets show a dedicated preview rendered with the current w
 
 ### Material editing
 
-The material registry (in the world properties panel) lists every material in the world. Selecting and editing a material there is a global edit — all meshes using it are affected immediately. Per-mesh editing from the object editor offers two paths:
+The material registry (in the world properties panel) lists every material of the loaded models and the world, including ones nothing draws; a model material the world replaces is shown with a `base_` prefix. Selecting one nothing draws loads its textures so it can be edited. Editing a model's material there is a global edit for this world — the first change splits it into a world override that replaces it on every mesh in the world and on models added later; world-owned materials are edited in place. The object editor's Material properties section lists each mesh and its material:
 
-- **Edit globally** — writes to the shared material; all users affected.
-- **Edit per-model** — creates a permanent copy assigned only to this mesh. The original is unchanged. The copy appears in the registry.
+- **Switch material** — puts the material selected in the registry on the mesh.
+- **Alter material for this model** — creates a copy assigned only to this mesh. The original is unchanged. The copy appears in the registry. **Revert** puts the mesh back on its previous material.
+- **Reset model** — puts every mesh back on its model file's material, or the world's override of it.
 
 Material properties: diffuse colour (RGB), ambient colour (RGB), specular exponent (float), and five texture slots: diffuse, ambient, specular, normal, opacity.
 

@@ -51,7 +51,9 @@ When a world is loaded, the engine creates an isolated Python sub-interpreter fo
 * A class that subclasses **ActorInterface** is registered as an :ref:`AI Actor <implementAIActor>`.
 * A class that subclasses **CameraExtensionInterface** is registered as a :ref:`Camera Attachment <implementCameraAttachment>`.
 
-Registration is automatic - there is no Python equivalent of the C++ ``registerAsTrigger`` entry point. The name the extension is registered under, and the name a map designer picks from in the editor, is the **Python class name** itself.
+Registration is automatic - there is no Python equivalent of the C++ ``registerTriggerTypes`` entry point. The name the extension is registered under, and the name a map designer picks from in the editor, is the **Python class name** itself.
+
+The files a class uses are read at registration too: if your script passes a ``./Data/...`` path written in its code to the API, return it from the ``get_pack_file_access_list`` class method, see :ref:`API-pack-file-access-list`. Read your own data files with ``read_file`` / ``read_text_file`` rather than ``open()``, which can't see a packed ``Data.pak``.
 
 .. note::
     Registered camera *attachments* (``CameraExtensionInterface``) are auto-discovered the same way - a class subclassing it is registered as a :ref:`Camera Attachment <implementCameraAttachment>`.

@@ -2156,6 +2156,62 @@ save_options
             bool: True on success, False otherwise
         """
 
+Files
+~~~~~
+
+These read the way the engine does: ``./Data/...`` from the loose ``./Data`` folder first, then from ``Data.pak``, and ``./Engine/...`` from the ``Engine`` folder only. ``open()`` only sees loose files, so use these for anything a packed game ships. A ``./Data/...`` path that no loaded world references and no registered class declares is refused, see :ref:`API-file-access`.
+
+.. _pythonApi-read_file:
+
+read_file
+^^^^^^^^^
+
+.. code-block:: python
+
+    def read_file(path: str) -> Optional[bytes]:
+        """
+        Read the whole file. None if it is missing, unreadable or refused,
+        so a missing file can be told apart from an empty one.
+        """
+
+.. _pythonApi-read_text_file:
+
+read_text_file
+^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def read_text_file(path: str) -> Optional[str]:
+        """
+        Read the whole file as UTF-8 text. None if it is missing, unreadable or refused.
+        """
+
+.. _pythonApi-file_exists:
+
+file_exists / is_directory
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def file_exists(path: str) -> bool:
+        """True if the path is a file in any layer."""
+
+    def is_directory(path: str) -> bool:
+        """True if the path is a folder in any layer."""
+
+.. _pythonApi-list_directory:
+
+list_directory
+^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def list_directory(path: str) -> Optional[List[Tuple[str, bool]]]:
+        """
+        (name, is_directory) for everything the folder holds across all layers,
+        names only, not full paths. None if the path is not a folder.
+        """
+
 Timed Events
 ~~~~~~~~~~~~
 

@@ -252,13 +252,18 @@ _______________________________________
 Limon engine will try to load custom actors on engine startup, from libcustomTriggers file (extension based on platform). If the file is found, engine will check for a method with following signature:
 ::
 
-    void registerActors(std::map<std::string, ActorInterface*(*)(uint32_t, LimonAPI*)>* actorMap)
+    extern "C" void registerActorTypes(std::map<std::string, ActorInterface::Registration>* actorMap)
 
 This method should fill the actorMap passed, with all the custom actors, like this:
 ::
 
-    (*actorMap)["$ACTOR_NAME1$"] = &createActorT<$ActorClass1$>;
-    (*actorMap)["$ACTOR_NAME2$"] = &createActorT<$ActorClass2$>;
+    (*actorMap)["$ACTOR_NAME1$"] = ActorInterface::registration<$ActorClass1$>();
+    (*actorMap)["$ACTOR_NAME2$"] = ActorInterface::registration<$ActorClass2$>();
+
+``registration<T>()`` stores how to create your actor together with the files it declares. If your actor passes a ``./Data/...`` path written in its code to the API (a gunshot sound, for example), declare it with a static ``getPackFileAccessList()``, see :ref:`API-pack-file-access-list`.
+
+.. note::
+    Libraries built before file declarations existed export ``registerActors`` instead. The engine refuses to load those and asks you to rebuild against the current LimonAPI.
 
 .. _ActorInterface-samples:
 

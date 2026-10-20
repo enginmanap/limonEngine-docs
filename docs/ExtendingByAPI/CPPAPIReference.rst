@@ -238,6 +238,16 @@ The ``uint32_t`` IDs taken and returned below follow the rules in :ref:`API-obje
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``bool``                                      | :ref:`saveOptions()<LimonAPI-saveOptions>`                                                                                                                                                                                                                                                                     |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`readFile(const std::string& path, std::vector\<uint8_t\>& contents)<LimonAPI-readFile>`                                                                                                                                                                                                                  |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`readTextFile(const std::string& path, std::string& contents)<LimonAPI-readTextFile>`                                                                                                                                                                                                                     |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`fileExists(const std::string& path)<LimonAPI-fileExists>`                                                                                                                                                                                                                                                |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`isDirectory(const std::string& path)<LimonAPI-isDirectory>`                                                                                                                                                                                                                                              |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``bool``                                      | :ref:`listDirectory(const std::string& path, std::vector\<LimonTypes::DirectoryEntry\>& entries)<LimonAPI-listDirectory>`                                                                                                                                                                                      |
++-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |void                                           | :ref:`simulateInput(const InputStates& input)<LimonAPI-simulateInput>`                                                                                                                                                                                                                                         |
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |bool                                           | :ref:`changeRenderPipeline(const std::string& pipelineFileName)<LimonAPI-changeRenderPipeline>`                                                                                                                                                                                                                |
@@ -1697,6 +1707,54 @@ Saves the current options to the user options file (``./Data/Options.xml``). Any
 
 Returns:
    bool: True if the options were saved successfully, false otherwise.
+
+Files
+=====
+
+These read the way the engine does: ``./Data/...`` from the loose ``./Data`` folder first, then from ``Data.pak``, and ``./Engine/...`` from the ``Engine`` folder only. ``fopen`` and ``std::ifstream`` only see loose files, so use these for anything a packed game ships. A ``./Data/...`` path that no loaded world references and no registered extension declares is refused, see :ref:`API-file-access`.
+
+.. _LimonAPI-readFile:
+
+bool readFile(const std::string& path, std::vector<uint8_t>& contents)
+----------------------------------------------------------------------
+
+Reads the whole file into ``contents``.
+
+Returns:
+   bool: True if the file was read, false if it is missing, unreadable or refused. ``contents`` is empty then.
+
+.. _LimonAPI-readTextFile:
+
+bool readTextFile(const std::string& path, std::string& contents)
+-----------------------------------------------------------------
+
+Same as :ref:`readFile<LimonAPI-readFile>`, into a string.
+
+.. _LimonAPI-fileExists:
+
+bool fileExists(const std::string& path)
+----------------------------------------
+
+Returns:
+   bool: True if the path is a file in any layer.
+
+.. _LimonAPI-isDirectory:
+
+bool isDirectory(const std::string& path)
+-----------------------------------------
+
+Returns:
+   bool: True if the path is a folder in any layer.
+
+.. _LimonAPI-listDirectory:
+
+bool listDirectory(const std::string& path, std::vector<LimonTypes::DirectoryEntry>& entries)
+---------------------------------------------------------------------------------------------
+
+Fills ``entries`` with what the folder holds across all layers. Each entry has a ``name`` (not a full path) and an ``isDirectory`` flag. A name present in both the loose folder and the pack is listed once.
+
+Returns:
+   bool: True if the path is a folder in any layer, false otherwise.
 
 Variables
 =========

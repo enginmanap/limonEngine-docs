@@ -97,20 +97,25 @@ _______________________________________
 Limon engine will try to load custom actions on engine startup, from libcustomTriggers file (extension based on platform). If the file is found, engine will check for a method with following signature:
 ::
 
-    void registerAsTrigger(std::map<std::string, TriggerInterface*(*)(LimonAPI*)>* triggerMap)
+    extern "C" void registerTriggerTypes(std::map<std::string, TriggerInterface::Registration>* triggerMap)
 
 This method should fill the triggerMap passed, with all the custom actions, like this:
 ::
 
-    (*triggerMap)["$ACTION_NAME1$"] = &createT<$ActionClass1$>;
-    (*triggerMap)["$ACTION_NAME2$"] = &createT<$ActionClass2$>;
+    (*triggerMap)["$ACTION_NAME1$"] = TriggerInterface::registration<$ActionClass1$>();
+    (*triggerMap)["$ACTION_NAME2$"] = TriggerInterface::registration<$ActionClass2$>();
+
+``registration<T>()`` stores how to create your action together with the files it declares. If your action passes a ``./Data/...`` path written in its code to the API, declare it with a static ``getPackFileAccessList()``, see :ref:`API-pack-file-access-list`.
+
+.. note::
+    Libraries built before file declarations existed export ``registerAsTrigger`` instead. The engine refuses to load those and asks you to rebuild against the current LimonAPI.
 
 .. _TriggerInterface-samples:
 
 Sample Actions
 ______________
 
-The engine ships with several actions under ``samples/`` that implement ``TriggerInterface``. They are registered in `CoinPickUpOnTrigger.cpp <https://github.com/enginmanap/limonEngine/blob/master/samples/CoinPickUpOnTrigger.cpp>`_ via ``registerAsTrigger`` and are good references for writing your own:
+The engine ships with several actions under ``samples/`` that implement ``TriggerInterface``. They are registered in `CoinPickUpOnTrigger.cpp <https://github.com/enginmanap/limonEngine/blob/master/samples/CoinPickUpOnTrigger.cpp>`_ via ``registerTriggerTypes`` and are good references for writing your own:
 
 * `OptionsDisplayAction <https://github.com/enginmanap/limonEngine/blob/master/samples/OptionsDisplayAction.cpp>`_ - lists every engine option on screen by iterating ``getOptions()->getAllOptions()`` and drawing each entry with :ref:`addGuiText <LimonAPI-addGuiText>`.
 * `CoinPickUpOnTrigger <https://github.com/enginmanap/limonEngine/blob/master/samples/CoinPickUpOnTrigger.cpp>`_ - removes a coin object and updates a counter when the player enters the trigger volume.

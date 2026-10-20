@@ -654,7 +654,9 @@ Materials define the visual appearance of meshes - colour, specularity, and up t
 Where Materials Come From
 _________________________
 
-When a model is added to the world, its embedded materials are loaded and registered automatically. If two models share the same source material, it is loaded once and shared - deduplication is automatic. Custom materials you modify in the editor are saved in the world file, but the asset manager treats them identically to model-sourced materials. The origin of a material has no effect on how it is managed at runtime.
+When a model loads, its materials are registered automatically. If two models have identical materials, they share one - deduplication is automatic. Custom materials you modify in the editor are saved in the world file, but the asset manager treats them identically to model-sourced materials. The origin of a material has no effect on how it is managed at runtime.
+
+A material's textures load only while something in the world draws it. A model material that every object in the world replaces never loads its textures, and a missing texture of such a material is never reported.
 
 For details on loading, lifetime, and cross-world sharing see :ref:`AssetManagement`.
 
@@ -666,20 +668,25 @@ _________________
 
     The material registry panel showing all materials in the current world.
 
-The world editor maintains a list of every material currently in use. Selecting a material from the registry and editing it is a global edit - the change propagates immediately to every mesh using that material.
+The world editor lists every material of the loaded models and of the world, including ones no object draws. A model material the world replaces is listed with a ``base_`` prefix. Selecting a material that nothing draws loads its textures, so it can be edited and previewed.
+
+Editing a material from the registry is a global edit for this world. A material that came from a model file is not changed in the model: the first change copies it into a world override, which replaces it on every mesh in this world that uses it, and on models added to this world later. The override is saved in the world file, other worlds keep the model's material. A material that already belongs to the world, an override or a per-model copy, is edited in place.
+
+An override stays in the world file even when no object uses it anymore, because a model added later may need it.
 
 Editing a Material on a Specific Model
 _______________________________________
 
-When a model is selected in the object editor, its materials are listed. Each material offers two options:
+When a model is selected in the object editor, the **Material properties** section lists its meshes and the material each one uses. Selecting a mesh selects its material in the registry too.
 
 .. figure:: _static/media/images/editor-mesh-material-pane_preview.png
     :align: center
 
     Per-mesh material editing with preview.
 
-* **Edit globally** - edits the shared material. All meshes using it are affected immediately.
-* **Edit per-model** - creates a permanent copy assigned only to this mesh. The original is unchanged. The new copy appears in the registry and can be shared or edited like any other material.
+* **Switch material** - puts the material selected in the registry on the selected mesh.
+* **Alter material for this model** - creates a copy assigned only to this mesh and opens its editor. The original is unchanged. The copy appears in the registry and can be shared or edited like any other material. **Revert** puts the mesh back on the material it had before.
+* **Reset model** - puts every mesh back on its model file's material, or on the world's override of it.
 
 Material Properties
 ___________________

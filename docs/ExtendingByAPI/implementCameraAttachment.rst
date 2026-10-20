@@ -138,15 +138,19 @@ Registering a camera attachment (C++)
 =====================================
 
 Camera attachments are discovered from the same user dynamic library as every other extension type, through
-the ``registerCameraExtensions`` entry point:
+the ``registerCameraExtensionTypes`` entry point:
 
 .. code-block:: cpp
 
-   extern "C" void registerCameraExtensions(
-           std::map<std::string, CameraExtensionInterface*(*)(LimonAPI*)>* cameraExtensionMap) {
-       (*cameraExtensionMap)["ObjectAttachedCameraRig"] = &createCameraExtension<ObjectAttachedCameraRig>;
-       (*cameraExtensionMap)["OrthographicCameraRig"]   = &createCameraExtension<OrthographicCameraRig>;
+   extern "C" void registerCameraExtensionTypes(
+           std::map<std::string, CameraExtensionInterface::Registration>* cameraExtensionMap) {
+       (*cameraExtensionMap)["ObjectAttachedCameraRig"] = CameraExtensionInterface::registration<ObjectAttachedCameraRig>();
+       (*cameraExtensionMap)["OrthographicCameraRig"]   = CameraExtensionInterface::registration<OrthographicCameraRig>();
    }
+
+``registration<T>()`` stores how to create the rig together with the files it declares, see
+:ref:`API-pack-file-access-list`. Libraries built before file declarations existed export
+``registerCameraExtensions`` instead; the engine refuses to load those and asks you to rebuild against the current LimonAPI.
 
 Using a rig in the editor
 =========================

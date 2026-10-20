@@ -186,6 +186,72 @@ Each level has a single dedicated music track playing on the MUSIC channel, loop
    * - ``isMusicPlaying()``
      - Returns ``True`` if level music is currently playing. (:ref:`C++ <LimonAPI-isMusicPlaying>` | :ref:`Python <pythonApi-is_music_playing>`)
 
+.. _API-file-access:
+
+File Access
+===========
+
+Where game files come from
+--------------------------
+
+A game's files live under ``./Data``, the engine's own under ``./Engine``. A released game can ship its ``Data`` packed into a single ``Data.pak`` instead of loose files. The engine reads both, in layers:
+
+* ``./Engine/...`` is read from the ``Engine`` folder only. Nothing overrides an engine file.
+* ``./Data/...`` is read from the loose ``./Data`` folder first, then from ``Data.pak``. A loose file replaces the packed one with the same path, which is how you test a change without rebuilding the pack.
+* Any other path, absolute or outside these two folders, is read straight from disk.
+
+Every path you give the API (models, textures, sounds, fonts, worlds) goes through these layers. ``fopen``, ``std::ifstream`` and Python's ``open()`` don't: they only see loose files, so they miss everything inside ``Data.pak``. To read a file of your own, a level description or a dialogue script for example, use the file methods instead:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Method
+     - Description
+   * - ``readFile(path, contents)``
+     - Reads the whole file as bytes. (:ref:`C++ <LimonAPI-readFile>` | :ref:`Python <pythonApi-read_file>`)
+   * - ``readTextFile(path, contents)``
+     - Reads the whole file as text. (:ref:`C++ <LimonAPI-readTextFile>` | :ref:`Python <pythonApi-read_text_file>`)
+   * - ``fileExists(path)`` / ``isDirectory(path)``
+     - Checks a path in any layer. (:ref:`C++ <LimonAPI-fileExists>` | :ref:`Python <pythonApi-file_exists>`)
+   * - ``listDirectory(path, entries)``
+     - Lists a folder across all layers, names only. (:ref:`C++ <LimonAPI-listDirectory>` | :ref:`Python <pythonApi-list_directory>`)
+
+There is no write method yet.
+
+.. _API-pack-file-access-list:
+
+Declaring the files your extension uses
+---------------------------------------
+
+The packer only ships what the game can reach: the worlds it starts from and the worlds they lead to, the files those worlds name, and the files the extensions they use declare. A path that comes from a world - a trigger parameter you set in the editor, a model placed in the map - is found in the world file itself. A path written in your code is not, so your extension has to declare it.
+
+The engine enforces this while you develop, not only in a packed game: any ``./Data/...`` path an extension passes to the API is refused, with an error naming the path, unless a loaded world references it or a registered extension declares it. Methods that create something return ``0``, the others ``false`` or ``None``. ``./Engine/...`` paths and paths outside both folders are never checked.
+
+In C++, give your class a static method that hides the base class's empty one. The registration helper (see the *How to enable Dynamic Library discovery* section of each extension page) picks it up:
+
+.. code-block:: cpp
+
+    class MyShooter : public PlayerExtensionInterface {
+    public:
+        static std::vector<std::string> getPackFileAccessList() {
+            return {"./Data/Sounds/guns/pistol.wav",
+                    "./Data/Textures/Hit/"};   // a trailing slash means the whole folder
+        }
+        ...
+    };
+
+In Python, override the class method of the base class:
+
+.. code-block:: python
+
+    class MyShooter(PlayerExtensionInterface):
+        @classmethod
+        def get_pack_file_access_list(cls):
+            return ["./Data/Sounds/guns/pistol.wav", "./Data/Textures/Hit/"]
+
+Declare a folder when your code builds file names at runtime, for example a sound name picked from a table. Prefer single files otherwise: everything in a declared folder ends up in the pack.
+
 Named Variables
 ===============
 

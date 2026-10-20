@@ -160,13 +160,18 @@ _______________________________________
 Limon engine will try to load custom player extensions on engine startup, from libcustomTriggers file (extension based on platform). If the file is found, engine will check for a method with following signature:
 ::
 
-    void registerPlayerExtensions(std::map<std::string, PlayerExtensionInterface*(*)(LimonAPI*)>* playerExtensionMap)
+    extern "C" void registerPlayerExtensionTypes(std::map<std::string, PlayerExtensionInterface::Registration>* playerExtensionMap)
 
-This method should fill the actorMap passed, with all the custom actors, like this:
+This method should fill the playerExtensionMap passed, with all the custom player extensions, like this:
 ::
 
-    (*playerExtensionMap)["$EXTENSION_NAME1$"] = &createPlayerExtension<$ExtensionClass1$>;
-    (*playerExtensionMap)["$EXTENSION_NAME2$"] = &createPlayerExtension<$ExtensionClass2$>;
+    (*playerExtensionMap)["$EXTENSION_NAME1$"] = PlayerExtensionInterface::registration<$ExtensionClass1$>();
+    (*playerExtensionMap)["$EXTENSION_NAME2$"] = PlayerExtensionInterface::registration<$ExtensionClass2$>();
+
+``registration<T>()`` stores how to create your extension together with the files it declares. If your extension passes a ``./Data/...`` path written in its code to the API (a muzzle flash model, for example), declare it with a static ``getPackFileAccessList()``, see :ref:`API-pack-file-access-list`.
+
+.. note::
+    Libraries built before file declarations existed export ``registerPlayerExtensions`` instead. The engine refuses to load those and asks you to rebuild against the current LimonAPI.
 
 .. note::
     Every registered extension name is available through the static ``PlayerExtensionInterface::getExtensionNames()`` (Python: ``get_extension_names()``). The editor uses this list to present the launch-time extension as a drop-down in Player Properties, so the registered name you use here is the one a map designer will pick from. See :ref:`UsingBuiltinEditor`.

@@ -31,9 +31,9 @@ Asset Types
    * - Audio
      - OpenAL
      - WAV only.
-   * - Materials (MaterialAsset)
+   * - Materials
      - Model asset or world file
-     - Deduplicated automatically regardless of source. See `Materials as Assets`_ below.
+     - Deduplicated automatically regardless of source. Their textures load only while something draws them. See `Materials as Assets`_ below.
    * - Shaders
      - GLSL
      - Discovered at launch via runtime reflection.
@@ -70,6 +70,8 @@ Loading calls don't return an error. Failures are written to standard error, and
      - The engine looks through the known assets under ``./Data`` for a file with the same name, then for the same name with any image extension, and uses the first one that loads. If none does, it logs ``TextureAsset Load from disk failed`` and uses ``./Engine/Textures/notFoundFallback.jpg``. The world keeps loading. If the fallback itself is missing, the engine exits.
    * - Texture referenced by a model
      - Found and resolved the same way, so a model whose textures were moved still loads, with the fallback texture if nothing matches. A texture slot the model file can't describe at all is left empty, with a log message.
+   * - Texture of a material nothing draws
+     - Not loaded, so nothing is logged for it. The path is still resolved by file name when the model loads, silently. A path that was resolved is logged as ``names texture ..., using ... found by file name`` the first time something draws the material, and a missing one is logged then as above.
    * - Model can't be imported, has no meshes, or has a material without a name
      - The engine exits, after an ``ERROR::ASSIMP`` or similar message.
    * - Sound file can't be read
@@ -93,9 +95,13 @@ Reference Counting
 Materials as Assets
 ===================
 
-All materials are managed as ``MaterialAsset`` objects regardless of origin. A material embedded in a model file and a material defined in the world file are both ``MaterialAsset`` instances - the asset manager makes no distinction between them.
+A material embedded in a model file and a material defined in the world file are the same kind of object, and the engine manages them the same way.
 
-If two models reference the same source material, it is loaded once and shared. Custom materials created or modified in the editor are saved in the world file and loaded identically to model-sourced materials.
+If two models have identical materials, they share one. Materials are identical when their colours, values and texture files match; the name doesn't count. Custom materials created or modified in the editor are saved in the world file and loaded identically to model-sourced materials.
+
+A material uses GPU resources only while something draws it: its textures, and a slot in the material buffer, whose size is set by the ``NR_MAX_MATERIALS`` constant. The current configuration is 200, but you can change it to suit your target hardware. A model's materials are known as soon as the model loads, but one that every object in the world replaces with another material never loads its textures and takes no slot. When the last object drawing a material is removed or switched to another material, its textures are freed and its slot is reused. So the limit counts the materials that are drawn, not every material of every loaded model.
+
+A packed game follows the same rule: the packer includes the textures of a model's own materials only if some placed object, in some packed world, draws them. A model that is named rather than placed, by a type's declared files (see :ref:`API-pack-file-access-list`) or by a parameter in a world, can be spawned anywhere, so all its materials' textures are packed. The converted ``.limonmodel`` still holds every material of the source model, so nothing is lost if a later world uses one.
 
 For how to create and edit materials in the editor, see :ref:`UsingBuiltinEditor`.
 

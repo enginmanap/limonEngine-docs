@@ -194,7 +194,7 @@ Two built-in RenderMethods ship with the engine:
 Materials and the Pipeline
 ==========================
 
-All materials are uploaded to the GPU as a Uniform Buffer Object (UBO). A material index is passed per instance as part of instanced rendering data. Any shader that declares the material UBO is automatically detected via reflection - no registration required. Custom pipeline shaders receive the full material array by declaring the UBO.
+Materials are uploaded to the GPU as a Uniform Buffer Object (UBO), one slot per material that something draws; a material nothing draws has no slot. A material index is passed per instance as part of instanced rendering data. Any shader that declares the material UBO is automatically detected via reflection - no registration required. Custom pipeline shaders receive the full material array by declaring the UBO.
 
 For how materials are created, edited, and managed see :ref:`UsingBuiltinEditor` and :ref:`AssetManagement`.
 
