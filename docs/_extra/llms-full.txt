@@ -59,11 +59,33 @@ CPU layer: thread pool decompresses, parses, and converts assets in parallel. Co
 
 ### limonmodel format
 
-Near memory-direct layout — loading is read-and-map, not parse-and-transform. Contains vertex/index buffers, skeletal animation data, material information, and optionally embedded textures. Faster load times and smaller file size than raw Assimp-imported formats. Generated via the "Convert models to binary" button in the world editor. Works around raw asset redistribution restrictions.
+Near memory-direct layout — loading is read-and-map, not parse-and-transform. Contains vertex/index buffers, skeletal animation data, material information, and optionally embedded textures. Also stores everything otherwise computed at load: the generated LOD levels together with what was asked of each (distance and pixel limits), any per-model LOD settings, and a baked software occluder for every LOD level, so a converted model neither simplifies nor bakes at load and never reads or writes a `.limon` sidecar. A converted model owns its embedded textures under its own path, so two files never share images. The file carries a version stamp; an older file is rejected at load with a message asking for a re-export. A flipped variant is a separate file (`Saloon_flipXZ.limonmodel`), because the mirror is in the exported vertices. Generated via the "Convert models to binary" button, by the packer, or by the map converter. Faster load times and smaller file size than raw Assimp-imported formats. Works around raw asset redistribution restrictions.
 
 ### Collision shapes as shared assets
 
 Both convex hull and triangle mesh collision shapes are generated at model import time and stored as part of the model asset. Shapes are shared across all instances via the asset manager — reference counted like meshes and textures. Runtime mass switching is cheap: shapes are already resident. Only Bullet re-registration is required.
+
+## File System and Packaging
+
+### File layers
+
+Every game-data read goes through `LimonFileSystem`: `./Engine/...` from the `Engine` folder only, `./Data/...` from the loose `./Data` folder first and then from a mounted `Data.pak`, anything else from disk. A loose file replaces a packed one with the same path. `fopen`, `std::ifstream` and Python `open()` see loose files only, so extensions read through the API instead: `readFile`, `readTextFile`, `fileExists`, `isDirectory`, `listDirectory` (C++ and Python). There is no write method yet.
+
+### File access declarations
+
+A `./Data/...` path passed to the API by an extension is refused, in development as well as in a packed game, unless a loaded world references it or a registered extension declares it. A path from a world (a trigger parameter, a placed model) is found in the world file. A path written in code is declared with a static `getPackFileAccessList()` (Python: `get_pack_file_access_list`) on the extension; a declared folder is packed whole. `./Engine/...` and paths outside both folders are never checked.
+
+### Packaging
+
+The packer builds `Data.pak` from what the game reaches from its starting world (`StartingWorld` in `Data/Release.xml`): worlds, files they name, files that used extensions declare, scripts and their imports, and the engine's fixed files. Models are converted to `.limonmodel`, worlds in the package are rewritten to refer to the conversions, and a manifest maps source models to conversions. Files are stored uncompressed. A `<package>.report.txt` lists worlds, types, converted models, every file with the reason it was packed, problems (names that do not exist, unreadable scripts) and repaired texture paths. The editor's Export Package button saves the world first, lets you choose the starting world, shows progress and locks the editor while it runs; `LimonEngine --pack <source Data directory> <output package>` does the same from the command line (exit code 0 or -1). Packing refuses while a package is mounted. `pack_maxModelsInFlight` caps models held in memory at once.
+
+### Running a package
+
+Put `Data.pak` next to the executable and the engine mounts it. `LimonEngine --loadpak <file>` mounts another package instead, and may sit anywhere among the parameters. `--loadpak` cannot be combined with `--pack` or `--convert`.
+
+### Map converter
+
+`LimonEngine --convert <model file> [output directory] [--scale <factor>]` turns a map exported from another engine as one model into a world of separate objects: one `.limonmodel` per distinct mesh (mirrored placements get a `_mirror` file), a world file placing them, model groups from the source hierarchy, animated meshes grouped into animated models, one directional light and an editor player. It stops and lists the nodes at fault on shear, `UCX_` proxies, or more objects than the 65536 object ID limit, and refuses to run while a package is mounted.
 
 ## GameObject Types
 
@@ -134,11 +156,15 @@ Five stages run in order per camera each frame, with each camera's workload on a
 
 ### SIMD occlusion culling
 
-Based on a heavily modified SDOC library. SSE4.1 on x86, NEON on AArch64. Depth buffer based, AABB occludee testing. Default resolution 512×256, must be a multiple of 8 for SIMD alignment. SplitModelToMeshCount option: models with more meshes than this run occlusion tests per mesh rather than per model.
+Based on a heavily modified SDOC library. SSE4.1 on x86, NEON on AArch64. Depth buffer based, AABB occludee testing. Default resolution 512×256, must be a multiple of 8 for SIMD alignment. SplitModelToMeshCount option: models with more meshes than this run occlusion tests per mesh rather than per model. Occluders are baked at load into compressed quads and rasterized from that blob instead of the triangle list; `occlusion_bakeLodLevel` chooses which LOD is baked (a `limonmodel` stores a bake per level, a source asset only the level it loaded with). Animated models never occlude, they are only tested. A model in a model group can become an occluder by its nearest group's box (`occlusion_occluderSizeByGroup`). Directional shadow cascades use their own orthographic occluder size.
 
 ### Point light culling
 
 Point lights use sphere-based culling instead of frustum culling. A frustum test would incorrectly cull point lights that are behind the camera but whose radius of influence still illuminates visible geometry. All other objects use standard frustum culling (step 2 above).
+
+### Render debugging
+
+The editor's Render Debugging section covers rendering investigation without changing code. The render target viewer lists every texture of the active pipeline and shows it with a layer slider (texture arrays and cube map arrays, including the cube and face), a manual min/max range for float targets (a manual tonemapping), and a channel selector. The occlusion controls toggle occlusion culling on and off, and a reverse mode draws only the meshes occlusion removed for the player camera, with the visible meshes optionally drawn over them at an adjustable opacity (0 hides them, 1 draws them normally). The occluder size can be changed live, separately for perspective and orthographic cameras (orthographic is the one directional shadow cascades use), as can the occluder bake LOD. Occluder selection can follow model groups (`occlusion_occluderSizeByGroup`, with `occlusion_occluderGroupMemberMinFraction`) or each model individually. Editor changes apply on the next tick and are not written to the options files. `occlusion_renderDump` and `occlusion_renderDumpFrequency` dump the software depth buffer to `.ppm` files, with no editor control.
 
 
 ## Animation System
@@ -227,6 +253,10 @@ Sound is a first-class world object. To attach to a model: playSound to create a
 
 ## World Systems
 
+### Simulation ticks
+
+The world is simulated in fixed steps. The rate is the build setting `TICK_PER_SECOND` (60 by default, 30 for the Raspberry Pi); ask for it with `getTicksPerSecond` (`get_ticks_per_second` in Python) instead of assuming it. Rendering is not tied to ticks, frames between two ticks repeat the last simulated state. When the engine falls more than `MAX_CATCHUP_TICKS` behind it drops the surplus, so game time runs slower than real time instead of spiralling.
+
 ### Named variable system
 
 Allows user code components to communicate state (e.g. an NPC sets alerted=true, any other extension reads it). In C++, getVariable returns a mutable reference — mutating it sets the variable. In Python, get_variable and set_variable are separate methods. Variables are not saved with the world.
@@ -289,7 +319,7 @@ Gamepad input is first-class, not a Player Extension concern. SDL GameController
 
 ### Binding sources (Engine/inputBindings.xml)
 
-`Engine/inputBindings.xml` maps physical inputs to named actions. If the file is absent the engine falls back to identical hard-coded defaults. Changes take effect on the next launch.
+`Engine/inputBindings.xml` maps physical inputs to named actions. If the file is absent the engine falls back to identical hard-coded defaults. A game can add its own actions or replace a device's bindings with an override file, `Data/inputBindings.xml`, read after the engine's file: an override that binds any input of a device (keyboard, mouse, or one gamepad) replaces all engine bindings of that device, and devices it does not mention keep the engine's. Any number of gamepads are supported, a binding names its pad with `gamepadIndex`. Changes take effect on the next launch.
 
 Six source types:
 
@@ -414,6 +444,7 @@ Right-click-drag on the preview orbits the camera around the model (pitch clampe
 ### Release preparation
 
 - **Convert models to binary**: scans all models referenced in the world, converts to `.limonmodel`, and updates the world file paths automatically. Run before shipping.
+- **Export Package**: builds a single `Data.pak` from everything the game reaches from its starting world (worlds, referenced files, extension-declared files, scripts). Models are converted to `.limonmodel` on the way, so "Convert models to binary" is not needed first. The world is saved first, the starting world can be chosen, and a report of what was packed and why is written next to the package.
 - **Generate navigation grid**: flood fill from the first AI actor's location. Must be run before saving the grid.
 - **Save navigation grid as binary**: fast-load format — recommended for shipped games.
 - **Save navigation grid as XML**: human-readable, for engine debugging only. Can require up to 2 GB of memory on large maps.
@@ -468,7 +499,7 @@ Options are live-referenced, not cached at load. Extensions reading an option vi
 
 - [Engine Architecture](EngineArchitecture.html): System overview, game object types, extension points, GenericParameter contract, physics, platform support.
 - [Rendering Pipeline](RenderingPipeline.html): Visual pipeline editor, RenderMethod extension point, occlusion culling, LOD, shadows, SSAO, configuration options.
-- [Supporting Systems](SupportingSystems.html): Navigation/pathfinding, particle system, debug line draw, Tracy profiler.
+- [Supporting Systems](SupportingSystems.html): Navigation/pathfinding, particle system, debug line draw, render debugging (render target viewer, occlusion debug view), Tracy profiler, asset tools.
 - [C++ API Reference](ExtendingByAPI/CPPAPIReference.html): Full LimonAPI method signatures.
 - [Python API Reference](ExtendingByAPI/pythonApi.html): Python scripting API.
 - [Options Reference](OptionsReference.html): All engine options — display, rendering, shadows, SSAO, culling, LOD, player, audio, debug/profiling.
@@ -479,5 +510,7 @@ Options are live-referenced, not cached at load. Extensions reading an option vi
 - [API Fundamentals](ExtendingByAPI/APIFundamentals.html): GenericParameter in depth, plugin structure.
 - [Python API Usage](ExtendingByAPI/PythonAPIUsage.html): Python scripting, discovery model, per-world interpreter.
 - [Asset Management](AssetManagement.html): limonmodel format, multithreaded loading, world transitions, cross-world sharing.
+- [Packaging](Packaging.html): Building `Data.pak` from the editor or `--pack`, what is included, the report, `Release.xml`, shipping, `--loadpak`.
+- [Map Converter](MapConverter.html): `--convert`, splitting a map exported as one model into separate objects and `.limonmodel` pieces.
 - [Getting Started](GettingStarted.html): Prebuilt binaries, build instructions, dependencies.
 - [Roadmap](RoadMap.html): Planned features and release targets.

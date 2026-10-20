@@ -4,6 +4,13 @@
 Supporting Systems
 ==================
 
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   Packaging
+   MapConverter
+
 Navigation System
 =================
 
@@ -239,12 +246,6 @@ Two functions of the engine work on a game's assets rather than inside a running
 
 * :ref:`Packaging <Packaging>` builds the ``Data.pak`` a released game ships with.
 * The :ref:`Map Converter <MapConverter>` splits a map exported from another engine as one model into a world of separate objects.
-
-.. toctree::
-   :maxdepth: 1
-
-   Packaging
-   MapConverter
 
 
 .. seealso::

@@ -52,7 +52,15 @@ The editor runs inside the game process — no separate play mode. Changes apply
 
 **World properties.** OnLoad actions (multiple), level music (change/clear), skybox (6-image cubemap), loading image, ESC key behaviour (quit, return-previous world, or load-a-named-world).
 
-**Release preparation.** "Convert models to binary" converts all world models to `.limonmodel` and updates the world file paths automatically. Navigation grid can be generated then saved as binary (fast-load, for shipping) or XML (human-readable debug format).
+**Release preparation.** "Convert models to binary" converts all world models to `.limonmodel` (which also stores their LOD levels and a baked occluder per level) and updates the world file paths automatically. Navigation grid can be generated then saved as binary (fast-load, for shipping) or XML (human-readable debug format). **Export Package** builds a single `Data.pak` from everything the game reaches from its starting world (worlds, referenced files, extension-declared files, scripts), converting models to `.limonmodel` on the way, and writes a report of what was packed and why.
+
+**Packaging and file system.** A released game ships its `Data` folder as a single `Data.pak`, mounted at startup under a loose `./Data` that can override it. Extensions read files through the API (`readFile`, `readTextFile`, `fileExists`, `isDirectory`, `listDirectory`), and a `./Data/...` path written in extension code must be declared with `getPackFileAccessList()` or the API refuses it. The packer (the editor's Export Package button, or `LimonEngine --pack <Data directory> <output>`) follows the game from the starting world in `Data/Release.xml`, converts models to `.limonmodel`, and writes a report of what was packed and why. `LimonEngine --loadpak <file>` runs against another package.
+
+**Map converter.** `LimonEngine --convert <model file> [output directory] [--scale <factor>]` splits a map exported from another engine as one model into a world of separate objects and `.limonmodel` pieces, keeping the source hierarchy as model groups and grouping animated meshes into animated models. It refuses to run while a package is mounted.
+
+**Ticks.** The world simulates in fixed ticks (`TICK_PER_SECOND`, 60 by default and 30 on the Raspberry Pi); extensions read the rate with `getTicksPerSecond` instead of assuming it. Rendering is not tied to ticks.
+
+**Render debugging.** The editor's Render Debugging section has a render target viewer (any texture of the active pipeline, with layer selection for arrays and cube maps, a manual min/max range for float targets, and per-channel display) and occlusion culling controls: toggle occlusion on and off, a reverse mode that draws only the occluded meshes (the visible ones can be drawn over them at an adjustable opacity), live occluder size for perspective and orthographic cameras, occluder bake LOD, and occluder selection by model group or per model. The software depth buffer can also be dumped to `.ppm` files through the `occlusion_renderDump` options.
 
 No undo/redo — planned for 0.8.
 
@@ -62,7 +70,7 @@ For architectural detail, API contracts, known limitations, and implementation n
 
 - [Engine Architecture](EngineArchitecture.html): System overview — game object types (Model, Model Group, Player, GUI Text/Button/Image, CPU/GPU Particle, Light, Sound, Camera Rig, Skybox, Trigger Volume), bone attachment rules, GenericParameter unified data contract, physics, AI, audio, GUI, platform support, and third-party libraries.
 - [Rendering Pipeline](RenderingPipeline.html): Node-based visual pipeline editor, built-in shaders, RenderMethod extension point, SIMD occlusion culling, LOD, cascaded shadow maps, SSAO, and all rendering configuration options.
-- [Supporting Systems](SupportingSystems.html): 3D navigation/pathfinding (async route requests), particle system API (CPU and GPU), debug line draw with per-vertex colour, in-game logger overlay, Tracy profiler integration with embedded flame graph.
+- [Supporting Systems](SupportingSystems.html): 3D navigation/pathfinding (async route requests), particle system API (CPU and GPU), debug line draw with per-vertex colour, in-game logger overlay, render debugging in the editor (render target viewer, occlusion culling debug view and live tuning, depth buffer dump), Tracy profiler integration with embedded flame graph, and the asset tools below.
 - [C++ API Reference](ExtendingByAPI/CPPAPIReference.html): Full LimonAPI method signatures.
 - [Python API Reference](ExtendingByAPI/pythonApi.html): Python scripting API (pybind11 bridge to LimonAPI).
 - [Options Reference](OptionsReference.html): All engine options — display, rendering, shadows, SSAO, culling, LOD, player movement, audio volumes, debug/profiling. Options readable and writable at runtime via API.
@@ -83,4 +91,6 @@ For architectural detail, API contracts, known limitations, and implementation n
 - [Getting Started](GettingStarted.html): Prebuilt binaries (Windows/Linux/macOS/Raspberry Pi), build instructions, and dependencies.
 - [Using the Editor](UsingTheEditor.html): In-process live editor, object placement, material editing, pipeline editor, animation sequencer, GUI authoring.
 - [Asset Management](AssetManagement.html): limonmodel format, asset loading, materials, textures, animations, world file format.
+- [Packaging](Packaging.html): Building `Data.pak` for a release, from the editor's Export Package button or `--pack`; what is included, the report, `Release.xml`, shipping and `--loadpak`.
+- [Map Converter](MapConverter.html): `--convert` splits a map exported from another engine as one model into a world of separate objects and `.limonmodel` pieces.
 - [Roadmap](RoadMap.html): Planned features and release targets.
