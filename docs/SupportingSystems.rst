@@ -7,7 +7,7 @@ Supporting Systems
 Navigation System
 =================
 
-Limon builds a 3D navigation grid for each world. The grid is used by AI actors for pathfinding and is queryable by any extension via the route request API.
+Limon builds a 3D navigation grid for each world. The grid is used by :ref:`AI actors <implementAIActor>` for pathfinding and is queryable by any extension via the :ref:`route request API <ActorInterface-route-lifecycle>`.
 
 Grid Generation
 ---------------
@@ -18,7 +18,7 @@ Grid Generation
 
 **Saving the grid**
 
-Generating the navigation grid on large maps can take several minutes. The editor provides two dedicated save buttons so it does not need to be regenerated on every load:
+Generating the navigation grid on large maps can take several minutes. The :ref:`editor <UsingBuiltinEditor>` provides two dedicated save buttons so it does not need to be regenerated on every load:
 
 * **Save as binary** - fast-load format, recommended for shipping
 * **Save as XML** - human-readable format for engine debugging only. Can require up to 2 GB of memory on large maps.
@@ -38,10 +38,10 @@ Visibility System
 
 Four sequential visibility filters run every frame for each active camera before any geometry is submitted to the GPU. With multiple cameras in the pipeline (player camera, shadow map cameras), each camera's culling workload runs on a separate thread concurrently.
 
-1. **Tag filtering** - each camera and scene object carries tags; an object is considered by a render stage if any of its tags is one the stage asks for.
+1. **Tag filtering** - each camera and scene object carries :ref:`tags <Tagging>`; an object is considered by a render stage if any of its tags is one the stage asks for.
 2. **Frustum culling** - objects outside the camera view volume are discarded.
 3. **Occlusion culling** - a SIMD software depth buffer on the CPU rejects objects hidden behind other geometry. SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5).
-4. **LOD selection** - each object uses the coarsest level whose switch distance it is past. Levels are generated so that each one stays within pixel limits at its own distance.
+4. **LOD selection** (see :ref:`LevelOfDetail`) - each object uses the coarsest level whose switch distance it is past. Levels are generated so that each one stays within pixel limits at its own distance.
 
 Objects below a configurable screen-space size threshold are skipped entirely before any of the above tests run.
 
@@ -147,8 +147,8 @@ Profiling System
 Limon integrates the Tracy profiler throughout the engine. CPU and GPU instrumentation is available out of the box without any user setup.
 
 * **CPU zones** cover all engine simulation subsystems.
-* **GPU zones** are generated automatically from the render pipeline configuration - custom RenderMethod passes produce correct GPU zones without manual instrumentation.
-* Zones are organised in named batches that can be individually enabled or disabled via options or from the editor.
+* **GPU zones** are generated automatically from the render pipeline configuration - custom :ref:`RenderMethod <RenderingPipeline>` passes produce correct GPU zones without manual instrumentation.
+* Zones are organised in named batches that can be individually enabled or disabled via :ref:`options <OptionsReference>` or from the editor.
 
 profileScope API
 ----------------
@@ -166,3 +166,13 @@ A custom Tracy server is embedded in the engine process. A per-frame flame graph
 
 .. note::
     The embedded view is less capable than the official Tracy UI. The official Tracy client can connect to the embedded server for complete profiling - the two are fully protocol-compatible.
+
+
+.. seealso::
+
+   * :ref:`EngineArchitecture-ticks` -simulation steps that drive actors and route requests
+   * :ref:`ActorInterface-route-lifecycle` -how an AI actor requests and follows a route
+   * :ref:`implementAIActor` -the AI actor extension point that uses the navigation grid
+   * :ref:`UsingBuiltinEditor` -saving the navigation grid and the profiler view
+   * :ref:`OptionsReference` -options that enable debug drawing and profiling
+   * :ref:`RenderingPipeline` -tags, culling and LOD

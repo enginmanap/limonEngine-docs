@@ -4,7 +4,7 @@
 How to Implement a Player Extension
 ===================================
 
-Player extensions are main ways of handling input in Limon Engine. Input from player is first handled by PhysicalPlayer class, which governs look around and movement, then all input information is passed to selected extension, so it can handle custom interactions, like pickups, shooting etc. On the other side, any interaction send by other entities to player is directly passed to player extension for handling.
+Player extensions are main ways of handling input in Limon Engine (see :ref:`InputSystem` for the input actions they receive). Input from player is first handled by PhysicalPlayer class, which governs look around and movement, then all input information is passed to selected extension, so it can handle custom interactions, like pickups, shooting etc. On the other side, any interaction send by other entities to player is directly passed to player extension for handling.
 
 .. note::
     ``PhysicalPlayer`` owns the player's movement and state. An extension is expected to react to the player, not to drive it. Nothing stops an extension from moving the player or changing its state through the API, but that is not supported or encouraged: it is at your own risk, and it may conflict with what ``PhysicalPlayer`` does in the same tick.
@@ -34,7 +34,7 @@ ______________________________
 
 PlayerExtensionInterface(LimonAPI \*limonAPI)
 =============================================
-The constructor of the interface. If the extension exposes editor-configurable settings, this is where it seeds their **defaults**: build each ``LimonTypes::GenericParameter`` descriptor and ``push_back`` it onto the protected ``this->parameters`` member.
+The constructor of the interface. If the extension exposes editor-configurable settings, this is where it seeds their **defaults**: build each :ref:`GenericParameter <GenericParameter>` descriptor and ``push_back`` it onto the protected ``this->parameters`` member.
 
 .. note::
     All Player Extension must have the same signature, no other parameters should be required.
@@ -44,14 +44,14 @@ The constructor of the interface. If the extension exposes editor-configurable s
 void processInput(const InputStates &inputState, const PlayerInformation &playerInformation, uint32_t time)
 ============================================================================================================
 
-Called once per simulation tick with updated input information, current player state, and the time in milliseconds.
+Called once per :ref:`simulation tick <EngineArchitecture-ticks>` with updated input information, current player state, and the time in milliseconds.
 
 .. note::
     How many ticks run per second is a build setting, 60 by default and 30 on the Raspberry Pi. A movement speed in metres per second has to be turned into a step per call with :ref:`getTicksPerSecond<LimonAPI-getTicksPerSecond>`, a fixed step per call would run half as fast on the Pi.
 
 Parameters:
 
-#. const InputStates &inputState: Current input state for this frame.
+#. const InputStates &inputState: Current input state for this frame (see :ref:`InputSystem`).
 #. const PlayerInformation &playerInformation: Current player position and look direction. See :ref:`PlayerInformation struct<PlayerExtensionInterface-PlayerInformation>` below.
 #. uint32_t time: Frame time in milliseconds.
 
@@ -191,3 +191,13 @@ The engine ships with sample player extensions under ``samples/`` that implement
 * `WesternMenuPlayerExtension <https://github.com/enginmanap/limonEngine/blob/master/samples/WesternMenuPlayerExtension.cpp>`_ - a menu controller using absolute mouse input for the western demo's menus.
 
 A Python player-extension sample ships under ``Engine/Scripts/`` as `python_player_extension.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_player_extension.py>`_ (the ``PythonPlayerExtension`` class), subclassing the Python base in `player_extension_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/player_extension_interface.py>`_.
+
+
+.. seealso::
+
+   * :ref:`implementAction`, :ref:`implementAIActor` and :ref:`implementCameraAttachment` -the other extension points
+   * :ref:`GenericParameter` -the data contract for parameters
+   * :ref:`InputSystem` -input actions, bindings and device handling
+   * :ref:`API-object-ids` -identifying objects
+   * :ref:`EngineArchitecture-ticks` -when ``processInput`` is called
+   * :ref:`UsingBuiltinEditor` -choosing the player extension in the editor

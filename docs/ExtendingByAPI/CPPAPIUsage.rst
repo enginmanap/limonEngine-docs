@@ -59,7 +59,7 @@ All extension points share this contract:
      - not yet unified
      - not yet unified
 
-In every case ``getParameters()`` returns one vector whose entries carry **both** a descriptor (request type, description, value type) **and** a value. There is no separate schema call. ``TriggerInterface``, ``PlayerExtensionInterface`` and ``ActorInterface`` all provide the same convenience: a protected ``parameters`` member with base ``getParameters()`` / ``setParameters()`` implementations that hold and return it directly. You seed your defaults into that member in the constructor, and the engine overwrites them through ``setParameters()`` on edit or load; that single member is then the source of truth for load, serialize, editor edits, and ``run()``. Because both methods are ``virtual``, an extension may instead keep its configuration in any form it likes - override ``getParameters()`` to convert typed members into the vector, and override ``setParameters()`` to apply values back onto them (the Actor style). Override ``setParameters()`` alone if you only need to react to a value change rather than just store it.
+In every case ``getParameters()`` returns one vector whose entries carry **both** a descriptor (request type, description, value type) **and** a value. There is no separate schema call. :ref:`TriggerInterface <implementAction>`, :ref:`PlayerExtensionInterface <implementPlayerExtension>` and :ref:`ActorInterface <implementAIActor>` all provide the same convenience: a protected ``parameters`` member with base ``getParameters()`` / ``setParameters()`` implementations that hold and return it directly. You seed your defaults into that member in the constructor, and the engine overwrites them through ``setParameters()`` on edit or load; that single member is then the source of truth for load, serialize, editor edits, and ``run()``. Because both methods are ``virtual``, an extension may instead keep its configuration in any form it likes - override ``getParameters()`` to convert typed members into the vector, and override ``setParameters()`` to apply values back onto them (the Actor style). Override ``setParameters()`` alone if you only need to react to a value change rather than just store it.
 
 .. note::
     This is a change from earlier releases, where triggers returned their parameter descriptors from ``getParameters()`` each call and the engine threaded the values separately. Triggers now seed defaults in the constructor and let the base ``getParameters()`` return the stored member. A short-lived ``getParametersReference()`` accessor that existed during the transition has been removed - use ``getParameters()`` and ``setParameters()``.
@@ -74,7 +74,7 @@ Used to indicate the semantic meaning of the parameter. Editor will render inter
 
 Possible values:
 
-* MODEL: Lists the models in the map. Uses value type LONG, sets world object ID.
+* MODEL: Lists the models in the map. Uses value type LONG, sets :ref:`world object ID <API-object-ids>`.
 * ANIMATION: Lists the custom animations loaded in the map. Uses value type LONG, sets animation index. Stale indices (animation removed after save) are detected and reset on load.
 * SWITCH: Renders a checkbox. Uses value type BOOLEAN, sets whether it is ticked.
 * FREE_TEXT: Renders a text input box. Uses value type STRING. Sets the entered text.
@@ -136,3 +136,12 @@ Used to indicate if the variable is set or or not. If default value is considere
 
 .. warning::
     If a variable is not required aka optional, this should be initialized with true, because editor doesn't allow saving a trigger with any parameter not set.
+
+.. seealso::
+
+   * :ref:`APIFundamentals` -object IDs and the API surface
+   * :ref:`PythonAPIUsage` -the same API from Python
+   * :ref:`EngineArchitecture` -the five extension points
+   * :ref:`RenderingPipeline` -RenderMethods and the pipeline editor
+   * :ref:`InputSystem` -input actions
+   * :ref:`OptionsReference` -engine options

@@ -108,7 +108,7 @@ All method names are ``snake_case`` to match the Python API binding. See :ref:`i
 Time and ticks
 ==============
 
-``process_input``, an actor's ``play`` and a trigger's ``run`` are called once per simulation tick. How many ticks run per second is a build setting of the engine, 60 by default and 30 on the Raspberry Pi, so a script must not assume it. Read it once, when the script is created, and derive per tick steps from it:
+``process_input``, an actor's ``play`` and a trigger's ``run`` are called once per :ref:`simulation tick <EngineArchitecture-ticks>`. How many ticks run per second is a build setting of the engine, 60 by default and 30 on the Raspberry Pi, so a script must not assume it. Read it once, when the script is created, and derive per tick steps from it:
 
 .. code-block:: python
 
@@ -144,3 +144,13 @@ Next steps
 * Read the per-extension-point how-tos: :ref:`implementAction`, :ref:`implementPlayerExtension`, :ref:`implementAIActor`, :ref:`implementCameraAttachment`.
 * Look up individual methods in the :ref:`Python API reference <pythonApi>`.
 * Review engine behaviours that cut across extension types in :ref:`APIFundamentals`.
+
+
+.. seealso::
+
+   * :ref:`APIFundamentals` -object IDs and the API surface
+   * :ref:`CPPAPIUsage` -the same API from C++
+   * :ref:`GenericParameter` -the data contract Python values map to
+   * :ref:`InputSystem` -input actions
+   * :ref:`EngineArchitecture-ticks` -tick rate and timing
+   * :ref:`OptionsReference` -engine options

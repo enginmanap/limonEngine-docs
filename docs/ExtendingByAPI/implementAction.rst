@@ -7,7 +7,7 @@ How to Implement an Action
 Actions are generalized by the class TriggerInterface, in src/limonAPI/TriggerInterface.h. Each new action must implement this interface. These actions can be assigned to trigger volumes or GUI button.They can also be run on map load.
 
 .. note::
-    The names overlap for historical reasons. A **trigger volume** is the scene object the player walks into, placed in the editor. An **action** is the code it runs, implemented as a ``TriggerInterface`` - which is why the editor labels a volume's action slots *First Enter Trigger*, *Enter Trigger* and *Exit Trigger*.
+    The names overlap for historical reasons. A **trigger volume** is the scene object the player walks into, placed in the :ref:`editor <Trigger Object Editor>`. An **action** is the code it runs, implemented as a ``TriggerInterface`` - which is why the editor labels a volume's action slots *First Enter Trigger*, *Enter Trigger* and *Exit Trigger*.
 
 Action constructors will get a populated LimonAPI instance for the world they are to be run in. Using this instance, API calls can be made to interact or change the world to game design.
 
@@ -39,7 +39,7 @@ ______________________
 
 TriggerInterface(LimonAPI \*limonAPI)
 =====================================
-The constructor of the interface. This is where an action seeds its **default parameters**: build each ``LimonTypes::GenericParameter`` descriptor and ``push_back`` it onto the protected ``this->parameters`` member. Those defaults are what the editor shows before the designer configures anything, and what serialization falls back to if the action is saved untouched.
+The constructor of the interface. This is where an action seeds its **default parameters**: build each :ref:`GenericParameter <GenericParameter>` descriptor and ``push_back`` it onto the protected ``this->parameters`` member. Those defaults are what the editor shows before the designer configures anything, and what serialization falls back to if the action is saved untouched.
 
 .. note::
     All actions must have the same signature, no other parameters should be required.
@@ -127,3 +127,13 @@ The engine ships with several actions under ``samples/`` that implement ``Trigge
 
 For a smaller starting point, a Python action sample ships under ``Engine/Scripts/`` as `limonimp.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/limonimp.py>`_ (the ``MyTrigger`` class), subclassing the Python base in `trigger_interface.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/trigger_interface.py>`_.
 
+
+
+.. seealso::
+
+   * :ref:`implementPlayerExtension`, :ref:`implementAIActor` and :ref:`implementCameraAttachment` -the other extension points
+   * :ref:`GenericParameter` -the data contract for parameters and results
+   * :ref:`API-object-ids` -identifying the objects an action works on
+   * :ref:`InputSystem` -binding actions to input
+   * :ref:`Trigger Object Editor` -placing and configuring triggers in the editor
+   * :ref:`EngineArchitecture-ticks` -when actions run

@@ -9,7 +9,7 @@ This page covers engine behaviours that cut across multiple extension types and 
 Extension Parameters
 ====================
 
-Every extension point exposes its configurable settings through ``LimonTypes::GenericParameter``. This single struct covers three concerns at once - loading saved configuration, serializing it back to disk, and building the editor interface to edit it - so an extension describes its parameters once and gets all three for free.
+Every extension point exposes its configurable settings through :ref:`GenericParameter <GenericParameter>`. This single struct covers three concerns at once - loading saved configuration, serializing it back to disk, and building the editor interface to edit it - so an extension describes its parameters once and gets all three for free.
 
 The pattern is uniform across extension points: ``getParameters()`` returns the extension's parameter vector - each entry carrying both its descriptor (request type, description, value type) and its value - and ``setParameters()`` stores edited or loaded values back. There is a single vector, not a separate schema and value list: right after construction it holds the **defaults** the extension seeded, and after an editor edit or a map load it holds the **configured values**. That one vector is the source of truth for editing, serialization, and runtime. Triggers, Actors, and Player Extensions hold it on a protected ``parameters`` member; RenderMethods persist theirs in both the editor node graph and the runtime pipeline file.
 
@@ -286,7 +286,17 @@ Key behaviours:
 * When a world is loaded (or reloaded), a fresh interpreter starts. Scripts do not carry state across world loads unless they persist data externally (e.g., to a file or via the engine's ``setVariable`` / ``getVariable`` API).
 * C++ extensions and Python extensions can coexist in the same user library. A C++ Action and a Python Player Extension running in the same world share the same engine API instance but have separate execution contexts.
 
-Four of the five extension types are implementable in Python: Actions, Player Extensions, AI Actors and Camera Attachments. RenderMethods are C++ only - they run on the performance-critical render path and are not exposed to Python. Python extensions have full parity with the C++ API - the same GenericParameter contract, the same enums, and automatic type conversion via pybind11.
+Four of the five extension types are implementable in Python: :ref:`Actions <implementAction>`, :ref:`Player Extensions <implementPlayerExtension>`, :ref:`AI Actors <implementAIActor>` and :ref:`Camera Attachments <implementCameraAttachment>`. :ref:`RenderMethods <RenderingPipeline>` are C++ only - they run on the performance-critical render path and are not exposed to Python. Python extensions have full parity with the C++ API - the same GenericParameter contract, the same enums, and automatic type conversion via pybind11.
 
 .. note::
     Because Python interpreter state is world-scoped, be careful with module-level singletons or caches that assume persistent lifetime. An extension that registers itself globally on first load will re-register on every world load, which may cause double-registration if the pattern is not world-aware.
+
+
+.. seealso::
+
+   * :ref:`CPPAPIUsage` and :ref:`PythonAPIUsage` -using the API from C++ and Python
+   * :ref:`GenericParameter` -the data contract used across the API
+   * :ref:`OptionsReference` -engine options
+   * :ref:`EngineArchitecture` -how extension points fit into the engine
+   * :ref:`AssetManagement` -packing and file access for assets
+   * :ref:`InputSystem` -reading input through the API

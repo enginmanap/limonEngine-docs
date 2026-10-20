@@ -7,7 +7,7 @@ How to implement a camera attachment
 A **camera attachment** is the extension point for camera behaviour. It takes full per-frame control of the
 player camera - overriding the default first-person viewpoint with any camera behaviour you implement:
 third-person, isometric, top-down, orbital, fixed security camera, and so on. It supports **both
-perspective and orthographic projection**, is configurable through the same ``GenericParameter`` contract
+perspective and orthographic projection**, is configurable through the same :ref:`GenericParameter <GenericParameter>` contract
 as every other extension point, and is edited and activated as a first-class scene object in the editor.
 
 .. note::
@@ -83,7 +83,7 @@ pose is reused.
   ``ObjectAttachedCameraRig`` sample does.
 * **Always returning** ``true`` is correct, just not free. It is the simple choice for a camera that moves
   most frames anyway.
-* ``setAttachmentTransform`` runs every simulation tick, which can be more often than frames are rendered;
+* ``setAttachmentTransform`` runs every :ref:`simulation tick <EngineArchitecture-ticks>`, which can be more often than frames are rendered;
   ``getCameraVariables`` only sees the latest transform.
 * The projection is picked up the same way. On a dirty frame the engine also reads ``getProjection()``, and if it
   changed, rebuilds the projection, switching between perspective and orthographic if the type changed. To
@@ -248,3 +248,14 @@ Relationship to the player
 The player is no longer a camera itself. Each player owns a default camera attachment that it feeds its own
 eye pose to; that default is what you see when no rig is active. Activating a camera rig overrides it, and
 deactivating restores it - this is why the player's own camera is always the backup.
+
+
+.. seealso::
+
+   * :ref:`implementPlayerExtension` -attachments are found through the player extension
+   * :ref:`implementAction`, :ref:`implementAIActor` -the other extension points
+   * :ref:`GenericParameter` -the data contract for parameters
+   * :ref:`API-object-ids` -identifying objects
+   * :ref:`UsingBuiltinEditor` -placing camera rigs in the editor
+   * :ref:`RenderingPipeline` -cameras and tags
+   * :ref:`EngineArchitecture-ticks` -when the camera is updated

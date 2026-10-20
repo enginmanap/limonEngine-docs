@@ -7,7 +7,7 @@
 C++ API reference
 ==============================
 
-The ``uint32_t`` IDs taken and returned below follow the rules in :ref:`API-object-ids`.
+The ``uint32_t`` IDs taken and returned below follow the rules in :ref:`API-object-ids`. Parameters of type ``LimonTypes::GenericParameter`` are described in :ref:`GenericParameter`.
 
 +-----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``uint32_t``                                  | :ref:`animateModel(uint32_t modelID, uint32_t animationID, bool looped, const std::string\& soundPath = "")<LimonAPI-animateModel>`                                                                                                                                                                            |
@@ -577,7 +577,7 @@ Parameters:
 bool removeObjectTag(uint32_t objectID, const std::string& tag)
 ---------------------------------------------------------------
 
-Removes a tag from the model indicated by the handle ID. Tags the engine set, like ``static_model_object``, can be removed too. A model with no tags is rendered by no stage, so removing the last tag puts the engine-set tags back. Returns false if the handle ID is not a model, or the model doesn't have the tag.
+Removes a tag from the model indicated by the handle ID (see :ref:`Tagging` for how tags are used). Tags the engine set, like ``static_model_object``, can be removed too. A model with no tags is rendered by no stage, so removing the last tag puts the engine-set tags back. Returns false if the handle ID is not a model, or the model doesn't have the tag.
 
 Parameters:
 
@@ -1230,7 +1230,7 @@ none
 uint32_t getTicksPerSecond()
 ----------------------------
 
-Returns how many simulation ticks the engine runs per second. This is a build setting of the engine, 60 by default and lower on slow hardware such as the Raspberry Pi, so code must not assume it. Everything that is called once per tick (``processInput`` of a player extension, ``play`` of an actor, trigger runs) steps by one tick, so a movement speed in metres per second, or a countdown in seconds, has to be turned into a per tick step with this value.
+Returns how many :ref:`simulation ticks <EngineArchitecture-ticks>` the engine runs per second. This is a build setting of the engine, 60 by default and lower on slow hardware such as the Raspberry Pi, so code must not assume it. Everything that is called once per tick (``processInput`` of a player extension, ``play`` of an actor, trigger runs) steps by one tick, so a movement speed in metres per second, or a countdown in seconds, has to be turned into a per tick step with this value.
 
 Parameters:
 
@@ -1696,7 +1696,7 @@ const OptionsUtil::Options \*getOptions()
 
 Returns a pointer to the current options.
 
-Options are loaded from two files at startup. The engine defaults are read from ``./Engine/Options.xml`` first, then the user options from ``./Data/Options.xml`` are loaded on top, overriding any matching engine defaults. The user options file is optional; if it is missing the engine defaults are used as-is.
+Options are loaded from two files at startup (the options themselves are listed in :ref:`OptionsReference`). The engine defaults are read from ``./Engine/Options.xml`` first, then the user options from ``./Data/Options.xml`` are loaded on top, overriding any matching engine defaults. The user options file is optional; if it is missing the engine defaults are used as-is.
 
 .. _LimonAPI-saveOptions:
 

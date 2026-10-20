@@ -111,7 +111,7 @@ These constants are defined in ``src/limonAPI/InputStates.h`` as ``constexpr uin
 Reading Input in Plugins
 ========================
 
-All extension types receive a ``const InputStates &`` from the engine each frame (as ``inputState`` in C++, ``input_states`` in Python). Query it with the action name hash:
+All extension types (:ref:`Actions <implementAction>`, :ref:`Player Extensions <implementPlayerExtension>`, :ref:`AI Actors <implementAIActor>`, :ref:`Camera Attachments <implementCameraAttachment>`) receive a ``const InputStates &`` from the engine each frame (as ``inputState`` in C++, ``input_states`` in Python). Query it with the action name hash:
 
 **C++** — use the compile-time ``HASH()`` macro or the ``InputActions::`` constants:
 
@@ -766,3 +766,13 @@ The index corresponds to SDL's internal joystick button numbering for the device
 
 .. note::
    For standard gamepad buttons already covered by ``source="gamepad_button"`` (A, B, X, Y, …), SDL delivers both a ``SDL_EVENT_GAMEPAD_BUTTON_DOWN`` event and a ``SDL_EVENT_JOYSTICK_BUTTON_DOWN`` event for the same physical press. Binding the same button via both ``gamepad_button`` and ``joystick_button`` will fire the action twice per press.
+
+
+.. seealso::
+
+   * :ref:`implementPlayerExtension` -reading input every tick from a player extension
+   * :ref:`implementAction` -reacting to input from an action
+   * :ref:`EngineArchitecture-ticks` -input is processed once per simulation step
+   * :ref:`UsingBuiltinEditor` -configuring input in the editor
+   * :ref:`OptionsReference` -input related options
+   * :ref:`APIFundamentals` -the API surface used to read input

@@ -6,7 +6,7 @@ How to Implement an AI Actor
 
 AI Actor is the way Limon enables custom behaviour for NPCs or enemies. Limon engine has a class named ActorInterface under src/AI, that it used to implement custom AI behaviour.
 
-Limon editor allows selecting Actor per model. After Actor selected, a new instance of the selected Actor is created, and called each frame with current information about the world. It is also possible to expose some settings to be filled by level designer using the same interface of editor.
+The :ref:`Limon editor <UsingBuiltinEditor>` allows selecting Actor per model. After Actor selected, a new instance of the selected Actor is created, and called each frame with current information about the world. It is also possible to expose some settings to be filled by level designer using the same interface of editor.
 
 Actors follow the :ref:`unified parameter contract <GenericParameter-unified-contract>`. Like Triggers and Player Extensions, ``ActorInterface`` provides a protected ``parameters`` member with base ``getParameters()`` / ``setParameters()`` implementations, so a simple actor can seed its defaults into that member in the constructor and rely on the base methods - no override required.
 
@@ -50,7 +50,7 @@ The constructor of the interface.
 std::vector<LimonTypes::GenericParameter> getParameters()
 =========================================================
 
-Returns a vector of ``LimonTypes::GenericParameter``. These parameters are going to be set by the map designer using the editor, and must be filled with their current values, because the Load/Save logic uses them to persist AI information. The base implementation returns the protected ``parameters`` member - seed your defaults into it in the constructor and they are returned here, exactly as for Triggers and Player Extensions. Override this method when the actor owns its configuration as its own typed members and assembles the vector from them; this is what the bundled actors do.
+Returns a vector of :ref:`GenericParameter <GenericParameter>`. These parameters are going to be set by the map designer using the editor, and must be filled with their current values, because the Load/Save logic uses them to persist AI information. The base implementation returns the protected ``parameters`` member - seed your defaults into it in the constructor and they are returned here, exactly as for Triggers and Player Extensions. Override this method when the actor owns its configuration as its own typed members and assembles the vector from them; this is what the bundled actors do.
 
 .. _ActorInterface-setParameters:
 
@@ -151,7 +151,7 @@ This struct is feeded for each frame, and meant to contain information to trigge
 | bool                   | routeReady                  | Was route course done?                                                   |
 +------------------------+-----------------------------+--------------------------------------------------------------------------+
 
-The first part of the information will be filled for each frame. The Route will not be filled until requested, and routeFound/routeReady will be false. To request route to player, check InformationRequest struct below.
+The first part of the information will be filled for each frame. The Route will not be filled until requested, and routeFound/routeReady will be false. To request route to player, check InformationRequest struct below. The routes come from the navigation grid described in :ref:`SupportingSystems`.
 
 .. _ActorInterface-InformationRequest:
 
@@ -279,3 +279,13 @@ Two Python actor samples ship under ``Engine/Scripts/``, both subclassing the Py
 
 * `python_cowboy_enemy.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/python_cowboy_enemy.py>`_ (the ``PythonCowboyEnemy`` class) - a faithful Python port of the C++ ``CowboyEnemyAI`` above, and the fullest example: it drives its own position, requests routes, plays animations, and interacts with the player. Registers as the actor type ``PythonCowboyEnemy``, distinct from the C++ ``Cowboy Enemy`` so both coexist in the editor.
 * `simple_guard_actor.py <https://github.com/enginmanap/limonEngine/blob/master/Engine/Scripts/simple_guard_actor.py>`_ (the ``SimpleGuardActor`` class) - a minimal starting point that reacts to player presence without moving or animating.
+
+
+.. seealso::
+
+   * :ref:`implementAction`, :ref:`implementPlayerExtension` and :ref:`implementCameraAttachment` -the other extension points
+   * :ref:`GenericParameter` -the data contract for parameters
+   * :ref:`API-object-ids` -identifying objects and actors
+   * :ref:`SupportingSystems` -how the navigation grid is generated
+   * :ref:`EngineArchitecture-ticks` -when ``play`` is called
+   * :ref:`UsingBuiltinEditor` -placing AI actors in the editor

@@ -26,17 +26,17 @@ All items implemented.
 #. Material editor -global material registry with per-model copy-on-write editing.
 #. Particle emitters -CPU and GPU particle emitters with full runtime API.
 #. Shadow mapping improvements -staggered cascade rendering, point light cube map shadows.
-#. Node-based render pipeline editor -visual pipeline configuration with forward and deferred configurations shipped.
+#. :ref:`Node-based render pipeline editor <RenderingPipeline>` -visual pipeline configuration with forward and deferred configurations shipped.
 #. SIMD software occlusion culling -SSE4.1 on x86, NEON on AArch64 (Apple Silicon, Raspberry Pi 4/5).
-#. Automatic LOD generation -meshoptimizer, levels checked against pixel limits at their own distance, overridable per model.
+#. :ref:`Automatic LOD generation <LevelOfDetail>` -meshoptimizer, levels checked against pixel limits at their own distance, overridable per model.
 #. Python scripting -full LimonAPI surface via pybind11, multi-interpreter, all five extension types implementable in Python.
-#. Camera Attachment -fourth user extension point: registered, configurable cameras (perspective and orthographic) wrapped in first-class ``CameraRig`` scene objects, enabling third-person, isometric, top-down, and custom cameras.
-#. RenderMethod Extension -fifth user extension point for custom GPU rendering primitives.
+#. :ref:`Camera Attachment <implementCameraAttachment>` -fourth user extension point: registered, configurable cameras (perspective and orthographic) wrapped in first-class ``CameraRig`` scene objects, enabling third-person, isometric, top-down, and custom cameras.
+#. :ref:`RenderMethod Extension <RenderingPipeline>` -fifth user extension point for custom GPU rendering primitives.
 #. Asset browser -typed tree with model preview using world lighting.
 #. limonmodel native format -near memory-direct layout for fast release builds.
 #. Debug line draw API -3D world-space coloured lines via ID-based buffer system.
 #. In-game logger overlay -transparent, toggleable, with C++ and Python API.
-#. Tracy profiling -embedded flame graph in editor, GPU zones from pipeline config, profileScope API.
+#. :ref:`Tracy profiling <SupportingSystems>` -embedded flame graph in editor, GPU zones from pipeline config, profileScope API.
 #. * Keyboard, mouse, and gamepad/controller input are all natively supported through the named-action input system and rebindable via ``Engine/inputBindings.xml``. Devices outside SDL's GameController mapping (flight sticks, racing wheels) are reachable through raw joystick button bindings. See :ref:`InputSystem`.
 
 Planned for 0.8
@@ -81,7 +81,7 @@ The following limitations are confirmed in version 0.7:
 **Navigation and AI**
 
 * Pathfinding assumes actor collision size and mobility matches the player. Flying and swimming actors are not natively supported.
-* Navigation grid is not generated if the world contains no AI actors.
+* :ref:`Navigation grid <SupportingSystems>` is not generated if the world contains no AI actors.
 * Navigation grid does not update for dynamic geometry changes at runtime. Planned post-0.7.
 * Map geometry disconnected from the flood-fill origin of the first AI actor is silently excluded from the navigation grid.
 

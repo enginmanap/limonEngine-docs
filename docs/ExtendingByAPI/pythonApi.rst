@@ -6,7 +6,7 @@
 Python API reference
 =====================================
 
-This page is the API reference for Python users. The object IDs taken and returned below follow the rules in :ref:`API-object-ids`.
+This page is the API reference for Python users. The object IDs taken and returned below follow the rules in :ref:`API-object-ids`. Parameters are :ref:`GenericParameter <GenericParameter>` values.
 
 .. contents:: Table of Contents
    :depth: 3
@@ -2434,6 +2434,8 @@ get_ticks_per_second
 
     seconds_per_tick = 1.0 / self.limon_api.get_ticks_per_second()
     position += velocity * seconds_per_tick
+
+See :ref:`EngineArchitecture-ticks` for how simulation ticks work.
 
 :del:`get_player_attached_model`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

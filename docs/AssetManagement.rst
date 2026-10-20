@@ -249,3 +249,13 @@ Model Scaling
 =============
 
 The engine assumes 1 unit = 1 meter. If the source model has a unit defined (e.g. centimetres, inches), that unit is used to calculate the import scale automatically. If the source model has no unit defined, or an incorrect one, the model imports at the scale the file specifies. Scale can be corrected at any time in the editor. No heuristic-based correction is applied.
+
+
+.. seealso::
+
+   * :ref:`UsingBuiltinEditor` -importing and placing models in the editor
+   * :ref:`LevelOfDetail` -how LOD levels are chosen at render time
+   * :ref:`API-pack-file-access-list` -reading packed files from an extension
+   * :ref:`API-file-access` -file access rules for extensions
+   * :ref:`OptionsReference` -material and asset related options
+   * :ref:`EngineArchitecture` -how assets fit in the engine layers
