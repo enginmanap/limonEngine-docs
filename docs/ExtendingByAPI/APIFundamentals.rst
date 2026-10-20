@@ -299,4 +299,5 @@ Four of the five extension types are implementable in Python: :ref:`Actions <imp
    * :ref:`OptionsReference` -engine options
    * :ref:`EngineArchitecture` -how extension points fit into the engine
    * :ref:`AssetManagement` -packing and file access for assets
+   * :ref:`Packaging` -what the packer includes, and how extensions declare files
    * :ref:`InputSystem` -reading input through the API

@@ -338,6 +338,8 @@ Third-Party Libraries
    * :ref:`GettingStarted` -building the engine and first launch
    * :ref:`UsingBuiltinEditor` -the editor that every GameObject type plugs into
    * :ref:`AssetManagement` -models, materials, ``.limonmodel`` files and packing
+   * :ref:`Packaging` -building Data.pak for a release
+   * :ref:`MapConverter` -splitting a map exported as one model
    * :ref:`RenderingPipeline` -render stages, tags, culling and LOD
    * :ref:`SupportingSystems` -navigation, debug drawing and profiling
    * :ref:`InputSystem` -input actions and bindings

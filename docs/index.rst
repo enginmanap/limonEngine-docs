@@ -95,6 +95,8 @@ The project is licensed under the LGPL license.
    GettingStarted
    UsingTheEditor
    AssetManagement
+   Packaging
+   MapConverter
    ExtendingByAPI/index
    EngineArchitecture
    RenderingPipeline

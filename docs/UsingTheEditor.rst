@@ -293,10 +293,41 @@ The map will be saved at the path when save world is clicked, overriding if it a
 Limon Auto generates a walking grid for path finding, used by AI Actors. Generating such data takes minutes on big maps, so saving it with map is a must for load speed of a map.
 There are 2 types of saving supported for this grid, binary and XML. XML should be avoided by game developers, it is only useful for engine developers. XML format can take up to 2GB of memory. Binary format is the go-to format.
 
-Convert models to binary button scans all the models used in the map, and converts used assets to "\*.limonmdel" files. This files use less ram, faster to load and not reversable, making them suitable for game releases. Map itself will be updated to use them if this button is pressed.
+Convert models to binary button scans all the models used in the map, and converts used assets to "\*.limonmdel" files. This files use less ram, faster to load and not reversable, making them suitable for game releases. Map itself will be updated to use them if this button is pressed. You do not need it before exporting a package, the export converts the models it packs by itself.
 
 .. warning::
     It is worth repeating. The save button overrides if there is a file with same name. Please pay attention.
+
+.. _EditorExportPackage:
+
+Exporting a package
+___________________
+
+When the game is ready to ship, the **Export Package** button, next to **Save World**, builds a single ``Data.pak`` with everything the game needs and nothing else. For what that means, and why you would do it, see :ref:`Packaging`.
+
+Clicking the button opens a confirmation window.
+
+.. figure:: _static/media/images/editor-export-package-dialog.png
+    :align: center
+
+    The export confirmation window.
+
+* Exporting **saves the world first**, under the name in the save box, and saves any model that has unsaved changes. The window lists those models. A package is built from what is saved on disk, so an unsaved edit would be left out otherwise.
+* The package contains the worlds the game reaches from the starting world in ``Release.xml``. If the world you have open is not that starting world, it is only packed when a world the game reaches links to it. When ``Release.xml`` starts somewhere else, the window asks which you want: to start from the world in ``Release.xml``, or to start from the world that is open. Choosing the open world is the way to export a test level, and your own ``Release.xml`` is not changed.
+* **Output** is where the package is written. It defaults to ``./Export/Data.pak``. Folders that do not exist are created.
+
+Press **Save and Export** to start. A progress window shows what the packer is doing: reading worlds, converting models with a progress bar, following script imports, and writing the package. The editor is locked until it finishes, so you can not change anything while it runs.
+
+.. figure:: _static/media/images/editor-export-package-progress.png
+    :align: center
+
+    The progress window while models are converted, and the result when it finishes.
+
+When it finishes, the window says where the package was written and lists any problems. Read them before shipping: a problem is something the game names that is missing. **Open Report** opens the report file next to the package, which lists everything that was packed and why.
+
+Export is refused, with the reason in the window, when the engine already runs from a package, or when another export is running.
+
+To build a package without the editor, for example from a build script, see :ref:`the command line <Packaging>`.
 
 Object Editor Details
 #####################

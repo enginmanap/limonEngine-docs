@@ -101,7 +101,7 @@ If two models have identical materials, they share one. Materials are identical 
 
 A material uses GPU resources only while something draws it: its textures, and a slot in the material buffer, whose size is set by the ``NR_MAX_MATERIALS`` constant. The current configuration is 200, but you can change it to suit your target hardware. A model's materials are known as soon as the model loads, but one that every object in the world replaces with another material never loads its textures and takes no slot. When the last object drawing a material is removed or switched to another material, its textures are freed and its slot is reused. So the limit counts the materials that are drawn, not every material of every loaded model.
 
-A packed game follows the same rule: the packer includes the textures of a model's own materials only if some placed object, in some packed world, draws them. A model that is named rather than placed, by a type's declared files (see :ref:`API-pack-file-access-list`) or by a parameter in a world, can be spawned anywhere, so all its materials' textures are packed. The converted ``.limonmodel`` still holds every material of the source model, so nothing is lost if a later world uses one.
+A packed game follows the same rule: the :ref:`packer <Packaging>` includes the textures of a model's own materials only if some placed object, in some packed world, draws them. A model that is named rather than placed, by a type's declared files (see :ref:`API-pack-file-access-list`) or by a parameter in a world, can be spawned anywhere, so all its materials' textures are packed. The converted ``.limonmodel`` still holds every material of the source model, so nothing is lost if a later world uses one.
 
 For how to create and edit materials in the editor, see :ref:`UsingBuiltinEditor`.
 
@@ -155,6 +155,8 @@ To convert all models in a world, use the **Convert models to binary** button in
 
 Conversion bakes the occluders for all LOD levels first, which makes it slower than a plain save but lets :ref:`occlusion_bakeLodLevel <option-occlusion_bakeLodLevel>` be changed afterwards without re-exporting.
 
+.. _FlippedModels:
+
 Flipped models
 --------------
 
@@ -167,55 +169,15 @@ The format carries a version stamp. A file written by an older engine - for exam
 
 LOD settings changed in the editor for a converted model are saved by rewriting its ``limonmodel``. The editor asks for confirmation first, since it overwrites the file in the game data and can't be undone.
 
-.. _MapConverter:
-
 Converting a map exported as one model
 --------------------------------------
 
-A level exported from another engine often arrives as a single model file holding the whole map. Loaded as it is, the map is one object: it can't be edited piece by piece, and it is culled and sorted as one unit. The map converter turns such a file into a world of separate objects:
+A level exported from another engine as a single model file can be split into separate objects with the :ref:`map converter <MapConverter>`, started from the command line.
 
-::
+Packing a game
+--------------
 
-    LimonEngine --convert <model file> [output directory] [--scale <factor>]
-
-Run it from the engine directory. It opens the engine window as usual, writes the result and exits.
-
-* Without an output directory, the result goes to a folder named after the source, next to it: ``Data/Maps/City.fbx`` converts into ``Data/Maps/City/``.
-* ``--scale`` resizes the whole map around the map origin, positions included. The pieces themselves keep the source's units, only the objects placing them are scaled.
-
-The folder receives:
-
-* **One** ``limonmodel`` **per distinct mesh**, named ``<source>_<mesh number>_<node name>.limonmodel``. A mesh placed many times is stored once and placed by many objects, so a map with thousands of props needs a few hundred files. Meshes are matched by content as well, since some exporters write a separate copy of a skinned mesh for every placement.
-* A mirrored placement gets its own ``_mirror`` file, because the mirror is in the vertices (see `Flipped models`_).
-* **A world file**, ``<source>.xml``. Every placement in the source becomes its own object. The world also gets one directional light and an editor player placed above the highest point of the map, and no sky.
-* **Model groups** from the source's hierarchy. A node holding more than one object, like a building base with its floors and roof attached, becomes a model group named after the node, so it can be selected and moved as one. A mesh the exporter split by material, like a car's body and glass, is grouped too and named after its parent, the car. As with any model group, the editor places its gizmo at the average of its members, not at the base mesh's origin.
-
-Like any ``limonmodel``, every piece carries its LOD levels and baked occluders, so converting is slow: about a minute for a city of around 5000 objects.
-
-Skinned and animated meshes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* A skinned mesh that no animation moves (vehicles are often exported this way) becomes an ordinary static piece. It keeps its bones, so animations can still be added to it later.
-* Animated meshes are grouped. Meshes moved by the same animation, directly or through another mesh it also moves, become one animated model carrying every animation that touches them. Two animations that move separate things end up as two models. A keyframe that never leaves its node's rest pose doesn't count as movement, since exporters often key every node.
-* An animated model placed many times shares one file. Its animations are stored once when the copies have identical ones. When copies have different animations under the same name, every variant is named ``<placement node>|<animation name>``.
-* No object is given an animation. Pick one in the editor.
-* Some exports bind every placed copy of a skinned mesh as if it stood at the map origin (Unreal level exports do). Such skins are rebound to their rest pose, and the converter lists every mesh it rebound.
-
-Refused input
-^^^^^^^^^^^^^
-
-The converter stops without writing anything, and lists every node at fault, when the source has:
-
-* a placement with shear, which a non uniform scale above a rotated child produces
-* ``UCX_`` physics proxy nodes
-* more objects than the engine's object ID limit
-
-An animated model that can't be converted is left out with an error naming it, and the rest of the map still converts. That happens when:
-
-* a bone that carries skin weights would get a rig index of 128 or more
-* its placement is mirrored or sheared, since animated models can't be flipped
-* its root node is animated and has a non uniform scale
-* a bone it skins with shares its name with a later node of the same rig
+The :ref:`packer <Packaging>` converts the models a game uses to ``limonmodel`` files when it builds ``Data.pak``, so you do not need to convert them by hand first.
 
 .. _LodSidecar:
 
@@ -255,6 +217,8 @@ The engine assumes 1 unit = 1 meter. If the source model has a unit defined (e.g
 
    * :ref:`UsingBuiltinEditor` -importing and placing models in the editor
    * :ref:`LevelOfDetail` -how LOD levels are chosen at render time
+   * :ref:`Packaging` -building ``Data.pak`` for a release
+   * :ref:`MapConverter` -splitting a map exported as one model
    * :ref:`API-pack-file-access-list` -reading packed files from an extension
    * :ref:`API-file-access` -file access rules for extensions
    * :ref:`OptionsReference` -material and asset related options

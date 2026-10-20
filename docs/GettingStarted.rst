@@ -53,9 +53,24 @@ cp -a ../Data .
 Running
 =======
 
-Limon engine takes single parameter, and that is the path to first map file to load. If no parameter is passed, Limon first tries to get the file name from release settings file, at ./Data/Release.xml, if file not found, or no world name specified, it defaults to "./Data/Maps/World001.xml", which is a test map that has samples for capabilities of the engine.
+Run the engine from its own directory. Without a parameter it starts the world named in the release settings file, ``./Data/Release.xml``. If that file is not found, or names no world, it defaults to ``./Data/Maps/World001.xml``, which is a test map that has samples for capabilities of the engine. These are the ways to start it:
 
-Started with ``--convert``, Limon instead converts a map exported from another engine as one model into a world of separate objects, then exits. See :ref:`MapConverter`.
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Command
+     - What it does
+   * - ``LimonEngine``
+     - Starts the world named by ``StartingWorld`` in ``./Data/Release.xml``, or ``./Data/Maps/World001.xml`` if there is none.
+   * - ``LimonEngine <world file>``
+     - Starts that world. Any further parameters are ignored.
+   * - ``LimonEngine --loadpak <package file> [world file]``
+     - Starts with that package mounted instead of ``./Data.pak``. The option can sit anywhere among the parameters, and the engine stops if the file does not exist. See :ref:`Packaging`.
+   * - ``LimonEngine --pack <source Data directory> <output package>``
+     - Builds a ``Data.pak`` for a release, then exits. See :ref:`Packaging`.
+   * - ``LimonEngine --convert <model file> [output directory] [--scale <factor>]``
+     - Splits a map exported from another engine as one model into a world of separate objects, then exits. It refuses to run while a package is mounted. See :ref:`MapConverter`.
 
 The Custom trigger are automatically loaded from the same directory of the engine binary, with name  *libcustomTriggers*, the extension of that file depends on the platform(dll, so, dynlib).
 
