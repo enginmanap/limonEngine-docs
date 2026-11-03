@@ -185,7 +185,7 @@ A route search runs on a worker thread and its result is delivered exactly once:
 #. ``routeReady`` with ``routeFound == false`` means there is no route: the destination is not reachable on the navigation grid, or is beyond the search depth (``informationRequest.maximumRouteNodeCount``, 128 by default; unlike the request flags it stays set, so set it once).
 #. Request again when the route is stale, for example because the player moved. Don't request every tick: each request is a full search.
 
-Route points float 2 units above the ground (the navigation grid height, ``AIMovementGrid::floatingHeight``), so compare them against your position plus that offset. ``routeToRequest[0]`` is the next point to walk to.
+Route points float above the ground by the navigation grid's floating height, :ref:`ai_gridFloatingHeight<option-ai_gridFloatingHeight>`, 2 units by default, so compare them against your position plus that offset. A saved grid keeps the height it was generated with, which is not always the current option value. ``routeToRequest[0]`` is the next point to walk to.
 
 .. code-block:: cpp
 
@@ -206,7 +206,7 @@ Route points float 2 units above the ground (the navigation grid height, ``AIMov
                 routeRequested = true;
             }
             if (!route.empty()) {
-                glm::vec3 positionOnGrid = getPosition() + glm::vec3(0, 2.0f, 0);
+                glm::vec3 positionOnGrid = getPosition() + glm::vec3(0, 2.0f, 0);//2.0f is the default floating height, use the value the grid was made with
                 if (glm::length(positionOnGrid - route[0]) < 0.3f) {
                     route.erase(route.begin());//reached it, head for the next one
                 }

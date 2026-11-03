@@ -203,7 +203,7 @@ _________________
 The Player properties section allows to set what is the launch time player mode. For game release, this should be either Menu, or Physical. Other types can be useful for development.
 
 * Physical: Normal Player for game play
-* Debug: The player that controls exactly like physical, but doesn't interact with physics, so can fly and walkthrough objects. Also renders physics meshes, GUI borders and AI walk grid to allow debugging issues.
+* Debug: The player that controls exactly like physical, but doesn't interact with physics, so can fly and walkthrough objects. Also renders physics meshes, GUI borders and AI walk grid to allow debugging issues. The walk grid is drawn only around the player, :ref:`debug_aiGridDrawRadius<option-debug_aiGridDrawRadius>` cells in each direction.
 * Editor: Builtin editor.
 * Menu: Menu interaction is allowed, movement and screen rotation disallowed. Mouse is set to free movement.
 
@@ -659,6 +659,8 @@ Because these three together decide where particles can go, the viewport also sh
 
 **Color Multipliers Over Particle Age** is a list of keyframes, each multiplying the particle's rendered color by an RGBA value at a given age. The age is milliseconds since that particular particle was created, not the emitter's own age or the world clock - every particle replays this same list from its own spawn. Each keyframe in the list is shown as a color swatch next to its age; select one to edit its color and age, or use the buttons below the list to add or remove keyframes.
 
+**Color texture (sRGB)** tells the engine how to read the emitter's texture. It is on for ordinary color images. Turn it off for textures that hold data, like a noise or a mask, so they are not decoded as colors. Changing it reloads the texture straight away, and the setting is saved with the map, see :ref:`ColorSpace`.
+
 **Remove** deletes the emitter.
 
 .. _Gizmo Usage:
@@ -732,6 +734,8 @@ ___________________
      - RGB
    * - Ambient colour
      - RGB
+   * - Specular colour
+     - RGB, replaced by the specular texture where one is set (not in the deferred pipeline)
    * - Specular exponent
      - Float
    * - Diffuse texture

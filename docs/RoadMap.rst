@@ -80,10 +80,10 @@ The following limitations are confirmed in version 0.7:
 
 **Navigation and AI**
 
-* Pathfinding assumes actor collision size and mobility matches the player. Flying and swimming actors are not natively supported.
-* :ref:`Navigation grid <SupportingSystems>` is not generated if the world contains no AI actors.
+* The :ref:`navigation grid <NavigationSystem>` is made for one actor size, set by the AI grid options (probe size, floating height, step height). Actors of other sizes share it. Flying and swimming actors are not natively supported.
 * Navigation grid does not update for dynamic geometry changes at runtime. Planned post-0.7.
-* Map geometry disconnected from the flood-fill origin of the first AI actor is silently excluded from the navigation grid.
+* Map geometry disconnected from the start point of the flood fill (the first AI actor, else the player, else the ground under the top center of the world) is excluded from the navigation grid without an error. The log says which start point was used.
+* A navigation grid link has no direction or type, so actors cannot tell a step up from a step down by the link alone.
 
 **Animation**
 

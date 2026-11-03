@@ -11,6 +11,8 @@ Supporting Systems
    Packaging
    MapConverter
 
+.. _NavigationSystem:
+
 Navigation System
 =================
 
@@ -19,18 +21,33 @@ Limon builds a 3D navigation grid for each world. The grid is used by :ref:`AI a
 Grid Generation
 ---------------
 
-* Flood fill from the location of the first AI actor in the world
-* Traversability calculated assuming player-equivalent size and mobility
-* Grid is static for the lifetime of the loaded world - runtime geometry changes are not reflected
+The grid is a lattice of nodes, :ref:`ai_gridSpacing<option-ai_gridSpacing>` meters apart, each linked to its eight neighbours. It is flood filled from a start point: from a node, a ray looks for ground at each neighbour, and the neighbour becomes walkable if the ground is within :ref:`ai_gridStepHeight<option-ai_gridStepHeight>` of the ground under the node, and the probe fits there without touching anything that blocks. Pathfinding takes a diagonal link only when both straight neighbours next to it are walkable, so an actor does not squeeze through the corner between two walls.
+
+* **Start point.** The first of these that has ground under it and room for the probe is used: the location of the first AI actor, the player, the ground under the top center of the world bounding box. The log says which one was used and why the earlier ones were rejected.
+* **Probe.** A box by default, or a capsule, see :ref:`ai_gridProbeShape<option-ai_gridProbeShape>`. Its size and the floating height describe the actor the grid is made for, see :ref:`the AI navigation options<OptionsReference>`. A grid is generated for one actor size, actors of other sizes share it.
+* **Threads.** Generation runs on :ref:`ai_gridThreads<option-ai_gridThreads>` threads, all the hardware threads by default. The result is the same grid for any thread count.
+* **Static.** The grid does not change for the lifetime of the loaded world, runtime geometry changes are not reflected.
+* **Links have no direction or type.** Going up or down a step is the same link, so an actor that plays a different animation for each has to compare the heights of the two nodes itself.
+
+Generation is refused, with an error in the log and no grid, when the settings cannot work: a size that is not above zero, a probe narrower than the spacing, or a probe whose bottom would be inside the ground. See :ref:`OptionsReference`.
+
+**Keeping geometry out of the grid**
+
+Two tags, set by you in the editor's Tags field or through the :ref:`tag API<LimonAPI-addObjectTag>`, control what the generation sees:
+
+* ``ai_walk_ignore`` - the object does not exist for the grid. It is taken out of the physics world while the grid generates and put back afterwards. Use it for what should not take part in the grid at all, like an ocean surface and the sea floor under it, so the flood stops at the shore.
+* ``ai_walk_blocker`` - the object still blocks the probe like any other, but ground on it counts as no ground. If the closest surface under a node carries the tag, there is no node there. Use it for surfaces that look like floor but cannot be walked on.
 
 **Saving the grid**
 
-Generating the navigation grid on large maps can take several minutes. The :ref:`editor <UsingBuiltinEditor>` provides two dedicated save buttons so it does not need to be regenerated on every load:
+Generating the navigation grid on large maps can take a while. The :ref:`editor <UsingBuiltinEditor>` provides two dedicated save buttons so it does not need to be regenerated on every load:
 
 * **Save as binary** - fast-load format, recommended for shipping
 * **Save as XML** - human-readable format for engine debugging only. Can require up to 2 GB of memory on large maps.
 
 If the grid is not present in the world file, it is generated at load time as a fallback.
+
+A saved grid carries the spacing, step height and floating height it was generated with, so it keeps working if the options change later. A grid file written by an older engine version is not read: the grid is generated again at load. Save it again to replace the old file.
 
 Route Request API
 -----------------
@@ -38,7 +55,7 @@ Route Request API
 Route requests are asynchronous - the result is delivered via callback and the simulation tick is never blocked. A single navigation grid is shared by all AI actors in the world. For implementation details see :ref:`implementAIActor`.
 
 .. warning::
-    Navigation grid is not generated if the world contains no AI actors. Areas unreachable from the first AI actor's location are silently excluded. The system assumes actor size and mobility matches the player - flying and swimming actors are not supported natively. Dynamic geometry changes at runtime do not update the grid (planned post-0.7).
+    Every world gets a navigation grid, also a world with no AI actors, which then starts from the player, or from the top of the world if there is none. Areas unreachable from the start point are excluded without an error, the log is the place to see which start point was used. The grid is made for one actor size - flying and swimming actors are not supported natively. Dynamic geometry changes at runtime do not update the grid (planned post-0.7).
 
 .. _VisibilitySystem:
 

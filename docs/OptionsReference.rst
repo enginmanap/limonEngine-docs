@@ -312,6 +312,48 @@ Ambient Occlusion (SSAO)
      - Long
      - ``1``
      - SSAO blur radius.
+   * - .. _option-ssao_strength:
+
+       `ssao_strength`
+     - Double
+     - `3.0`
+     - Gain on the blurred occlusion before it removes ambient light, clamped to 1. The raw occlusion peaks around 0.3 in creases, so `1.0` is faint. Baked into the shader, needs a restart.
+   * - .. _option-ssao_power:
+
+       `ssao_power`
+     - Double
+     - `1.0`
+     - Exponent applied to the occlusion when it is generated. Above 1 keeps only the deep creases. Baked into the shader, needs a restart.
+   * - .. _option-ssao_radius:
+
+       `ssao_radius`
+     - Double
+     - `0.3`
+     - Sample radius in view space units at the camera, shrinking with distance. Used by SSAO and GTAO. Baked into the shader, needs a restart.
+   * - .. _option-ssao_fadeEnd:
+
+       `ssao_fadeEnd`
+     - Double
+     - `75.0`
+     - View distance where the occlusion has faded out completely. Used by SSAO and GTAO. Baked into the shader, needs a restart.
+   * - .. _option-ssao_angleBias:
+
+       `ssao_angleBias`
+     - Double
+     - `0.05`
+     - How far above the surface plane a sample has to be to count as an occluder, which keeps flat surfaces clean. SSAO only. Baked into the shader, needs a restart.
+   * - .. _option-gtao_sliceCount:
+
+       `gtao_sliceCount`
+     - Long
+     - `2`
+     - Directions the GTAO horizon search runs in for each pixel.
+   * - .. _option-gtao_stepCount:
+
+       `gtao_stepCount`
+     - Long
+     - `6`
+     - Steps along each direction, on each side, for the GTAO horizon search.
 
 Culling, LOD and Occlusion
 ==========================
@@ -517,6 +559,82 @@ Culling, LOD and Occlusion
      - ``0.25``
      - With ``occlusion_debugReverse``, the meshes that passed culling are drawn over the occluded ones with this opacity. ``0`` hides them, ``1`` draws them as normal.
 
+AI Navigation Grid
+==================
+
+These options shape the :ref:`navigation grid <NavigationSystem>`. The defaults suit a human sized actor. For smaller or larger actors, change them together: the probe size, the floating height and the step height all describe the same actor. The grid is generated at world load when no saved grid exists, so changing an option needs the grid to be generated and saved again to take effect.
+
+Spacing, step height and floating height are saved with the grid. The rest only matter while it is generated. Generation is refused, with an error in the log and no grid, if spacing, floating height, step height or a probe size is not above zero, if the probe is narrower than the spacing, or if the probe bottom would be inside the ground: the floating height has to be more than half the probe height.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 12 16 40
+
+   * - Option
+     - Type
+     - Default
+     - Description
+   * - .. _option-ai_gridThreads:
+
+       ``ai_gridThreads``
+     - Long
+     - ``-1``
+     - Threads that generate the grid. ``-1`` uses all the hardware threads, ``1`` generates on the calling thread. The grid is the same for every value.
+   * - .. _option-ai_gridChunkSize:
+
+       ``ai_gridChunkSize``
+     - Long
+     - ``4``
+     - How many consecutive nodes a generation thread takes at a time. Small chunks balance the threads better, big ones keep each thread on one patch of geometry. Ignored with one thread.
+   * - .. _option-ai_gridProbeShape:
+
+       ``ai_gridProbeShape``
+     - String
+     - ``box``
+     - Shape that has to fit at every node: ``box`` or ``capsule``. A node where the shape touches something that blocks is not walkable. Box sizes and capsule sizes below are separate settings, only the chosen shape's are used.
+   * - .. _option-ai_gridSpacing:
+
+       ``ai_gridSpacing``
+     - Double
+     - ``1.0``
+     - Distance between neighbour nodes in meters. Halving it gives about four times the nodes. Saved with the grid. The probe has to be at least this wide.
+   * - .. _option-ai_gridFloatingHeight:
+
+       ``ai_gridFloatingHeight``
+     - Double
+     - ``2.0``
+     - How high above the ground a node sits, in meters. Route points are at this height, so an actor compares them against its position plus this offset. Saved with the grid. Also used for worlds that have no grid.
+   * - .. _option-ai_gridStepHeight:
+
+       ``ai_gridStepHeight``
+     - Double
+     - ``1.0``
+     - How much the ground height can differ between two neighbour nodes for them to link, in meters. The same going up and going down, a link has no direction. Saved with the grid.
+   * - .. _option-ai_gridBoxHalfExtentXZ:
+
+       ``ai_gridBoxHalfExtentXZ``
+     - Double
+     - ``0.5137``
+     - Half the width and depth of the box probe. Not round on purpose, a surface exactly on a face of the box is a coin flip.
+   * - .. _option-ai_gridBoxHalfHeight:
+
+       ``ai_gridBoxHalfHeight``
+     - Double
+     - ``1.0513``
+     - Half the height of the box probe. The box is centered on the node, so its bottom is the floating height minus this above the ground.
+   * - .. _option-ai_gridCapsuleRadius:
+
+       ``ai_gridCapsuleRadius``
+     - Double
+     - ``0.71``
+     - Radius of the capsule probe.
+   * - .. _option-ai_gridCapsuleHeight:
+
+       ``ai_gridCapsuleHeight``
+     - Double
+     - ``1.4``
+     - Height of the straight part of the capsule probe, without the two caps.
+
 Debugging and Profiling
 =======================
 
@@ -546,6 +664,12 @@ Debugging and Profiling
      - Long
      - ``1000``
      - Vertex buffer capacity for debug line drawing. Accumulated lines are flushed to the GPU when it fills.
+   * - .. _option-debug_aiGridDrawRadius:
+
+       ``debug_aiGridDrawRadius``
+     - Long
+     - ``50``
+     - The Debug player draws the navigation grid only this many cells around itself, a whole map worth of lines is too slow to render.
    * - .. _option-profiler_enableServer:
 
        ``profiler_enableServer``

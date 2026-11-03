@@ -268,7 +268,7 @@ The :ref:`editor <UsingBuiltinEditor>` runs inside the game process. There is no
 AI
 --
 
-Limon builds a 3D navigation grid per world, flood-filled from the first AI actor location. AI actors implement ``ActorInterface``, called each simulation step with ``ActorInformation``: player direction, line-of-sight state, distance, and pathfinding results. Route requests are asynchronous -the simulation tick is never blocked. For extension details: :ref:`implementAIActor`.
+Limon builds a 3D navigation grid per world, flood-filled from the first AI actor location, or from the player when there is none. The grid is sized for the actor through the :ref:`AI grid options<OptionsReference>`. AI actors implement ``ActorInterface``, called each simulation step with ``ActorInformation``: player direction, line-of-sight state, distance, and pathfinding results. Route requests are asynchronous -the simulation tick is never blocked. For extension details: :ref:`implementAIActor`.
 
 Platform Support
 ================

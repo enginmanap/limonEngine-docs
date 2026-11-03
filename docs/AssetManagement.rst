@@ -103,6 +103,8 @@ A material uses GPU resources only while something draws it: its textures, and a
 
 A packed game follows the same rule: the :ref:`packer <Packaging>` includes the textures of a model's own materials only if some placed object, in some packed world, draws them. A model that is named rather than placed, by a type's declared files (see :ref:`API-pack-file-access-list`) or by a parameter in a world, can be spawned anywhere, so all its materials' textures are packed. The converted ``.limonmodel`` still holds every material of the source model, so nothing is lost if a later world uses one.
 
+A material has an ambient, a diffuse and a specular color, and a specular texture that replaces the specular color where it is set  The textures of the diffuse, ambient and specular slots are sRGB color textures, normal and opacity textures are linear data, see :ref:`ColorSpace`. Model files that carry a shininess strength have it multiplied into the specular color when the material is imported.
+
 For how to create and edit materials in the editor, see :ref:`UsingBuiltinEditor`.
 
 World Transitions

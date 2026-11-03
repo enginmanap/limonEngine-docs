@@ -112,6 +112,8 @@ The engine sets these tags itself:
    * - ``picked_object``
      - The object selected in the editor. Not saved with the map.
 
+Two more tags are never set by the engine, you add them to control which geometry the :ref:`navigation grid <NavigationSystem>` sees: ``ai_walk_ignore`` takes an object out of the physics world while the grid generates, and ``ai_walk_blocker`` makes ground on that object count as no ground.
+
 Cameras carry tags too, and a stage's camera tags select which cameras it renders for: ``player_camera``, ``directional_camera`` and ``point_camera``.
 
 Any tag can be added, and the engine-set ones can be removed, both from the editor and at runtime through the API (:ref:`addObjectTag<LimonAPI-addObjectTag>`, :ref:`removeObjectTag<LimonAPI-removeObjectTag>`, :ref:`getObjectTags<LimonAPI-getObjectTags>`). A custom tag and a stage that asks for it is how a game gives a category of objects its own shader or its own pass.
@@ -198,6 +200,21 @@ Materials are uploaded to the GPU as a Uniform Buffer Object (UBO), one slot per
 
 For how materials are created, edited, and managed see :ref:`UsingBuiltinEditor` and :ref:`AssetManagement`.
 
+.. _ColorSpace:
+
+Color Space
+===========
+
+The engine lights in linear space and lets the hardware convert at the edges, so no shader needs a gamma curve.
+
+* **Color textures** (diffuse, ambient and specular slots, particle textures, skybox faces) are loaded as `SRGB8_ALPHA8`, which the GPU decodes to linear when a shader samples them. **Data textures** (normal and opacity slots) stay linear. A file can't be used as both kinds in one run, the engine stops with a message naming it.
+* **Material colors** (ambient, diffuse, specular) come from model files that keep them sRGB encoded like their textures. They are decoded to linear when uploaded, the editor and the world file keep the encoded values.
+* **Light colors** are linear numbers, nothing decodes them.
+* **Render stages** have an **sRGB Framebuffer Encode** flag, on by default. A stage with it on has the GPU convert what it writes to sRGB, and blending then happens in linear. Turn it off for stages whose colors are already encoded, the GUI, text, line and ImGui stages of the shipped pipelines do. Stages that are joined into one pass have to agree on the flag. A pipeline file without the flag loads with it on.
+* **Intermediate color buffers** that a later stage reads, like the forward SSAO pipeline's `ForwardColorBuffer`, should use the `SRGB8_ALPHA8` internal format, so the 8 bits are spent on the dark end like they are on screen.
+* **Startup check:** the engine writes a mid gray through the encode path and reads it back, and stops with a message if the window can't encode. The OpenGL ES backend also needs `GL_EXT_sRGB_write_control`.
+
+Editor panels follow the same rules. Their previews render into `SRGB8_ALPHA8` targets, and the ImGui shader encodes sRGB textures back before they reach the screen, so a texture shows the way it looks in the file.
 Performance Systems
 ===================
 
@@ -292,7 +309,7 @@ Rendering is configured through engine options; :ref:`OptionsReference` is the c
 * **Backend and pipeline** - :ref:`render_backend <option-render_backend>`, :ref:`render_pipeline <option-render_pipeline>`, :ref:`render_textureFiltering <option-render_textureFiltering>`
 * **Display** - :ref:`display_width <option-display_width>`, :ref:`display_height <option-display_height>`, :ref:`display_fullScreen <option-display_fullScreen>`
 * **Lights and shadows** - :ref:`performance_maximumLights <option-performance_maximumLights>`, :ref:`shadow_mapDirectionalSize <option-shadow_mapDirectionalSize>`, :ref:`shadow_mapPointWidth <option-shadow_mapPointWidth>`, :ref:`shadow_mapPointHeight <option-shadow_mapPointHeight>`, :ref:`shadow_directionalSampleCount <option-shadow_directionalSampleCount>`, :ref:`shadow_pointSampleCount <option-shadow_pointSampleCount>`, :ref:`shadow_cascadeCount <option-shadow_cascadeCount>`, :ref:`shadow_cascadeLimitList <option-shadow_cascadeLimitList>`, :ref:`shadow_cascadeStaggerIntervals <option-shadow_cascadeStaggerIntervals>`, :ref:`shadow_cascadeStaggerOffsets <option-shadow_cascadeStaggerOffsets>`, :ref:`shadow_directionalProjectionBackOff <option-shadow_directionalProjectionBackOff>`, :ref:`shadow_pointNearPlane <option-shadow_pointNearPlane>`, :ref:`shadow_pointFarPlane <option-shadow_pointFarPlane>`
-* **SSAO** - :ref:`ssao_width <option-ssao_width>`, :ref:`ssao_height <option-ssao_height>`, :ref:`ssao_sampleCount <option-ssao_sampleCount>`, :ref:`ssao_blurRadius <option-ssao_blurRadius>`
+* **SSAO** - :ref:`ssao_width <option-ssao_width>`, :ref:`ssao_height <option-ssao_height>`, :ref:`ssao_sampleCount <option-ssao_sampleCount>`, :ref:`ssao_blurRadius <option-ssao_blurRadius>`, :ref:`ssao_strength <option-ssao_strength>`, :ref:`ssao_power <option-ssao_power>`, :ref:`ssao_radius <option-ssao_radius>`, :ref:`ssao_fadeEnd <option-ssao_fadeEnd>`, :ref:`ssao_angleBias <option-ssao_angleBias>`, :ref:`gtao_sliceCount <option-gtao_sliceCount>`, :ref:`gtao_stepCount <option-gtao_stepCount>`
 * **Culling and LOD** - :ref:`performance_multiThreadedCulling <option-performance_multiThreadedCulling>`, :ref:`LOD_levelDistances <option-LOD_levelDistances>`, :ref:`LOD_calibrate <option-LOD_calibrate>`, :ref:`LOD_switchHysteresis <option-LOD_switchHysteresis>`, :ref:`LOD_forceLevel <option-LOD_forceLevel>`, :ref:`LOD_skipRenderDistance <option-LOD_skipRenderDistance>`, :ref:`LOD_skipRenderSize <option-LOD_skipRenderSize>`, :ref:`LOD_maxSkipRenderSize <option-LOD_maxSkipRenderSize>`, :ref:`SplitModelToMeshCount <option-SplitModelToMeshCount>`
 * **Software occlusion** - :ref:`occlusion_enabled <option-occlusion_enabled>`, :ref:`occlusion_renderWidth <option-occlusion_renderWidth>`, :ref:`occlusion_renderHeight <option-occlusion_renderHeight>`, :ref:`occlusion_occluderSizePerspective <option-occlusion_occluderSizePerspective>`, :ref:`occlusion_occluderSizeOrthographic <option-occlusion_occluderSizeOrthographic>`, :ref:`occlusion_bakeLodLevel <option-occlusion_bakeLodLevel>`, :ref:`occlusion_renderDump <option-occlusion_renderDump>`, :ref:`occlusion_renderDumpFrequency <option-occlusion_renderDumpFrequency>`
 * **Debugging** - :ref:`debug_renderInformations <option-debug_renderInformations>`, :ref:`debug_drawLines <option-debug_drawLines>`, :ref:`debug_drawBufferSize <option-debug_drawBufferSize>`, :ref:`profiler_enableServer <option-profiler_enableServer>`
